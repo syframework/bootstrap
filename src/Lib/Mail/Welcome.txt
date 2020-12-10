@@ -1,0 +1,13 @@
+{"Hello"},
+
+{"You can connect directly by clicking on"}:
+{ACTIVATE_URL}
+
+{"Or use your generated password"}:
+{PASSWORD}
+
+{"If you have not ask to receive this mail please report by clicking on"}:
+{REPORT_URL}
+
+{"Thank you"},
+{"Project team"}

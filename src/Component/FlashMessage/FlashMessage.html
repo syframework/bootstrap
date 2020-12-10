@@ -1,0 +1,22 @@
+<div id="flash-message" class="alert alert-{TYPE} flash-message">
+	<button type="button" class="close" onclick="$('#flash-message').off();$('#flash-message').removeClass('in')">&times;</button>
+	<span class="h4 alert-heading">{TITLE}</span>
+	<p class="mb-0">{MESSAGE}</p>
+</div>
+<div id="flash-message-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- BEGIN TITLE_BLOCK -->
+			<div class="modal-header">
+				<h4 class="modal-title">{TITLE}</h4>
+			</div>
+			<!-- END TITLE_BLOCK -->
+			<div class="modal-body">
+				<p>{MESSAGE}</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{"OK"}</button>
+			</div>
+		</div>
+	</div>
+</div>

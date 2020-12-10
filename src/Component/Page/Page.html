@@ -1,0 +1,150 @@
+<!-- BEGIN LAYOUT_BLOCK -->
+{LAYOUT}
+<!-- ELSE LAYOUT_BLOCK -->
+<div class="container pt-1">
+	<div class="alert alert-danger">
+		<span class="fas fa-exclamation-triangle"></span> {"Site is under maintenance"}
+	</div>
+</div>
+<!-- END LAYOUT_BLOCK -->
+<div id="sy-page-toolbar">
+	<!-- BEGIN CREATE_BTN_BLOCK -->
+	<div title="{'New page'}" data-title="{'New page'}" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" data-toggle="modal" data-target="#new-page-modal">
+			<span class="fas fa-plus" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END CREATE_BTN_BLOCK -->
+	<!-- BEGIN UPDATE_INLINE_BTN_BLOCK -->
+	<div title="{'Start editing'}" data-title="{'Start editing'}" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" id="btn-page-update-start">
+			<span class="fas fa-pencil-alt" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<div title="{'Finish editing'}" data-title="{'Finish editing'}" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1 d-none" id="btn-page-update-stop">
+			<span class="fas fa-check" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END UPDATE_INLINE_BTN_BLOCK -->
+	<!-- BEGIN UPDATE_BTN_BLOCK -->
+	<div title="{'Page settings'}" data-title="{'Page settings'}" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" data-toggle="modal" data-target="#update-page-modal">
+			<span class="fas fa-cog" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END UPDATE_BTN_BLOCK -->
+	<!-- BEGIN HTML_BTN_BLOCK -->
+	<div title="HTML" data-title="HTML" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" data-toggle="modal" data-target="#html-modal" data-backdrop="static">
+			<span class="fab fa-html5" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END HTML_BTN_BLOCK -->
+	<!-- BEGIN CSS_BTN_BLOCK -->
+	<div title="CSS" data-title="CSS" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" data-toggle="modal" data-target="#css-modal" data-backdrop="static">
+			<span class="fab fa-css3" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END CSS_BTN_BLOCK -->
+	<!-- BEGIN JS_BTN_BLOCK -->
+	<div title="JS" data-title="JS" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" data-toggle="modal" data-target="#js-modal" data-backdrop="static">
+			<span class="fab fa-js" data-fa-transform="grow-5"></span>
+		</button>
+	</div>
+	<!-- END JS_BTN_BLOCK -->
+	<!-- BEGIN DELETE_BTN_BLOCK -->
+	<div title="{'Delete page'}" data-title="{'Delete page'}" data-placement="right" data-container="body" data-trigger="hover">
+		<button class="btn btn-primary rounded rounded-circle mb-1" id="btn-page-delete">
+			<span class="fas fa-trash" data-fa-transform="grow-5"></span>
+		</button>
+		<div hidden>{DELETE_PAGE_FORM}</div>
+	</div>
+	<!-- END DELETE_BTN_BLOCK -->
+</div>
+<!-- BEGIN CREATE_MODAL_BLOCK -->
+<div class="modal fade" id="new-page-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"New page"}</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				{NEW_PAGE_FORM}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END CREATE_MODAL_BLOCK -->
+<!-- BEGIN UPDATE_MODAL_BLOCK -->
+<div class="modal fade" id="update-page-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"Page settings"}</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				{UPDATE_PAGE_FORM}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END UPDATE_MODAL_BLOCK -->
+<!-- BEGIN HTML_MODAL_BLOCK -->
+<div class="modal fade" id="html-modal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"HTML"}</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div>
+				{HTML_FORM}
+			</div>
+			<div class="modal-footer">
+				<button form="{FORM_HTML_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END HTML_MODAL_BLOCK -->
+<!-- BEGIN CSS_MODAL_BLOCK -->
+<div class="modal fade" id="css-modal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"CSS"}</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div>
+				{CSS_FORM}
+			</div>
+			<div class="modal-footer">
+				<button form="{FORM_CSS_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END CSS_MODAL_BLOCK -->
+<!-- BEGIN JS_MODAL_BLOCK -->
+<div class="modal fade" id="js-modal">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"JS"}</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div>
+				{JS_FORM}
+			</div>
+			<div class="modal-footer">
+				<button form="{FORM_JS_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END JS_MODAL_BLOCK -->

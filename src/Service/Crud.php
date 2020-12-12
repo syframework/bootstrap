@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Service;
 
+use Sy\Bootstrap\Lib\Str;
+
 class Crud {
 
 	/**

@@ -230,7 +230,7 @@ class Crud {
 	}
 
 	protected function logWarning($message) {
-		$service = ServiceContainer::getInstance();
+		$service = Container::getInstance();
 		$service->debug->logWarning($message);
 	}
 

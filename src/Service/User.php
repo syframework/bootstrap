@@ -209,11 +209,11 @@ class User extends Crud {
 	}
 
 	/**
-	 * @return \Sy\Bootstrap\Lib\Model\User
+	 * @return \Sy\Bootstrap\Model\User
 	 */
 	public function getCurrentUser() {
 		if (!isset($this->currentUser)) {
-			$this->currentUser = new \Sy\Bootstrap\Lib\Model\User(\Sy\Http::session('user_id', 0));
+			$this->currentUser = new \Sy\Bootstrap\Model\User(\Sy\Http::session('user_id', 0));
 		}
 		return $this->currentUser;
 	}

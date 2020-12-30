@@ -30,7 +30,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 	public function submitAction() {
 		try {
 			$this->validatePost();
-			$service = \Sy\Bootstrap\Lib\ServiceContainer::getInstance();
+			$service = \Sy\Bootstrap\Service\Container::getInstance();
 			$service->user->signUp(strtolower(trim($this->post('email'))));
 			$this->setSuccess($this->_('Account created successfully'), null, 0);
 		} catch (\Sy\Component\Html\Form\Exception $e) {

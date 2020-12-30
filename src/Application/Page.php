@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Lib\Url;
+
 class Page extends \Sy\Bootstrap\Component\Page {
 
 	/**

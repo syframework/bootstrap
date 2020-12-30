@@ -1,0 +1,45 @@
+<div id="accordion">
+	<div class="card mb-1">
+		<div class="card-header">
+			<h2 class="h5 m-0">
+				<a class="text-secondary {COLLAPSED_SIGNIN}" data-toggle="collapse" href="#signin">
+					<span class="caret"></span> {"Sign In"}
+				</a>
+			</h2>
+		</div>
+		<div id="signin" class="collapse {IN_SIGNIN}" data-parent="#accordion">
+			<div class="card-body">
+				{SIGN_IN_FORM}
+			</div>
+		</div>
+	</div>
+	<div class="card mb-1">
+		<div class="card-header">
+			<h2 class="h5 m-0">
+				<a class="text-secondary {COLLAPSED_FORGET}" data-toggle="collapse" href="#forget">
+					<span class="caret"></span> {"Forget password"}
+				</a>
+			</h2>
+		</div>
+		<div id="forget" class="collapse {IN_FORGET}" data-parent="#accordion">
+			<div class="card-body">
+				{FORGET_PASSWORD_FORM}
+			</div>
+		</div>
+	</div>
+	<div class="card">
+		<div class="card-header">
+			<h2 class="h5 m-0">
+				<a class="text-secondary {COLLAPSED_SIGNUP}" data-toggle="collapse" href="#signup">
+					<span class="caret"></span> {"Sign Up"}
+				</a>
+			</h2>
+		</div>
+		<div id="signup" class="collapse {IN_SIGNUP}" data-parent="#accordion">
+			<div class="card-body">
+				{SIGN_UP_FORM}
+				<small>{"By signing up you accept our"} <a href="{USE_URL}" target="_blank">{"Conditions of use"}</a></small>
+			</div>
+		</div>
+	</div>
+</div>

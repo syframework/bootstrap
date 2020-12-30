@@ -22,7 +22,7 @@ class Crud {
 	 */
 	public function getDbContainer() {
 		if (!isset($this->dbContainer)) {
-			$this->dbContainer = DbContainer::getInstance();
+			$this->dbContainer = \Sy\Bootstrap\Db\Container::getInstance();
 		}
 		return $this->dbContainer;
 	}

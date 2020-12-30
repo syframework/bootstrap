@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Service;
 
+use Sy\Bootstrap\Lib\Str;
+
 class Crud {
 
 	/**
@@ -230,7 +232,7 @@ class Crud {
 	}
 
 	protected function logWarning($message) {
-		$service = ServiceContainer::getInstance();
+		$service = Container::getInstance();
 		$service->debug->logWarning($message);
 	}
 

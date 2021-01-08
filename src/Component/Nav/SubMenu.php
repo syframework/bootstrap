@@ -4,7 +4,7 @@ namespace Sy\Bootstrap\Component\Nav;
 class SubMenu extends \Sy\Component\Html\Element {
 
 	public function __construct() {
-		parent::__construct('div');
+		parent::__construct('ul');
 		$this->setAttribute('class', 'dropdown-menu');
 		$this->addTranslator(LANG_DIR);
 	}
@@ -45,6 +45,7 @@ class SubMenu extends \Sy\Component\Html\Element {
 		if (isset($data['class'])) {
 			$attributes['class'] = $data['class'];
 		}
+		$li = new \Sy\Component\Html\Element('li');
 		$item = new \Sy\Component\Html\Element('a');
 		$item->addText($icon . $this->_($label));
 		$item->setAttributes($attributes);
@@ -53,7 +54,8 @@ class SubMenu extends \Sy\Component\Html\Element {
 			$item->setAttribute('class', 'active');
 		}
 		$item->addClass('dropdown-item');
-		$this->addElement($item);
+		$li->addElement($item);
+		$this->addElement($li);
 		return $active;
 	}
 

@@ -18,9 +18,9 @@ class Menu extends Element {
 	public function addDropdown($title, SubMenu $subMenu, $active = false) {
 		$a = new \Sy\Component\Html\Element('a');
 		$a->setAttributes([
-			'href'        => '#',
-			'class'       => 'nav-link dropdown-toggle',
-			'data-toggle' => 'dropdown',
+			'href'           => '#',
+			'class'          => 'nav-link dropdown-toggle',
+			'data-bs-toggle' => 'dropdown',
 		]);
 		$a->addText($title);
 		$li = new \Sy\Component\Html\Element('li');

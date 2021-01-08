@@ -1,42 +1,36 @@
-<div id="accordion">
-	<div class="card mb-1">
-		<div class="card-header">
-			<h2 class="h5 m-0">
-				<a class="text-secondary {COLLAPSED_SIGNIN}" data-toggle="collapse" href="#signin">
-					<span class="caret"></span> {"Sign In"}
-				</a>
-			</h2>
-		</div>
-		<div id="signin" class="collapse {IN_SIGNIN}" data-parent="#accordion">
-			<div class="card-body">
+<div class="accordion" id="accordion">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button {COLLAPSED_SIGNIN}" data-bs-toggle="collapse" data-bs-target="#signin">
+				<span class="caret"></span> {"Sign In"}
+			</button>
+		</h2>
+		<div id="signin" class="accordion-collapse collapse {IN_SIGNIN}" data-bs-parent="#accordion">
+			<div class="accordion-body">
 				{SIGN_IN_FORM}
 			</div>
 		</div>
 	</div>
-	<div class="card mb-1">
-		<div class="card-header">
-			<h2 class="h5 m-0">
-				<a class="text-secondary {COLLAPSED_FORGET}" data-toggle="collapse" href="#forget">
-					<span class="caret"></span> {"Forget password"}
-				</a>
-			</h2>
-		</div>
-		<div id="forget" class="collapse {IN_FORGET}" data-parent="#accordion">
-			<div class="card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button {COLLAPSED_FORGET}" data-bs-toggle="collapse" data-bs-target="#forget">
+				<span class="caret"></span> {"Forget password"}
+			</button>
+		</h2>
+		<div id="forget" class="accordion-collapse collapse {IN_FORGET}" data-bs-parent="#accordion">
+			<div class="accordion-body">
 				{FORGET_PASSWORD_FORM}
 			</div>
 		</div>
 	</div>
-	<div class="card">
-		<div class="card-header">
-			<h2 class="h5 m-0">
-				<a class="text-secondary {COLLAPSED_SIGNUP}" data-toggle="collapse" href="#signup">
-					<span class="caret"></span> {"Sign Up"}
-				</a>
-			</h2>
-		</div>
-		<div id="signup" class="collapse {IN_SIGNUP}" data-parent="#accordion">
-			<div class="card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button {COLLAPSED_SIGNUP}" data-bs-toggle="collapse" data-bs-target="#signup">
+				<span class="caret"></span> {"Sign Up"}
+			</button>
+		</h2>
+		<div id="signup" class="accordion-collapse collapse {IN_SIGNUP}" data-bs-parent="#accordion">
+			<div class="accordion-body">
 				{SIGN_UP_FORM}
 				<small>{"By signing up you accept our"} <a href="{USE_URL}" target="_blank">{"Conditions of use"}</a></small>
 			</div>

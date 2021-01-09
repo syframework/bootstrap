@@ -15,12 +15,13 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 
 		$this->addEmail(
 			[
+				'id'       => 'forgetpwd-email',
 				'name'     => 'email',
 				'required' => 'required',
 			],
 			['label' => 'E-mail']
 		);
-		$this->addButton('Send', ['type' => 'submit'], ['color' => 'primary', 'icon' => 'fas fa-paper-plane', 'size' => 'block']);
+		$this->addButton('Send', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-paper-plane']);
 	}
 
 	public function submitAction() {

@@ -16,6 +16,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 		// E-mail field
 		$this->addEmail(
 			[
+				'id'       => 'signup-email',
 				'name'     => 'email',
 				'required' => 'required',
 			],
@@ -24,7 +25,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			]
 		);
 
-		$this->addButton('Sign Up', [], ['color' => 'primary', 'icon' => 'fas fa-check', 'size' => 'block']);
+		$this->addButton('Sign Up', ['class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-check']);
 	}
 
 	public function submitAction() {

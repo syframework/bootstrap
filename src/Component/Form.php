@@ -425,7 +425,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$element = new Form\TextFillableInput($class);
 
 		if (is_null($container)) $container = $this;
-		$div = $container->addDiv(['class' => 'form-group']);
+		$div = $container->addDiv(['class' => 'mb-3']);
 		if (isset($attributes['placeholder'])) {
 			$attributes['placeholder'] = $this->_($attributes['placeholder']);
 		}

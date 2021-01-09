@@ -13,6 +13,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 		$f = $this->addFieldset();
 		$this->addEmail(
 			[
+				'id'       => 'signin-email',
 				'name'     => 'email',
 				'required' => 'required',
 			],
@@ -20,12 +21,13 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 		);
 		$this->addPassword(
 			[
+				'id'       => 'signin-password',
 				'name'     => 'password',
 				'required' => 'required',
 			],
 			['label' => $this->_('Password')], $f
 		);
-		$this->addButton('Sign In', ['type' => 'submit'], ['color' => 'primary', 'icon' => 'fas fa-power-off', 'size' => 'block'], $f);
+		$this->addButton('Sign In', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-power-off'], $f);
 	}
 
 	public function submitAction() {

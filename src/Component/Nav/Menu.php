@@ -26,7 +26,7 @@ class Menu extends Element {
 		$li = new \Sy\Component\Html\Element('li');
 		$li->setAttribute('class', 'nav-item dropdown');
 		if ($active) {
-			$li->addClass('active');
+			$a->addClass('active');
 		}
 		$li->addElement($a);
 		$li->addElement($subMenu);

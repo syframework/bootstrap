@@ -40,10 +40,10 @@ class Element extends \Sy\Component\Html\Navigation {
 		if (isset($data['class'])) {
 			$attributes['class'] .= ' ' . $data['class'];
 		}
-		$item = $this->addItem($icon . $this->_($label), $link, $attributes);
 		if ($active) {
-			$item->setAttribute('class', 'active');
+			$attributes['class'] .= ' active';
 		}
+		$item = $this->addItem($icon . $this->_($label), $link, $attributes);
 		$item->addClass('nav-item');
 		return $active;
 	}

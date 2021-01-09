@@ -66,7 +66,7 @@ class Menu extends Element {
 	private function init($menu) {
 		$this->addTranslator(LANG_DIR);
 		if (is_null($this->getAttribute('class'))) {
-			$this->setAttribute('class', 'navbar-nav mr-auto mb-2 mb-lg-0 mb-xl-0');
+			$this->setAttribute('class', 'navbar-nav me-auto mb-2 mb-lg-0');
 		}
 		$this->add($menu);
 	}

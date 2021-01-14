@@ -229,7 +229,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addTextarea(array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
-		$div = $container->addDiv(['class' => 'form-group']);
+		$div = $container->addDiv(['class' => 'mb-3']);
 		if (isset($attributes['placeholder'])) {
 			$attributes['placeholder'] = $this->_($attributes['placeholder']);
 		}
@@ -330,7 +330,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addSelect(array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
-		$div = $container->addDiv(['class' => 'form-group']);
+		$div = $container->addDiv(['class' => 'mb-3']);
 		if (isset($options['label'])) {
 			$options['label'] = $this->_($options['label']);
 		}
@@ -339,7 +339,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {
 			// Selectbox
 			$select = $div->addSelect($attributes, $options);
-			$select->addClass('custom-select');
+			$select->addClass('form-select');
 
 			// Size
 			if (isset($options['size'])) {

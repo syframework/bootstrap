@@ -47,7 +47,7 @@ class Url {
 		if (file_exists(AVATAR_DIR . "/$id.png")) {
 			return PROJECT_URL . AVATAR_ROOT . "/$id.png";
 		} else {
-			$n = count(glob(DEFAULT_AVATAR_ROOT . '/*.svg'));
+			$n = count(glob(DEFAULT_AVATAR_DIR . '/*.svg'));
 			return DEFAULT_AVATAR_ROOT . '/' . (($id % $n) + 1) . '.svg';
 		}
 	}

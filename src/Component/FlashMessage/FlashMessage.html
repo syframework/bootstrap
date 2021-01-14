@@ -1,5 +1,5 @@
-<div id="flash-message" class="alert alert-{TYPE} flash-message" role="alert">
-	<button type="button" class="btn-close" onclick="$('#flash-message').off();$('#flash-message').removeClass('in')">&times;</button>
+<div id="flash-message" class="alert alert-{TYPE} alert-dismissible flash-message" role="alert">
+	<button type="button" class="btn-close" onclick="$('#flash-message').off();$('#flash-message').removeClass('in')"></button>
 	<span class="h4 alert-heading">{TITLE}</span>
 	<p class="mb-0">{MESSAGE}</p>
 </div>

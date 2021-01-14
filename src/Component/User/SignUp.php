@@ -38,7 +38,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch (\Sy\Bootstrap\Lib\Crud\DuplicateEntryException $e) {
+		} catch (\Sy\Bootstrap\Service\Crud\DuplicateEntryException $e) {
 			$this->logWarning($e->getMessage());
 			$this->fill($_POST);
 			$this->setError($this->_('Account already exists'));

@@ -119,11 +119,11 @@ class User extends Crud {
 			$service = \Sy\Bootstrap\Service\Container::getInstance();
 			$service->mail->sendWelcome($email, $password, $token);
 			$this->getDbCrud()->commit();
-		} catch(\Sy\Bootstrap\Lib\Crud\Exception $e) {
+		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
 			$this->logWarning($e);
 			$this->getDbCrud()->rollBack();
 			throw new User\SignUpException('Database error');
-		} catch(\Sy\Bootstrap\Lib\Mail\Exception $e) {
+		} catch(\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
 			$this->getDbCrud()->rollBack();
 			throw new User\SignUpException('Mail error');
@@ -202,7 +202,7 @@ class User extends Crud {
 			$token = sha1(uniqid());
 			$this->update(['email' => $email], ['token' => $token]);
 			$service->mail->sendForgetPassword($email, $token);
-		} catch(Mail\Exception $e) {
+		} catch(\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
 			throw new User\Exception('Mail error');
 		}

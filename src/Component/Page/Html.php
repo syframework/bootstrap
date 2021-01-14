@@ -56,7 +56,7 @@ class Html extends \Sy\Bootstrap\Component\Form {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch(\Sy\Bootstrap\Lib\Crud\Exception $e) {
+		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Database error'));
 			$this->fill($_POST);

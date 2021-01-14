@@ -41,13 +41,14 @@ class Url {
 	/**
 	 * Get the avatar url
 	 *
-	 * @param type $id the user id
+	 * @param int $id the user id
 	 */
 	public static function avatar($id) {
 		if (file_exists(AVATAR_DIR . "/$id.png")) {
 			return PROJECT_URL . AVATAR_ROOT . "/$id.png";
 		} else {
-			return DEFAULT_AVATAR_ROOT . '/' . (($id % 25) + 1) . '.svg';
+			$n = count(glob(DEFAULT_AVATAR_ROOT . '/*.svg'));
+			return DEFAULT_AVATAR_ROOT . '/' . (($id % $n) + 1) . '.svg';
 		}
 	}
 

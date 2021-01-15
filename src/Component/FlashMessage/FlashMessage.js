@@ -58,7 +58,7 @@ $(function() {
 		}, {TIMEOUT});
 	});
 	<!-- ELSE TIMEOUT_BLOCK -->
-	$('#flash-message-modal').modal({
+	new bootstrap.Modal(document.getElementById('flash-message-modal'), {
 		keyboard: false,
 		backdrop: 'static'
 	});

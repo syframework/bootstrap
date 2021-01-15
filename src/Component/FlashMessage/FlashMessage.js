@@ -58,10 +58,11 @@ $(function() {
 		}, {TIMEOUT});
 	});
 	<!-- ELSE TIMEOUT_BLOCK -->
-	new bootstrap.Modal(document.getElementById('flash-message-modal'), {
+	var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {
 		keyboard: false,
 		backdrop: 'static'
 	});
+	modal.show();
 	<!-- END TIMEOUT_BLOCK -->
 
 	$.post(window.location, {flash_message_action: "clear"});

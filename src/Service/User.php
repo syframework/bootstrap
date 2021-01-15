@@ -53,7 +53,7 @@ class User extends Crud {
 				$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
 			} else {
 				$pwd = Str::generatePassword();
-				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT), 'algo' => 'bcrypt']);
+				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
 				$service = \Sy\Bootstrap\Service\Container::getInstance();
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
 				throw new User\ActivateAccountException;
@@ -66,7 +66,7 @@ class User extends Crud {
 		// Upgrade algo from sha1 to bcrypt
 		if ($algo === 'sha1') {
 			$pass = password_hash($password, PASSWORD_DEFAULT);
-			$this->update(['id' => $user['id']], ['password' => $pass, 'algo' => 'bcrypt']);
+			$this->update(['id' => $user['id']], ['password' => $pass]);
 		}
 
 		// Session
@@ -99,11 +99,8 @@ class User extends Crud {
 		try {
 			$this->getDbCrud()->beginTransaction();
 
-			// Generate a unique nickname
+			// Generate nickname
 			$name = Str::generateNicknameFromEmail($email);
-			while(!empty($this->retrieve(['firstname' => $name]))) {
-				$name = Str::generateNickname();
-			}
 
 			$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
 			$token = sha1(uniqid());
@@ -112,7 +109,6 @@ class User extends Crud {
 				'email'    => $email,
 				'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
 				'password' => password_hash($password, PASSWORD_DEFAULT),
-				'algo'     => 'bcrypt',
 				'token'    => $token,
 				'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']))
 			]);

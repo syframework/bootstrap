@@ -4,7 +4,7 @@ namespace Sy\Bootstrap\Component;
 abstract class Api extends \Sy\Component\WebComponent {
 
 	public function __construct() {
-		$this->__construct();
+		parent::__construct();
 		$this->addTranslator(LANG_DIR);
 		$this->security();
 		$this->dispatch();

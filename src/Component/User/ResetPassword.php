@@ -48,7 +48,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 		try {
 			$this->validatePost();
 			$service = \Sy\Bootstrap\Service\Container::getInstance();
-			$service->user->update(['email' => $this->post('email')], ['password' => password_hash($this->post('new_password'), PASSWORD_DEFAULT), 'algo' => 'bcrypt', 'token' => '']);
+			$service->user->update(['email' => $this->post('email')], ['password' => password_hash($this->post('new_password'), PASSWORD_DEFAULT), 'token' => '']);
 			$service->user->signIn($this->post('email'), $this->post('new_password'));
 			$this->setSuccess($this->_('You are connected'), PROJECT_URL);
 		} catch (\Sy\Component\Html\Form\Exception $e) {

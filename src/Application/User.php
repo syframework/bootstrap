@@ -26,7 +26,7 @@ class User extends \Sy\Component\WebComponent {
 			$service->place->clearCache(['retrieve']);
 
 			\Sy\Bootstrap\Lib\FlashMessage::setMessage($this->_('You are connected'));
-		} catch(\Sy\Bootstrap\Lib\Service\User\ActivateAccountException $e) {
+		} catch(\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Activation error'));
 		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
@@ -45,7 +45,7 @@ class User extends \Sy\Component\WebComponent {
 			$service = \Sy\Bootstrap\Service\Container::getInstance();
 			$service->user->report($this->get('email'), $this->get('token'));
 			\Sy\Bootstrap\Lib\FlashMessage::setMessage($this->_('Thanks for your report'));
-		} catch(\Sy\Bootstrap\Lib\Service\User\ActivateAccountException $e) {
+		} catch(\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Report error'));
 		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {

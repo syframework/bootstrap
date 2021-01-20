@@ -40,10 +40,10 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch (\Sy\Bootstrap\Lib\Service\User\ActivateAccountException $e) {
+		} catch (\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Account not activated'));
-		} catch (\Sy\Bootstrap\Lib\Service\User\SignInException $e) {
+		} catch (\Sy\Bootstrap\Service\User\SignInException $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('ID or password error'));
 		} catch (\Sy\Bootstrap\Service\Crud\Exception $e) {

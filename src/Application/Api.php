@@ -34,13 +34,12 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		$id = $service->user->getCurrentUser()->id;
 
 		// Csrf check
-		if ($service->user->getCsrfToken() !== $this->post('__csrf')) exit();
+		if ($service->user->getCsrfToken() !== $this->post('__csrf')) exit;
 
 		$fileName = AVATAR_DIR . '/' . "$id.png";
 		\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
 		\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
-		$service->cloudflare->purgeFile(PROJECT_URL . AVATAR_ROOT . '/' . $id . '.png');
-		exit();
+		exit;
 	}
 
 	/**

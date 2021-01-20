@@ -60,7 +60,7 @@ class User extends Crud {
 		}
 
 		// Wrong password
-		if (empty($pass) or !$this->passwordVerify($password, $pass, $algo)) throw new User\SignInException;
+		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException;
 
 		// Session
 		$fingerprint = preg_replace("/[^a-zA-Z]/", '', $_SERVER['HTTP_USER_AGENT']);
@@ -183,7 +183,7 @@ class User extends Crud {
 			// Inactive user
 			if ($user['status'] === 'inactive') {
 				$pwd = Str::generatePassword();
-				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT), 'algo' => 'bcrypt']);
+				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
 				throw new User\ActivateAccountException;
 			}

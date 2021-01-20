@@ -8,7 +8,7 @@
 	<input id="avatar-input-file" data-csrf="{CSRF_TOKEN}" data-upload-url="{UPLOAD_URL}" data-size="{SIZE}" data-alert-image="{'Selected file is not an image'}" data-alert-dimension="{'Picture is too small'}" type="file" class="d-none" onclick="this.value=null" accept="image/*" />
 </div>
 
-<div id="avatar-modal" class="modal fade" data-backdrop="static">
+<div id="avatar-modal" class="modal fade" data-bs-backdrop="static">
 	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -27,7 +27,7 @@
 	</div>
 </div>
 
-<div id="avatar-progress-modal" class="modal fade" data-backdrop="static">
+<div id="avatar-progress-modal" class="modal fade" data-bs-backdrop="static">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-body">

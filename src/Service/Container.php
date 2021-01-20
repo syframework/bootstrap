@@ -7,8 +7,8 @@ use Sy\Cache\SimpleCache;
 /**
  * @method Container getInstance()
  * @property-read Debugger $debug Debug and log service
- * @property-read Service\User $user User service
- * @property-read Service\Mail $mail Mail service
+ * @property-read User $user User service
+ * @property-read Mail $mail Mail service
  * @property-read Crud $page Page service
  * @property-read Crud $pageHistory Page service
  * @property-read SimpleCache $cache Cache service

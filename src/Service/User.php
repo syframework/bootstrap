@@ -44,12 +44,11 @@ class User extends Crud {
 
 		// User password
 		$pass = $user['password'];
-		$algo = isset($user['algo']) ? $user['algo'] : 'bcrypt';
 
 		// Inactive user
 		if ($user['status'] === 'inactive') {
 			// Activate account if password is good
-			if (!empty($pass) and $this->passwordVerify($password, $pass, $algo)) {
+			if (!empty($pass) and $this->passwordVerify($password, $pass)) {
 				$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
 			} else {
 				$pwd = Str::generatePassword();
@@ -62,12 +61,6 @@ class User extends Crud {
 
 		// Wrong password
 		if (empty($pass) or !$this->passwordVerify($password, $pass, $algo)) throw new User\SignInException;
-
-		// Upgrade algo from sha1 to bcrypt
-		if ($algo === 'sha1') {
-			$pass = password_hash($password, PASSWORD_DEFAULT);
-			$this->update(['id' => $user['id']], ['password' => $pass]);
-		}
 
 		// Session
 		$fingerprint = preg_replace("/[^a-zA-Z]/", '', $_SERVER['HTTP_USER_AGENT']);
@@ -287,7 +280,7 @@ class User extends Crud {
 	 * @param type $algo
 	 * @return bool
 	 */
-	public function passwordVerify($password, $hash, $algo) {
+	public function passwordVerify($password, $hash, $algo = 'bcrypt') {
 		switch ($algo) {
 			case 'sha1':
 				return sha1($password) === $hash;

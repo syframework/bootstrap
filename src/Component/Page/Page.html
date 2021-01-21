@@ -9,8 +9,8 @@
 <!-- END LAYOUT_BLOCK -->
 <div id="sy-page-toolbar">
 	<!-- BEGIN CREATE_BTN_BLOCK -->
-	<div title="{'New page'}" data-bs-title="{'New page'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" data-bs-toggle="modal" data-bs-target="#new-page-modal">
+	<div data-bs-toggle="modal" data-bs-target="#new-page-modal">
+		<button class="btn btn-primary btn-circle mb-1" title="{'New page'}" data-bs-title="{'New page'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
 				<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
 			</svg>
@@ -18,15 +18,15 @@
 	</div>
 	<!-- END CREATE_BTN_BLOCK -->
 	<!-- BEGIN UPDATE_INLINE_BTN_BLOCK -->
-	<div title="{'Start editing'}" data-bs-title="{'Start editing'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" id="btn-page-update-start">
+	<div>
+		<button class="btn btn-primary btn-circle mb-1" id="btn-page-update-start" title="{'Start editing'}" data-bs-title="{'Start editing'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
 				<path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
 			</svg>
 		</button>
 	</div>
-	<div title="{'Finish editing'}" data-bs-title="{'Finish editing'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1 d-none" id="btn-page-update-stop">
+	<div>
+		<button class="btn btn-primary btn-circle mb-1 d-none" id="btn-page-update-stop" title="{'Finish editing'}" data-bs-title="{'Finish editing'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
 				<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
 			</svg>
@@ -34,8 +34,8 @@
 	</div>
 	<!-- END UPDATE_INLINE_BTN_BLOCK -->
 	<!-- BEGIN UPDATE_BTN_BLOCK -->
-	<div title="{'Page settings'}" data-bs-title="{'Page settings'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" data-bs-toggle="modal" data-bs-target="#update-page-modal">
+	<div data-bs-toggle="modal" data-bs-target="#update-page-modal">
+		<button class="btn btn-primary btn-circle mb-1" title="{'Page settings'}" data-bs-title="{'Page settings'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
 				<path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
 			</svg>
@@ -43,8 +43,8 @@
 	</div>
 	<!-- END UPDATE_BTN_BLOCK -->
 	<!-- BEGIN HTML_BTN_BLOCK -->
-	<div title="HTML" data-bs-title="HTML" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" data-bs-toggle="modal" data-bs-target="#html-modal" data-bs-backdrop="static">
+	<div data-bs-toggle="modal" data-bs-target="#html-modal" data-bs-backdrop="static">
+		<button class="btn btn-primary btn-circle mb-1" title="HTML" data-bs-title="HTML" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
 				<path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/>
 			</svg>
@@ -52,8 +52,8 @@
 	</div>
 	<!-- END HTML_BTN_BLOCK -->
 	<!-- BEGIN CSS_BTN_BLOCK -->
-	<div title="CSS" data-bs-title="CSS" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" data-bs-toggle="modal" data-bs-target="#css-modal" data-bs-backdrop="static">
+	<div data-bs-toggle="modal" data-bs-target="#css-modal" data-bs-backdrop="static">
+		<button class="btn btn-primary btn-circle mb-1" title="CSS" data-bs-title="CSS" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
 				<path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z"/>
 			</svg>
@@ -61,8 +61,8 @@
 	</div>
 	<!-- END CSS_BTN_BLOCK -->
 	<!-- BEGIN JS_BTN_BLOCK -->
-	<div title="JS" data-bs-title="JS" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" data-bs-toggle="modal" data-bs-target="#js-modal" data-bs-backdrop="static">
+	<div data-bs-toggle="modal" data-bs-target="#js-modal" data-bs-backdrop="static">
+		<button class="btn btn-primary btn-circle mb-1" title="JS" data-bs-title="JS" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
 				<path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/>
 			</svg>
@@ -70,8 +70,8 @@
 	</div>
 	<!-- END JS_BTN_BLOCK -->
 	<!-- BEGIN DELETE_BTN_BLOCK -->
-	<div title="{'Delete page'}" data-bs-title="{'Delete page'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
-		<button class="btn btn-primary btn-circle mb-1" id="btn-page-delete">
+	<div>
+		<button class="btn btn-primary btn-circle mb-1" id="btn-page-delete" title="{'Delete page'}" data-bs-title="{'Delete page'}" data-bs-placement="right" data-bs-container="body" data-bs-trigger="hover">
 			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
 				<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
 			</svg>

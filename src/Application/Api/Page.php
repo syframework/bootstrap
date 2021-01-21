@@ -20,7 +20,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 	 *
 	 * @return void
 	 */
-	public function get() {
+	public function getAction() {
 		$id   = $this->get('id');
 		$lang = $this->get('lang');
 		if (is_null($id) or !s_null($lang)) {
@@ -41,7 +41,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 	 *
 	 * @return void
 	 */
-	public function post() {
+	public function postAction() {
 		$service = Container::getInstance();
 		try {
 			// Update page

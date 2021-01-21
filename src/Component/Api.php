@@ -15,6 +15,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 	public function dispatch() {
 		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 		if (empty($method)) return;
+		$method .= 'Action';
 		$this->$method();
 	}
 

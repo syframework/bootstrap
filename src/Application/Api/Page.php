@@ -23,7 +23,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 	public function getAction() {
 		$id   = $this->get('id');
 		$lang = $this->get('lang');
-		if (is_null($id) or !s_null($lang)) {
+		if (is_null($id) or is_null($lang)) {
 			$this->requestError();
 		}
 		$f = TPL_DIR . "/Application/Page/content/$lang/$id.html";

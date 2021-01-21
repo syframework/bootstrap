@@ -22,7 +22,9 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		$this->actionDispatch(ACTION_TRIGGER);
 
 		// If no action method found, check if a plugin api class exists
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(ACTION_TRIGGER);
+		$c = $this->request(ACTION_TRIGGER);
+		if (is_null($c)) return;
+		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst($c);
 		if (class_exists($class)) new $class();
 	}
 

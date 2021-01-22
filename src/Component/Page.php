@@ -51,16 +51,6 @@ abstract class Page extends \Sy\Component\WebComponent {
 		$service = \Sy\Bootstrap\Service\Container::getInstance();
 		$page = $service->page->retrieve(['id' => $name, 'lang' => $lang]);
 
-		// Create
-		if ($service->user->getCurrentUser()->hasPermission('page-create')) {
-			$form = new \Sy\Bootstrap\Component\Page\Create();
-			$form->getField('lang')->setAttribute('value', $lang);
-			$this->setComponent('NEW_PAGE_FORM', $form);
-			$this->addJsCode("$('#new-page-modal').has('div.alert').modal('show');");
-			$this->setBlock('CREATE_BTN_BLOCK');
-			$this->setBlock('CREATE_MODAL_BLOCK');
-		}
-
 		// No page found
 		if (empty($page) and $name === '404') return;
 		if (empty($page)) throw new \Sy\Bootstrap\Application\PageNotFoundException();
@@ -122,6 +112,19 @@ abstract class Page extends \Sy\Component\WebComponent {
 		}
 		if (file_exists(TPL_DIR . "/Application/Page/js/$name.js")) {
 			$this->addJsCode(file_get_contents(TPL_DIR . "/Application/Page/js/$name.js"));
+		}
+
+		// No toolbar for 404 page
+		if ($name === '404') return;
+
+		// Create
+		if ($service->user->getCurrentUser()->hasPermission('page-create')) {
+			$form = new \Sy\Bootstrap\Component\Page\Create();
+			$form->getField('lang')->setAttribute('value', $lang);
+			$this->setComponent('NEW_PAGE_FORM', $form);
+			$this->addJsCode("$('#new-page-modal').has('div.alert').modal('show');");
+			$this->setBlock('CREATE_BTN_BLOCK');
+			$this->setBlock('CREATE_MODAL_BLOCK');
 		}
 
 		// Javascript code

@@ -75,10 +75,6 @@ class Editor extends \Sy\Component\WebComponent {
 			echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($func, '$url', '$message');</script>";
 		}
 
-		// Purge cloudflare cache
-		$service = \Project\Service\Container::getInstance();
-		$service->cloudflare->purgeFile(PROJECT_URL . $url);
-
 		exit;
 	}
 

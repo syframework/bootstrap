@@ -45,15 +45,8 @@ $(function() {
 				filebrowserWindowHeight: 400,
 				imageUploadUrl: '{IMG_UPLOAD_AJAX}',
 				uploadUrl: '{FILE_UPLOAD_AJAX}',
-				extraPlugins: 'sourcedialog,sycomponent,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
-				allowedContent: {
-					$1: {
-						elements: CKEDITOR.dtd,
-						attributes: true,
-						styles: true,
-						classes: true
-					}
-				},
+				extraPlugins: 'sycomponent,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
+				allowedContent: true,
 				justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
 				disallowedContent: 'script; *[on*]; img{width,height}',
 				removePlugins: 'about',
@@ -95,7 +88,19 @@ $(function() {
 
 			editor.on('change', function() {
 				changed = true;
-			})
+			});
+
+			editor.config.toolbar = [
+				{ name: 'document', items: [ 'Templates' ] },
+				{ name: 'clipboard', items: [ 'Undo', 'Redo' ] },
+				{ name: 'editing', items: [ 'Find', 'Replace', 'Scayt' ] },
+				{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
+				{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
+				{ name: 'links', items: [ 'Link', 'Unlink' ] },
+				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Iframe' ] },
+				{ name: 'styles', items: [ 'Format' ] },
+				{ name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+			];
 		}
 		$(this).hide();
 		$('#btn-page-update-stop').removeClass("d-none");

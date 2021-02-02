@@ -49,6 +49,9 @@ class Create extends \Sy\Bootstrap\Component\Form\Crud\Create {
 					mkdir(TPL_DIR . '/Application/Page/content/' . $fields['lang'], 0777, true);
 				}
 				$content = new Content();
+				if (file_exists(TPL_DIR . '/Application/Page/content/_default.html')) {
+					$content->setTemplateFile(TPL_DIR . '/Application/Page/content/_default.html');
+				}
 				file_put_contents(TPL_DIR . '/Application/Page/content/' . $fields['lang'] . '/' . $fields['id'] . '.html', $content->__toString());
 			}
 			$this->getService()->create($fields);

@@ -287,6 +287,9 @@ class User extends Crud {
 
 			case 'bcrypt':
 				return password_verify($password, $hash);
+
+			default:
+				return false;
 		}
 	}
 

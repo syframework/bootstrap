@@ -1,7 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
-class Editor extends \Sy\Component\WebComponent {
+class Editor extends \Sy\Bootstrap\Component\Api {
 
 	public function __construct() {
 		parent::__construct();
@@ -127,9 +127,11 @@ class Editor extends \Sy\Component\WebComponent {
 		exit;
 	}
 
-	private function security() {
+	public function security() {
 		$service = \Project\Service\Container::getInstance();
 		$user = $service->user->getCurrentUser();
+		$id   = $this->get('id');
+		$item = $this->get('item');
 
 		// Check if a plugin class exists
 		$class = 'Sy\\Bootstrap\\Application\\Editor\\' . ucfirst($item);

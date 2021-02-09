@@ -179,7 +179,7 @@ class Crud {
 	 * @return int The number of affected rows.
 	 * @throws Crud\Exception
 	 */
-	public function change(array $fields, array $updates) {
+	public function change(array $fields, array $updates = []) {
 		try {
 			return $this->getDbCrud()->change($fields, $updates);
 		} catch(\Sy\Db\Exception $e) {

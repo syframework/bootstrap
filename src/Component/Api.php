@@ -10,7 +10,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 		$this->dispatch();
 	}
 
-	abstract function security();
+	abstract public function security();
 	
 	public function dispatch() {
 		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;

@@ -148,13 +148,6 @@ abstract class Page extends \Sy\Component\WebComponent {
 				'FILE_UPLOAD_AJAX'=> Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
 				'CKEDITOR_ROOT'   => CKEDITOR_ROOT,
 			]);
-			if (defined('IFRAMELY')) {
-				$js->setVars([
-					'IFRAMELY'     => IFRAMELY,
-					'IFRAMELY_KEY' => IFRAMELY_KEY,
-				]);
-				$js->setBlock('IFRAMELY_BLOCK');
-			}
 			$js->setBlock('UPDATE_BLOCK');
 			$this->setBlock('UPDATE_INLINE_BTN_BLOCK');
 		}

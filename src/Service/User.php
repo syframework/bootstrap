@@ -21,9 +21,11 @@ class User extends Crud {
 
 	public function __construct() {
 		parent::__construct('user');
-		ini_set('session.cookie_httponly', true);
-		ini_set('session.use_strict_mode', true);
-		if (!session_id()) session_start();
+		if (!session_id()) {
+			ini_set('session.cookie_httponly', true);
+			ini_set('session.use_strict_mode', true);
+			session_start();
+		}
 		$this->autoSignIn();
 	}
 

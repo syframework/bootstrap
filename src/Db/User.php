@@ -37,7 +37,8 @@ class User extends Crud {
 
 	public function getSettings($id) {
 		$sql = new Select(['FROM' => 't_user_setting', 'WHERE' => ['user_id' => $id]]);
-		return $this->queryAll($sql, \PDO::FETCH_ASSOC);
+		$records = $this->queryAll($sql, \PDO::FETCH_ASSOC);
+		return array_column($records, 'value', 'key');
 	}
 
 	public function setSetting($id, $key, $value) {

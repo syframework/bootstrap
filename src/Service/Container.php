@@ -5,7 +5,7 @@ use Sy\Debug\Debugger;
 use Sy\Cache\SimpleCache;
 
 /**
- * @method Container getInstance()
+ * @method static Container getInstance()
  * @property-read Debugger $debug Debug and log service
  * @property-read User $user User service
  * @property-read Mail $mail Mail service

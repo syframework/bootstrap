@@ -2,7 +2,7 @@
 namespace Sy\Bootstrap\Db;
 
 /**
- * @method Container getInstance()
+ * @method static Container getInstance()
  * @property-read \Sy\Bootstrap\Db\User $user User Db service
  */
 class Container extends \Sy\Container {

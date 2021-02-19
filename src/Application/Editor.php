@@ -3,11 +3,7 @@ namespace Sy\Bootstrap\Application;
 
 class Editor extends \Sy\Bootstrap\Component\Api {
 
-	public function __construct() {
-		parent::__construct();
-		// Security check
-		$this->security();
-		$this->addTranslator(LANG_DIR);
+	public function dispatch() {
 		$this->actionDispatch(ACTION_TRIGGER);
 	}
 

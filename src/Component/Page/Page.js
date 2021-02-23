@@ -149,5 +149,14 @@ $(function() {
 		CodeMirror['{CM_JS_ID}'].setSize(null, window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight() - 20);
 		CodeMirror['{CM_JS_ID}'].refresh();
 	});
+	$('#js-modal form').submit(function(e) {
+		let code = CodeMirror['{CM_JS_ID}'].getValue();
+		try { 
+			eval(code);
+		} catch(err) {
+			alert('JS code error');
+			e.preventDefault();
+		}
+	});
 <!-- END JS_BLOCK -->
 });

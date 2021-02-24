@@ -33,22 +33,6 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 				$file = \Sy\Bootstrap\Lib\Str::slugify($parts['filename']) . '.' . strtolower($parts['extension']);
 				\Sy\Bootstrap\Lib\Upload::proceed(UPLOAD_DIR . "/$item/$type/$id/$file", 'upload', $checkfile);
 
-				// resize image
-				if ($type === 'image') {
-					list($w, $h) = getimagesize(UPLOAD_DIR . "/$item/$type/$id/$file");
-					$max = 750;
-					if (max([$w, $h]) > $max) {
-						if ($h > $w) {
-							$w = $max * $w / $h;
-							$h = $max;
-						} else {
-							$h = $max * $h / $w;
-							$w = $max;
-						}
-					}
-					\Sy\Bootstrap\Lib\Image::resize(UPLOAD_DIR . "/$item/$type/$id/$file", $w, $h);
-				}
-
 				$url = UPLOAD_ROOT . "/$item/$type/$id/$file";
 				$message = '';
 			}

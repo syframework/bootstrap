@@ -19,11 +19,17 @@ class ControllerActionConverter implements IConverter {
 		$path = substr($uri, strlen(WEB_ROOT) + 1);
 		if (empty($path)) return false;
 		$p = explode('/', $path);
-		$_REQUEST[CONTROLLER_TRIGGER] = $p[0];
-		$_GET[CONTROLLER_TRIGGER] = $p[0];
-		if (!empty($p[1])) {
-			$_REQUEST[ACTION_TRIGGER] = $p[1];
-			$_GET[ACTION_TRIGGER] = $p[1];
+		$c = array_shift($p);
+		$_REQUEST[CONTROLLER_TRIGGER] = $c;
+		$_GET[CONTROLLER_TRIGGER] = $c;
+		if (empty($p)) return true;
+		$a = array_shift($p);
+		$_REQUEST[ACTION_TRIGGER] = $a;
+		$_GET[ACTION_TRIGGER] = $a;
+		if (empty($p)) return true;
+		foreach($p as $v) {
+			$_REQUEST[ACTION_PARAM][] = $v;
+			$_GET[ACTION_PARAM][] = $v;
 		}
 		return true;
 	}

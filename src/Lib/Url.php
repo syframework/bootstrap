@@ -18,7 +18,10 @@ class Url {
 	public static function build($controller, $action = null, array $parameters = array(), $anchor = null) {
 		$params = $parameters;
 		$params[CONTROLLER_TRIGGER] = $controller;
-		if (!is_null($action)) $params[ACTION_TRIGGER] = $action;
+		if (!is_null($action)) {
+			$action = is_array($action) ? implode('/', $action) : $action;
+			$params[ACTION_TRIGGER] = $action;
+		}
 		foreach (self::$converters as $converter) {
 			$url = $converter->paramsToUrl($params);
 			if (!is_null($url)) return $url;

@@ -231,4 +231,14 @@ class Str {
 		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', $string));
 	}
 
+	/**
+	 * Converts a snake_case or dash-case string to camlCase
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function snakeToCaml($string) {
+		return lcfirst(str_replace('_', '', ucwords(str_replace('-', '_', $string), '_')));
+	}
+
 }

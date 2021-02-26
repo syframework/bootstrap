@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Lib\Str;
 use Sy\Bootstrap\Service\Container;
 
 class Api extends \Sy\Bootstrap\Component\Api {
@@ -22,9 +23,9 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		$this->actionDispatch(ACTION_TRIGGER);
 
 		// If no action method found, check if a plugin api class exists
-		$c = $this->request(ACTION_TRIGGER);
+		$c = $this->action;
 		if (is_null($c)) return;
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst($c);
+		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($c));
 		if (class_exists($class)) new $class();
 	}
 

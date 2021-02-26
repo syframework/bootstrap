@@ -3,8 +3,18 @@ namespace Sy\Bootstrap\Component;
 
 abstract class Api extends \Sy\Component\WebComponent {
 
+	protected $action;
+
+	protected $method;
+
+	protected $param;
+
 	public function __construct() {
 		parent::__construct();
+		$this->action = $this->request(ACTION_TRIGGER);
+		$param = $this->request(ACTION_PARAM, ['']);
+		$this->method = array_shift($param);
+		$this->param = $param;
 		$this->addTranslator(LANG_DIR);
 		$this->security();
 		$this->dispatch();

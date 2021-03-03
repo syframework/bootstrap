@@ -147,6 +147,7 @@ abstract class Page extends \Sy\Component\WebComponent {
 				'IMG_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image', 'json' => '']),
 				'FILE_UPLOAD_AJAX'=> Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
 				'CKEDITOR_ROOT'   => CKEDITOR_ROOT,
+				'GET_URL'         => Url::build('api', 'page', ['id' => $name, 'lang' => $lang])
 			]);
 			$js->setBlock('UPDATE_BLOCK');
 			$this->setBlock('UPDATE_INLINE_BTN_BLOCK');
@@ -178,7 +179,6 @@ abstract class Page extends \Sy\Component\WebComponent {
 			$this->setVar('FORM_HTML_ID', 'form_html_' . $name);
 			$js->setVars([
 				'CM_HTML_ID' => 'codearea_html_' . $name,
-				'GET_URL' => Url::build('api', 'page', ['id' => $name, 'lang' => $lang])
 			]);
 			$js->setBlock('HTML_BLOCK');
 			$this->setBlock('HTML_BTN_BLOCK');

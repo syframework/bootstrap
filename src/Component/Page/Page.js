@@ -31,79 +31,88 @@ $(function() {
 
 	$('#btn-page-update-start').click(function(e) {
 		e.preventDefault();
-		$('#content').attr('contenteditable', true);
-		if (!CKEDITOR.instances.content) {
-			var editor = CKEDITOR.inline('content', {
-				title: false,
-				startupFocus: true,
-				linkShowAdvancedTab: false,
-				filebrowserImageBrowseUrl: '{IMG_BROWSE}',
-				filebrowserImageUploadUrl: '{IMG_UPLOAD_AJAX}',
-				filebrowserBrowseUrl: '{FILE_BROWSE}',
-				filebrowserUploadUrl: '{FILE_UPLOAD_AJAX}',
-				filebrowserWindowWidth: 200,
-				filebrowserWindowHeight: 400,
-				imageUploadUrl: '{IMG_UPLOAD_AJAX}',
-				uploadUrl: '{FILE_UPLOAD_AJAX}',
-				extraPlugins: 'sycomponent,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
-				allowedContent: true,
-				justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
-				disallowedContent: 'script; *[on*]; img{width,height}',
-				removePlugins: 'about',
-				templates: 'websyte',
-				templates_files: ['{CKEDITOR_ROOT}/templates.js'],
-				<!-- BEGIN IFRAMELY_BLOCK -->
-				embed_provider: '{IFRAMELY}?url={' + 'url' + '}&callback={' + 'callback' + '}&api_key={IFRAMELY_KEY}',
-				<!-- END IFRAMELY_BLOCK -->
-				on: {
-					instanceReady: function (ev) {
-						this.dataProcessor.writer.setRules('p', {
-							indent: true,
-							breakBeforeOpen: true,
-							breakAfterOpen: true,
-							breakBeforeClose: true,
-							breakAfterClose: true
-						});
-						this.dataProcessor.writer.setRules('div', {
-							indent: true,
-							breakBeforeOpen: true,
-							breakAfterOpen: true,
-							breakBeforeClose: true,
-							breakAfterClose: true
-						});
-						this.dataProcessor.htmlFilter.addRules({
-							elements: {
-								img: function(el) {
-									el.addClass('img-fluid');
-								}
+		$.getJSON('{GET_URL}', function(res) {
+			if (res.status === 'ok') {
+				$('#content').html(res.content);
+				$('#content').attr('contenteditable', true);
+				if (!CKEDITOR.instances.content) {
+					var editor = CKEDITOR.inline('content', {
+						title: false,
+						startupFocus: true,
+						linkShowAdvancedTab: false,
+						filebrowserImageBrowseUrl: '{IMG_BROWSE}',
+						filebrowserImageUploadUrl: '{IMG_UPLOAD_AJAX}',
+						filebrowserBrowseUrl: '{FILE_BROWSE}',
+						filebrowserUploadUrl: '{FILE_UPLOAD_AJAX}',
+						filebrowserWindowWidth: 200,
+						filebrowserWindowHeight: 400,
+						imageUploadUrl: '{IMG_UPLOAD_AJAX}',
+						uploadUrl: '{FILE_UPLOAD_AJAX}',
+						extraPlugins: 'sharedspace,sycomponent,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
+						allowedContent: true,
+						justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
+						disallowedContent: 'script; *[on*]; img{width,height}',
+						removePlugins: 'about',
+						templates: 'websyte',
+						templates_files: ['{CKEDITOR_ROOT}/templates.js'],
+						<!-- BEGIN IFRAMELY_BLOCK -->
+						embed_provider: '{IFRAMELY}?url={' + 'url' + '}&callback={' + 'callback' + '}&api_key={IFRAMELY_KEY}',
+						<!-- END IFRAMELY_BLOCK -->
+						sharedSpaces: {
+							top: 'sy-page-topbar',
+							bottom: 'sy-page-bottombar'
+						},
+						on: {
+							instanceReady: function (ev) {
+								this.dataProcessor.writer.setRules('p', {
+									indent: true,
+									breakBeforeOpen: true,
+									breakAfterOpen: true,
+									breakBeforeClose: true,
+									breakAfterClose: true
+								});
+								this.dataProcessor.writer.setRules('div', {
+									indent: true,
+									breakBeforeOpen: true,
+									breakAfterOpen: true,
+									breakBeforeClose: true,
+									breakAfterClose: true
+								});
+								this.dataProcessor.htmlFilter.addRules({
+									elements: {
+										img: function(el) {
+											el.addClass('img-fluid');
+										}
+									}
+								});
 							}
-						});
-					}
+						}
+					});
+
+					editor.on('blur', function() {
+						if (changed) save();
+					});
+
+					editor.on('change', function() {
+						changed = true;
+					});
+
+					editor.config.toolbar = [
+						{ name: 'document', items: [ 'Templates' ] },
+						{ name: 'clipboard', items: [ 'Undo', 'Redo' ] },
+						{ name: 'editing', items: [ 'Find', 'Replace', 'Scayt' ] },
+						{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
+						{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
+						{ name: 'links', items: [ 'Link', 'Unlink' ] },
+						{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Iframe' ] },
+						{ name: 'styles', items: [ 'Format' ] },
+						{ name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+					];
 				}
-			});
-
-			editor.on('blur', function() {
-				if (changed) save();
-			});
-
-			editor.on('change', function() {
-				changed = true;
-			});
-
-			editor.config.toolbar = [
-				{ name: 'document', items: [ 'Templates' ] },
-				{ name: 'clipboard', items: [ 'Undo', 'Redo' ] },
-				{ name: 'editing', items: [ 'Find', 'Replace', 'Scayt' ] },
-				{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
-				{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
-				{ name: 'links', items: [ 'Link', 'Unlink' ] },
-				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Iframe' ] },
-				{ name: 'styles', items: [ 'Format' ] },
-				{ name: 'colors', items: [ 'TextColor', 'BGColor' ] }
-			];
-		}
-		$(this).hide();
-		$('#btn-page-update-stop').removeClass("d-none");
+				$('#btn-page-update-start').hide();
+				$('#btn-page-update-stop').removeClass("d-none");
+			}
+		});
 	});
 
 	$('#btn-page-update-stop').click(function(e) {
@@ -111,7 +120,7 @@ $(function() {
 		if (changed) {
 			save(true);
 		} else {
-			location.reload(true);
+			location.reload();
 		}
 	});
 

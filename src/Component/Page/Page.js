@@ -144,6 +144,7 @@ $(function() {
 		$.getJSON('{GET_URL}', function(res) {
 			if (res.status === 'ok') {
 				CodeMirror['{CM_HTML_ID}'].setValue(res.content);
+				CodeMirror['{CM_HTML_ID}'].clearHistory();
 			}
 		});
 	});

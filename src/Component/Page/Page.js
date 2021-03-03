@@ -6,6 +6,7 @@ $(function() {
 	CKEDITOR.dtd.$removeEmpty['span'] = false;
 	CKEDITOR.dtd.$removeEmpty['i'] = false;
 	CKEDITOR.plugins.addExternal('sycomponent', '{CKEDITOR_ROOT}/plugins/sycomponent/');
+	CKEDITOR.plugins.addExternal('sywidget', '{CKEDITOR_ROOT}/plugins/sywidget/');
 
 	function save(reload) {
 		$.post("{URL}", {
@@ -48,7 +49,7 @@ $(function() {
 						filebrowserWindowHeight: 400,
 						imageUploadUrl: '{IMG_UPLOAD_AJAX}',
 						uploadUrl: '{FILE_UPLOAD_AJAX}',
-						extraPlugins: 'sharedspace,sycomponent,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
+						extraPlugins: 'sharedspace,sycomponent,sywidget,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
 						allowedContent: true,
 						justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
 						disallowedContent: 'script; *[on*]; img{width,height}',

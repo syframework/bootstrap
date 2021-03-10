@@ -89,7 +89,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 				]);
 			}
 		} catch (\Sy\Bootstrap\Service\Crud\Exception $e) {
-			echo $this->serverError([
+			$this->serverError([
 				'status' => 'ko',
 				'message' => $this->_('Database error')
 			]);

@@ -1,10 +1,17 @@
 <?php
 namespace Sy\Bootstrap\Component\Form;
 
+use Sy\Bootstrap\Service\Container;
+
 class Crud extends \Sy\Bootstrap\Component\Form {
 
 	/**
-	 * @var string Service name
+	 * @var Container
+	 */
+	private $serviceContainer;
+	
+	/**
+	 * @var string
 	 */
 	private $service;
 
@@ -24,8 +31,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	private $item;
 
 	public function __construct($service, array $id = []) {
-		$s = \Sy\Bootstrap\Service\Container::getInstance();
-		$this->service = $s->$service;
+		$this->service = $service;
 		$this->id = $id;
 		$this->fields = [];
 		parent::__construct();
@@ -59,21 +65,21 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 			$this->validatePost();
 			$fields = $this->post('form');
 		}
-		if (!empty($this->id) and $this->service->count($this->id) > 0) {
+		if (!empty($this->id) and $this->getService()->count($this->id) > 0) {
 			// Remove the pk
 			foreach ($this->id as $k => $v) {
 				unset($fields[$k]);
 			}
-			$this->service->update($this->id, $fields);
+			$this->getService()->update($this->id, $fields);
 		} else {
-			$this->service->change($fields);
+			$this->getService()->change($fields);
 		}
 	}
 
 	public function initInputs() {
 		parent::init();
 		$this->addCsrfField();
-		$rows = $this->service->getColumns();
+		$rows = $this->getService()->getColumns();
 		$item = $this->getItem();
 		foreach ($rows as $row) {
 			if ($row['Extra'] === 'auto_increment') continue;
@@ -116,8 +122,26 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		}
 	}
 
+	/**
+	 * @return Container
+	 */
+	public function getServiceContainer() {
+		if (empty($this->serviceContainer)) {
+			$this->serviceContainer = Container::getInstance();
+		}
+		return $this->serviceContainer;
+	}
+
+	public function setServiceContainer($serviceContainer) {
+		$this->serviceContainer = $serviceContainer;
+	}
+
+	/**
+	 * @return \Sy\Bootstrap\Service\Container\Crud
+	 */
 	public function getService() {
-		return $this->service;
+		$service = $this->service;
+		return $this->getServiceContainer()->$service;
 	}
 
 	public function getId() {
@@ -126,7 +150,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 
 	public function getItem() {
 		if (!isset($this->item)) {
-			$this->item = empty($this->id) ? [] : $this->service->retrieve($this->id);
+			$this->item = empty($this->id) ? [] : $this->getService()->retrieve($this->id);
 		}
 		return $this->item;
 	}

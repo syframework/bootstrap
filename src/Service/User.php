@@ -17,7 +17,7 @@ class User extends Crud {
 	 *
 	 * @var Model\User
 	 */
-	private $currentUser;
+	protected $currentUser;
 
 	public function __construct() {
 		parent::__construct('user');

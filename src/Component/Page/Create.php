@@ -32,7 +32,7 @@ class Create extends \Sy\Bootstrap\Component\Form\Crud\Create {
 		});
 
 		// Description
-		$this->getField('description')->setAttribute('maxlength', '256');
+		$this->getField('description')->setAttribute('maxlength', '512');
 		$this->getField('description')->addValidator(function($value) {
 			if (strlen($value) <= 512) return true;
 			$this->setError($this->_('512 characters max for description'));

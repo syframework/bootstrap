@@ -3,7 +3,7 @@ namespace Sy\Bootstrap\Component\Form\Element;
 
 class CodeArea extends \Sy\Component\Html\Form\Textarea {
 
-	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2';
+	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4';
 
 	private $theme = 'default';
 

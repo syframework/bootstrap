@@ -63,10 +63,10 @@ $(function() {
 					csrf = res.csrf;
 					changed = true;
 				} else {
-					location.reload(true);
+					location.reload();
 				}
 			} else if (reload) {
-				location.reload(true);
+				location.reload();
 			}
 		}, 'json');
 		changed = false;

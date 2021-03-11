@@ -1,6 +1,6 @@
 CodeMirror['{CODE_AREA_ID}'] = (function() {
 	CodeMirror.commands.save = function(cm) {
-		cm.getTextArea().form.submit();
+		$(cm.getTextArea().form).submit();
 	};
 	return CodeMirror.fromTextArea(document.getElementById("{CODE_AREA_ID}"), {
 <!-- BEGIN MODE_BLOCK -->

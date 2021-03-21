@@ -51,7 +51,9 @@ var SyFormPicture = {
 				} else {
 					$(input).siblings('.loader').hide();
 					$(input).siblings('.picture-div').find('div[data-id="' + id + '"]').html(
-						'<img class="picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" /><button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm picture-rm" onclick="SyFormPicture.removePicture(this, \'' + $(input).attr('id') + '\', \'' + id + '\');return false"><span class="fas fa-times"></span></button><input type="text" class="form-control" data-id="' + id + '" data-pid="' + $(input).attr('id') + '" onchange="SyFormPicture.updateCaption(this)" placeholder="' + $(input).data('caption-placeholder') + '" />'
+						'<img class="picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" />' +
+						'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm picture-rm" data-id="' + id + '" data-pid="' + $(input).attr('id') + '"><span class="fas fa-times"></span></button>' +
+						'<input type="text" class="form-control picture-caption" data-id="' + id + '" data-pid="' + $(input).attr('id') + '" placeholder="' + $(input).data('caption-placeholder') + '" />'
 					);
 
 					var width = img.width;
@@ -84,8 +86,10 @@ var SyFormPicture = {
 		reader.readAsDataURL(f);
 	},
 
-	removePicture: function(btn, id, i) {
+	removePicture: function(btn) {
 		$(btn).parent().remove();
+		var id = $(btn).data('pid');
+		var i  = $(btn).data('id');
 		delete this.pictures[id][i];
 		$('#' + id).siblings('input.picture-input-hidden').val(JSON.stringify(this.pictures[id]));
 		$('#' + id).siblings('input.picture-input-hidden').change();
@@ -98,3 +102,15 @@ var SyFormPicture = {
 		$('#' + id).siblings('input.picture-input-hidden').change();
 	}
 };
+
+$('.picture-input-file').change(function() {
+	SyFormPicture.handleFileSelectBtn(this);
+});
+
+$('.picture-div').on('click', '.picture-rm', function() {
+	SyFormPicture.removePicture(this);
+});
+
+$('.picture-div').on('change', '.picture-caption', function() {
+	SyFormPicture.updateCaption(this);
+});

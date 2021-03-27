@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Service;
 
-use Sy\Bootstrap\Lib\Str;
-
 class Crud {
 
 	/**
@@ -42,12 +40,6 @@ class Crud {
 	public function getDbCrud() {
 		$container = $this->getDbContainer();
 		$id = $this->id;
-		if (!isset($container->$id)) {
-			$table = 't_' . Str::camlToSnake($id);
-			$container->$id = function () use ($table) {
-				return new \Sy\Bootstrap\Db\Crud($table);
-			};
-		}
 		return $container->$id;
 	}
 

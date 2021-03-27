@@ -42,10 +42,12 @@ class Container extends \Sy\Container {
 		try {
 			return parent::get($id);
 		} catch(\Sy\Container\NotFoundException $e) {
-			$class = 'Sy\\Bootstrap\\Service\\Container\\' . ucfirst($id);
+			$class = 'Sy\\Bootstrap\\Service\\' . ucfirst($id);
 			if (class_exists($class)) {
-				$container = $class::getInstance();
-				return $container->get($id);
+				$this->$id = function () use ($class) {
+					return new $class();
+				};
+				return $this->get($id);
 			} else {
 				throw new \Sy\Container\NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
 			}

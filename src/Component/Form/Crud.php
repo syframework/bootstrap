@@ -92,21 +92,21 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 				$this->fields[$row['Field']] = $field;
 				continue;
 			} elseif ($row['Comment'] === 'readonly') {
-				$field = $this->addTextInput(['disabled' => 'disabled'], ['label' => ucwords(strtolower($row['Field']))]);
+				$field = $this->addTextInput(['disabled' => 'disabled'], ['label' => $this->fieldLabel($row['Field'])]);
 				if (!empty($item)) {
 					$field->setAttribute('value', $item[$row['Field']]);
 				}
 				$this->fields[$row['Field']] = $field;
 				continue;
 			} elseif ($row['Comment'] === 'select') {
-				$field = $this->addSelect(['name' => 'form[' . $row['Field'] . ']'], ['label' => ucwords(strtolower($row['Field']))]);
+				$field = $this->addSelect(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
 				$this->fields[$row['Field']] = $field;
 				continue;
 			} elseif ($row['Comment'] === 'textarea') {
-				$field = $this->addTextarea(['name' => 'form[' . $row['Field'] . ']'], ['label' => ucwords(strtolower($row['Field']))]);
+				$field = $this->addTextarea(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
 			} else {
 				$method = ($row['Type'] === 'text') ? 'addTextarea' : 'addTextInput';
-				$field = $this->$method(['name' => 'form[' . $row['Field'] . ']'], ['label' => ucwords(strtolower($row['Field']))]);
+				$field = $this->$method(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
 			}
 			if ($row['Key'] === 'PRI') {
 				$field->setAttribute('required', 'required');
@@ -161,6 +161,10 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 
 	protected function initButton() {
 		$this->addButton('Save', ['type' => 'submit'], ['icon' => 'fas fa-save', 'color' => 'primary']);
+	}
+
+	protected function fieldLabel($name) {
+		return str_replace('_', ' ', ucwords(strtolower($name)));
 	}
 
 }

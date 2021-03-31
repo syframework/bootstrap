@@ -18,7 +18,11 @@ class Buttons extends \Sy\Component\WebComponent {
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Buttons.html');
-		$this->addJsLink(CLIPBOARD_JS);
+		if (defined('CLIPBOARD_JS')) {
+			$this->addJsLink(CLIPBOARD_JS);
+		} else {
+			$this->logError('Constant CLIPBOARD_JS need to be defined');
+		}
 		$this->addJsCode(file_get_contents(__DIR__ . '/Buttons.js'));
 		$this->setVar('URL', $this->url);
 	}

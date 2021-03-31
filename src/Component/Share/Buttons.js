@@ -14,7 +14,7 @@ $(function() {
 		window.open(url, 'share', opts);
 	});
 
-	var clipboard = new Clipboard('.copy-url', {
+	var clipboard = new ClipboardJS('.copy-url', {
 		target: function(trigger) {
 			return trigger.parentNode.previousElementSibling;
 		}

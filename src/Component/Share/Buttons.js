@@ -16,7 +16,7 @@ $(function() {
 
 	var clipboard = new ClipboardJS('.copy-url', {
 		target: function(trigger) {
-			return trigger.parentNode.previousElementSibling;
+			return trigger.previousElementSibling;
 		}
 	});
 

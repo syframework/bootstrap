@@ -22,8 +22,10 @@ $(function() {
 
 	clipboard.on('success', function(e) {
 		var btn = $(e.trigger);
-		var title = btn.data('original-title');
-		btn.attr('data-original-title', btn.data('success')).tooltip('show');
-		btn.attr('data-original-title', title);
+		var title = btn.data('bs-original-title');
+		btn.attr('data-bs-original-title', btn.data('success'));
+		var tooltip = bootstrap.Tooltip.getInstance(e.trigger);
+		tooltip.show();
+		btn.attr('data-bs-original-title', title);
 	});
 });

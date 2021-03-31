@@ -7,6 +7,11 @@ abstract class Page extends \Sy\Component\WebComponent {
 
 	private $method;
 
+	/**
+	 * @var array
+	 */
+	private $translators;
+
 	public function __construct($method = null) {
 		parent::__construct();
 		// hack to select the default menu
@@ -14,8 +19,18 @@ abstract class Page extends \Sy\Component\WebComponent {
 			$_GET[CONTROLLER_TRIGGER] = 'page';
 		}
 		$this->method = $method;
+		$this->translators = array();
 		$this->addTranslator(LANG_DIR);
 		$this->actionDispatch(ACTION_TRIGGER, 'index');
+	}
+
+	public function addTranslator($directory, $type = 'php', $lang = '') {
+		parent::addTranslator($directory, $type, $lang);
+		$this->translators[] = array(
+			'directory' => $directory,
+			'type' => $type,
+			'lang' => $lang
+		);
 	}
 
 	public function indexAction() {
@@ -63,7 +78,9 @@ abstract class Page extends \Sy\Component\WebComponent {
 		$l = file_exists(TPL_DIR . "/Application/Page/layout/$name.html") ? $name : '_default';
 		$layout = new \Sy\Component\WebComponent();
 		$layout->setTemplateFile(TPL_DIR . "/Application/Page/layout/$l.html");
-		$layout->addTranslator(LANG_DIR);
+		foreach ($this->translators as $translator) {
+			$layout->addTranslator($translator['directory'], $translator['type'], $translator['lang']);
+		}
 		if (isset($arguments['LAYOUT'])) {
 			foreach ($arguments['LAYOUT'] as $k => $v) {
 				if ($v instanceof \Sy\Component) {
@@ -84,7 +101,9 @@ abstract class Page extends \Sy\Component\WebComponent {
 		}
 		$content = new \Sy\Component\WebComponent();
 		$content->setTemplateFile($f);
-		$content->addTranslator(LANG_DIR);
+		foreach ($this->translators as $translator) {
+			$content->addTranslator($translator['directory'], $translator['type'], $translator['lang']);
+		}
 		if (isset($arguments['CONTENT'])) {
 			foreach ($arguments['CONTENT'] as $k => $v) {
 				if ($v instanceof \Sy\Component) {

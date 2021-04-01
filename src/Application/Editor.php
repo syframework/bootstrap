@@ -1,61 +1,31 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Lib\Str;
+
 class Editor extends \Sy\Bootstrap\Component\Api {
+
+	public function security() {
+		$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
+		if (empty($origin) and isset($_SERVER['HTTP_REFERER'])) {
+			$origin = $_SERVER['HTTP_REFERER'];
+		}
+		if (empty($origin)) {
+			$this->forbidden();
+		}
+		if ($_SERVER['SERVER_NAME'] !== parse_url($origin)['host']) {
+			$this->forbidden();
+		}
+	}
 
 	public function dispatch() {
 		$this->actionDispatch(ACTION_TRIGGER);
-	}
 
-	/**
-	 * CKEditor Upload
-	 */
-	public function uploadAction() {
-		$func = $this->get('CKEditorFuncNum');
-		$id   = $this->get('id');
-		$item = $this->get('item');
-		$type = $this->get('type');
-
-		$url = '';
-		$message = 'error';
-
-		try {
-			if (!is_null($id)) {
-				$parts = pathinfo($_FILES['upload']['name']);
-				switch ($type) {
-					case 'image':
-						$checkfile = '\Sy\Bootstrap\Lib\Image::isImage';
-						break;
-					default:
-						$checkfile = null;
-						break;
-				}
-				$file = \Sy\Bootstrap\Lib\Str::slugify($parts['filename']) . '.' . strtolower($parts['extension']);
-				\Sy\Bootstrap\Lib\Upload::proceed(UPLOAD_DIR . "/$item/$type/$id/$file", 'upload', $checkfile);
-
-				$url = UPLOAD_ROOT . "/$item/$type/$id/$file";
-				$message = '';
-			}
-		} catch (\Sy\Bootstrap\Lib\Upload\Exception $e) {
-			$message = $e->getMessage();
-		}
-
-		// Ckeditor 4.9+ works only json response
-		if (isset($_GET['json'])) {
-			$res = [
-				'uploaded' => (empty($message) ? 1 : 0),
-				'filename' => $file,
-				'url' => $url
-			];
-
-			if (!empty($message)) $res['error']['message'] = $message;
-			echo json_encode($res);
-		} else {
-			// Works for ckeditor <= 4.8
-			echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($func, '$url', '$message');</script>";
-		}
-
-		exit;
+		// If no action method found, check if a plugin api class exists
+		$c = $this->get('item');
+		if (is_null($c)) return;
+		$class = 'Sy\\Bootstrap\\Application\\Editor\\' . ucfirst(Str::snakeToCaml($c));
+		if (class_exists($class)) new $class();
 	}
 
 	/**
@@ -105,22 +75,6 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 
 		echo $c;
 		exit;
-	}
-
-	public function security() {
-		$service = \Project\Service\Container::getInstance();
-		$user = $service->user->getCurrentUser();
-		$id   = $this->get('id');
-		$item = $this->get('item');
-
-		// Check if a plugin class exists
-		$class = 'Sy\\Bootstrap\\Application\\Editor\\' . ucfirst($item);
-		if (class_exists($class)) {
-			$plugin = new $class();
-			if (!$plugin->authorized($id)) exit;
-		} else {
-			if (!$user->hasPermission('page-update')) exit;
-		}
 	}
 
 }

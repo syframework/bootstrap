@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Lib\Str;
+
 class Sitemap extends \Sy\Bootstrap\Component\Sitemap {
 
 	private $plugins = array('Place', 'Article');
@@ -9,7 +11,7 @@ class Sitemap extends \Sy\Bootstrap\Component\Sitemap {
 		parent::__construct();
 
 		// Check if a plugin sitemap class exists
-		$class = 'Sy\\Bootstrap\\Application\\Sitemap\\' . ucfirst(ACTION_TRIGGER);
+		$class = 'Sy\\Bootstrap\\Application\\Sitemap\\' . ucfirst(Str::snakeToCaml($this->get(ACTION_TRIGGER)));
 		if (class_exists($class)) {
 			$sitemap = new $class();
 			$sitemap->init();

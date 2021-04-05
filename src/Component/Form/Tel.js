@@ -7,7 +7,7 @@
 			utilsScript: '{INTLTELINPUT_UTILS_JS}',
 			initialCountry: 'auto',
 			geoIpLookup: function(callback) {
-				fetch('{WEB_ROOT}/api/ipCountry').then(function(res) {
+				fetch('{WEB_ROOT}/api/location').then(function(res) {
 					if (!res.ok) return;
 					res.text().then(function(data) {
 						callback(data);

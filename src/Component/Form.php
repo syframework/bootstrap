@@ -461,10 +461,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 			// Input group addon before
 			if (isset($options['addon-before'])) {
-				$span = $inputGroupDiv->addDiv(['class' => 'input-group-prepend'])->addSpan(['class' => 'input-group-text']);
+				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
 				$span->addText($options['addon-before']);
 			} elseif (isset($options['btn-before'])) {
-				$this->addGroupButton($options['btn-before'], $inputGroupDiv->addDiv(['class' => 'input-group-prepend']));
+				$this->addGroupButton($options['btn-before'], $inputGroupDiv);
 			}
 
 			// Input
@@ -475,10 +475,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 			// Input group addon after
 			if (isset($options['addon-after'])) {
-				$span = $inputGroupDiv->addDiv(['class' => 'input-group-append'])->addSpan(['class' => 'input-group-text']);
+				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
 				$span->addText($options['addon-after']);
 			} elseif (isset($options['btn-after'])) {
-				$this->addGroupButton($options['btn-after'], $inputGroupDiv->addDiv(['class' => 'input-group-append']));
+				$this->addGroupButton($options['btn-after'], $inputGroupDiv);
 			}
 		}
 

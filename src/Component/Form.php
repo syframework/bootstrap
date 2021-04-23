@@ -204,21 +204,90 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @param array $attributes
 	 * @param array $options
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @return Form\TextFillableInput
+	 */
+	public function addRange(array $attributes = [], array $options = [], $container = null) {
+		$options['label-class'] = 'form-label';
+		$range = $this->addInput('range', $attributes, $options, $container);
+		$range->setAttribute('class', 'form-range');
+		return $range;
+	}
+
+	/**
+	 * @param array $attributes
+	 * @param array $options
+	 * @param \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\Checkbox
 	 */
 	public function addCheckbox(array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
-		$div = $container->addDiv(['class' => 'custom-control custom-checkbox']);
+		$div = $container->addDiv(['class' => 'form-check']);
 		if (isset($options['label'])) {
 			$options['label'] = $this->_($options['label']);
 		}
-		$options['label-class'] = 'custom-control-label';
+		$options['label-class'] = 'form-check-label';
 		$input = $div->addCheckbox($attributes, $options);
 		if (!isset($attributes['id'])) {
 			$input->setAttribute('id', 'checkbox_' . uniqid());
 		}
-		$input->addClass('custom-control-input');
+		$input->addClass('form-check-input');
 		return $input;
+	}
+
+	/**
+	 * @param array $attributes
+	 * @param array $options
+	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @return \Sy\Component\Html\Form\Radio
+	 */
+	public function addRadio(array $attributes = [], array $options = [], $container = null) {
+		if (is_null($container)) $container = $this;
+		$div = $container->addDiv(['class' => 'form-check']);
+		if (isset($options['label'])) {
+			$options['label'] = $this->_($options['label']);
+		}
+		$options['label-class'] = 'form-check-label';
+		$input = $div->addRadio($attributes, $options);
+		if (!isset($attributes['id'])) {
+			$input->setAttribute('id', 'checkbox_' . uniqid());
+		}
+		$input->addClass('form-check-input');
+		return $input;
+	}
+
+	/**
+	 * @param array $attributes
+	 * @param array $options
+	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @return \Sy\Component\Html\Form\File
+	 */
+	public function addFile(array $attributes = [], array $options = [], $container = null) {
+		if (is_null($container)) $container = $this;
+		$div = $container->addDiv(['class' => 'mb-3']);
+		if (isset($options['label'])) {
+			$options['label'] = $this->_($options['label']);
+		}
+		$options['error-class'] = 'invalid-feedback';
+		$options['error-position'] = 'after';
+
+		// File input
+		$file = $div->addFile($attributes, $options);
+		$file->addClass('form-control');
+
+		// Size
+		if (isset($options['size'])) {
+			$file->addClass('form-control-' . $options['size']);
+		}
+
+		// Help text
+		if (isset($options['help'])) {
+			$small = new \Sy\Component\Html\Element('small');
+			$small->addClass('form-text text-muted');
+			$small->addText($this->_($options['help']));
+			$div->addElement($small);
+		}
+
+		return $file;
 	}
 
 	/**
@@ -461,10 +530,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 			// Input group addon before
 			if (isset($options['addon-before'])) {
-				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
+				$span = $inputGroupDiv->addDiv(['class' => 'input-group-prepend'])->addSpan(['class' => 'input-group-text']);
 				$span->addText($options['addon-before']);
 			} elseif (isset($options['btn-before'])) {
-				$this->addGroupButton($options['btn-before'], $inputGroupDiv);
+				$this->addGroupButton($options['btn-before'], $inputGroupDiv->addDiv(['class' => 'input-group-prepend']));
 			}
 
 			// Input
@@ -475,10 +544,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 			// Input group addon after
 			if (isset($options['addon-after'])) {
-				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
+				$span = $inputGroupDiv->addDiv(['class' => 'input-group-append'])->addSpan(['class' => 'input-group-text']);
 				$span->addText($options['addon-after']);
 			} elseif (isset($options['btn-after'])) {
-				$this->addGroupButton($options['btn-after'], $inputGroupDiv);
+				$this->addGroupButton($options['btn-after'], $inputGroupDiv->addDiv(['class' => 'input-group-append']));
 			}
 		}
 

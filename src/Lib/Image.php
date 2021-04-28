@@ -66,7 +66,7 @@ class Image {
 	}
 
 	public static function isImage($file) {
-		if (\file_exists($file) and \filesize($file) > 11 and in_array(\exif_imagetype($file), array(\IMAGETYPE_GIF, \IMAGETYPE_JPEG, \IMAGETYPE_PNG, \IMAGETYPE_BMP, \IMAGETYPE_TIFF_II, \IMAGETYPE_TIFF_MM))) {
+		if (\file_exists($file) and \filesize($file) > 11 and \exif_imagetype($file)) {
 			return true;
 		} else {
 			return false;

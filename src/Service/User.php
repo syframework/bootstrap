@@ -49,7 +49,7 @@ class User extends Crud {
 		// Inactive user
 		if ($user['status'] === 'inactive') {
 			// Activate account if password is good
-			if (!empty($pass) and password_verify($password, $pass)) {
+			if (!empty($pass) and $this->passwordVerify($password, $pass)) {
 				$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
 			} else {
 				$pwd = Str::generatePassword();
@@ -61,7 +61,7 @@ class User extends Crud {
 		}
 
 		// Wrong password
-		if (empty($pass) or !password_verify($password, $pass)) throw new User\SignInException;
+		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException;
 
 		// Session
 		$fingerprint = preg_replace("/[^a-zA-Z]/", '', $_SERVER['HTTP_USER_AGENT']);
@@ -272,13 +272,21 @@ class User extends Crud {
 		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', 'AAROLD1234567890', 0, '1234567890DLORAA');
 	}
 
+	/**
+	 * @param string $password
+	 * @param string $hash
+	 * @return bool
+	 */
+	public function passwordVerify($password, $hash) {
+		return password_verify($password, $hash);
+	}
+
 	public function delete(array $pk) {
 		$res = $this->retrieve($pk);
 		parent::delete($pk);
 
 		// Delete uploaded pictures
 		if (empty($res['id'])) return;
-		Upload::delete(UPLOAD_DIR . '/photo/user/' . $res['id']);
 		Upload::delete(UPLOAD_DIR . '/avatar/' . $res['id'] . '.png');
 	}
 }

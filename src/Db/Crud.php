@@ -2,7 +2,6 @@
 namespace Sy\Bootstrap\Db;
 
 use \Sy\Bootstrap\Service\Container;
-use Sy\Db\MySql\Gate;
 
 class Crud extends \Sy\Db\MySql\Crud {
 
@@ -12,10 +11,9 @@ class Crud extends \Sy\Db\MySql\Crud {
 	 */
 	public function __construct($table, $pk = []) {
 		parent::__construct($table, $pk);
+		$this->setConfig(DATABASE_CONFIG);
 		$service = Container::getInstance();
-		$gate = new Gate(DATABASE_CONFIG);
-		$gate->setLogger($service->debug->getLogger());
-		$this->setDbGate($gate);
+		$this->db->setLogger($service->debug->getLogger());
 		$this->setCacheEngine($service->cache);
 	}
 

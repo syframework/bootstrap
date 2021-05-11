@@ -27,7 +27,7 @@ class User extends Crud {
 			FROM t_user_has_permission
 			WHERE id = :id)
 		", [':id' => $id]);
-		$rows = $this->queryAll($sql, \PDO::FETCH_ASSOC);
+		$rows = $this->db->queryAll($sql, \PDO::FETCH_ASSOC);
 		$permissions = [];
 		foreach ($rows as $row) {
 			$permissions[] = $row['permission'];
@@ -37,7 +37,7 @@ class User extends Crud {
 
 	public function getSettings($id) {
 		$sql = new Select(['FROM' => 't_user_setting', 'WHERE' => ['user_id' => $id]]);
-		$records = $this->queryAll($sql, \PDO::FETCH_ASSOC);
+		$records = $this->db->queryAll($sql, \PDO::FETCH_ASSOC);
 		return array_column($records, 'value', 'key');
 	}
 

@@ -1,6 +1,9 @@
 <?php
 namespace Sy\Bootstrap\Service;
 
+/**
+ * @method void transaction(callable $fn)
+ */
 class Crud {
 
 	/**
@@ -56,9 +59,9 @@ class Crud {
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
 			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation');
+				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
 			} else {
-				throw new Crud\Exception('Create error');
+				throw new Crud\Exception('Create error', 0, $e);
 			}
 		}
 	}
@@ -76,9 +79,9 @@ class Crud {
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
 			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation');
+				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
 			} else {
-				throw new Crud\Exception($e->getMessage());
+				throw new Crud\Exception($e->getMessage(), 0, $e);
 			}
 		}
 	}
@@ -112,9 +115,9 @@ class Crud {
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
 			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation');
+				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
 			} else {
-				throw new Crud\Exception('Update error');
+				throw new Crud\Exception('Update error', 0, $e);
 			}
 		}
 	}
@@ -131,7 +134,7 @@ class Crud {
 			return $this->getDbCrud()->delete($pk);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Delete error');
+			throw new Crud\Exception('Delete error', 0, $e);
 		}
 	}
 
@@ -146,14 +149,14 @@ class Crud {
 			return $this->getDbCrud()->retrieveAll($parameters);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('retrieve all error');
+			throw new Crud\Exception('retrieve all error', 0, $e);
 		}
 	}
 
 	/**
 	 * Foreach row, apply a function on it.
 	 *
-	 * @param callback $callback
+	 * @param callable $callback
 	 * @param array $parameters Select parameters like: WHERE, LIMIT, OFFSET...
 	 */
 	public function foreachRow($callback, array $parameters = []) {
@@ -176,7 +179,7 @@ class Crud {
 			return $this->getDbCrud()->change($fields, $updates);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Change error');
+			throw new Crud\Exception('Change error', 0, $e);
 		}
 	}
 
@@ -192,7 +195,7 @@ class Crud {
 			return $this->getDbCrud()->count($where);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Count error');
+			throw new Crud\Exception('Count error', 0, $e);
 		}
 	}
 
@@ -207,7 +210,7 @@ class Crud {
 			return $this->getDbCrud()->getColumns();
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Get columns error');
+			throw new Crud\Exception('Get columns error', 0, $e);
 		}
 	}
 
@@ -216,10 +219,10 @@ class Crud {
 			return call_user_func_array([$this->getDbCrud(), $name], $arguments);
 		} catch(\Sy\Db\IntegrityConstraintViolationException $e) {
 			$this->logWarning($e);
-			throw new Crud\DuplicateEntryException("$name error: " . $e->getMessage());
+			throw new Crud\DuplicateEntryException("$name error: " . $e->getMessage(), 0, $e);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception("$name error: " . $e->getMessage());
+			throw new Crud\Exception("$name error: " . $e->getMessage(), 0, $e);
 		}
 	}
 

@@ -6,9 +6,8 @@ use Sy\Bootstrap\Lib\Str;
 
 /**
  * @method array getPermissions(int $userId) Retrieve user permissions
- * @method array retrieveFollowing(int $userId, int $offset) Retrieve user following
- * @method array retrieveFollower(int $userId, int $offset) Retrieve user followers
- * @method array retrieveSuggestion(double $lat, double $lng, int $userId) Retrieve suggestion of users near to a point
+ * @method array getSettings(int $userId) Retrieve user settings
+ * @method void setSetting(int $userId, string $key, mixed $value) Set user setting
  */
 class User extends Crud {
 
@@ -50,7 +49,7 @@ class User extends Crud {
 		// Inactive user
 		if ($user['status'] === 'inactive') {
 			// Activate account if password is good
-			if (!empty($pass) and $this->passwordVerify($password, $pass)) {
+			if (!empty($pass) and password_verify($password, $pass)) {
 				$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
 			} else {
 				$pwd = Str::generatePassword();
@@ -62,7 +61,7 @@ class User extends Crud {
 		}
 
 		// Wrong password
-		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException;
+		if (empty($pass) or !password_verify($password, $pass)) throw new User\SignInException;
 
 		// Session
 		$fingerprint = preg_replace("/[^a-zA-Z]/", '', $_SERVER['HTTP_USER_AGENT']);
@@ -92,31 +91,28 @@ class User extends Crud {
 	 */
 	public function signUp($email, $password = null) {
 		try {
-			$this->getDbCrud()->beginTransaction();
-
-			// Generate nickname
-			$name = Str::generateNicknameFromEmail($email);
-
-			$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
-			$token = sha1(uniqid());
-			$this->create([
-				'firstname'=> $name,
-				'email'    => $email,
-				'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
-				'password' => password_hash($password, PASSWORD_DEFAULT),
-				'token'    => $token,
-				'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']))
-			]);
-			$service = \Sy\Bootstrap\Service\Container::getInstance();
-			$service->mail->sendWelcome($email, $password, $token);
-			$this->getDbCrud()->commit();
+			$this->transaction(function() use($email, $password) {
+				// Generate nickname
+				$name = Str::generateNicknameFromEmail($email);
+	
+				$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
+				$token = sha1(uniqid());
+				$this->create([
+					'firstname'=> $name,
+					'email'    => $email,
+					'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
+					'password' => password_hash($password, PASSWORD_DEFAULT),
+					'token'    => $token,
+					'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']))
+				]);
+				$service = \Sy\Bootstrap\Service\Container::getInstance();
+				$service->mail->sendWelcome($email, $password, $token);
+			});
 		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
 			$this->logWarning($e);
-			$this->getDbCrud()->rollBack();
 			throw new User\SignUpException('Database error');
 		} catch(\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
-			$this->getDbCrud()->rollBack();
 			throw new User\SignUpException('Mail error');
 		}
 	}
@@ -274,25 +270,6 @@ class User extends Crud {
 	 */
 	protected function decrypt($text) {
 		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', 'AAROLD1234567890', 0, '1234567890DLORAA');
-	}
-
-	/**
-	 * @param type $password
-	 * @param type $hash
-	 * @param type $algo
-	 * @return bool
-	 */
-	public function passwordVerify($password, $hash, $algo = 'bcrypt') {
-		switch ($algo) {
-			case 'sha1':
-				return sha1($password) === $hash;
-
-			case 'bcrypt':
-				return password_verify($password, $hash);
-
-			default:
-				return false;
-		}
 	}
 
 	public function delete(array $pk) {

@@ -12,9 +12,10 @@ class Crud extends \Sy\Db\MySql\Crud {
 	 */
 	public function __construct($table, $pk = []) {
 		parent::__construct($table, $pk);
-		$this->setDbGate(new Gate(DATABASE_CONFIG));
 		$service = Container::getInstance();
-		$this->setLogger($service->debug->getLogger());
+		$gate = new Gate(DATABASE_CONFIG);
+		$gate->setLogger($service->debug->getLogger());
+		$this->setDbGate($gate);
 		$this->setCacheEngine($service->cache);
 	}
 

@@ -12,7 +12,7 @@ class User extends Crud {
 	private $settings;
 
 	public function __construct() {
-		parent::__construct('t_user', ['id']);
+		parent::__construct('t_user');
 		$this->settings = new Crud('t_user_setting', ['user_id', 'key']);
 	}
 

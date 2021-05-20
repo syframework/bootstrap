@@ -13,11 +13,19 @@ class Date {
 	 */
 	private $translator;
 
-	public function __construct($time) {
+	/**
+	 * @param string $time A date/time string. Valid formats are explained in https://www.php.net/manual/en/datetime.formats.php
+	 */
+	public function __construct($time = 'now') {
 		$this->dateTime = new \DateTime($time);
 		$this->translator = \Sy\Translate\TranslatorProvider::createTranslator(__DIR__ . '/Date');
 	}
 
+	/**
+	 * Returns a string representation of a this time relative to now, such as "2 days ago" or "in 2 days".
+	 *
+	 * @return string
+	 */
 	public function humanTimeDiff() {
 		$now = new \DateTime();
 		$interval = $now->diff($this->dateTime);
@@ -39,14 +47,33 @@ class Date {
 		return $interval->format($this->translator->translate('just now'));
 	}
 
+	/**
+	 * Returns the date.
+	 *
+	 * @return string
+	 */
 	public function date() {
 		return $this->f($this->translator->translate('Y-m-d'));
 	}
 
-	public function f($format) {
-		return $this->dateTime->format($format);
+	/**
+	 * Format the date/time value as a string.
+	 *
+	 * @param string $format Possible patterns are documented at https://unicode-org.github.io/icu/userguide/format_parse/datetime
+	 * @param string $timezone List of supported timezones: https://www.php.net/manual/en/timezones.php
+	 * @return string
+	 */
+	public function f($format, $timezone = null) {
+		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		$formatter = new \IntlDateFormatter($lang, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, $timezone, null, $format);
+		return $formatter->format($this->timestamp());
 	}
 
+	/**
+	 * Returns the Unix timestamp representing the date.
+	 *
+	 * @return int
+	 */
 	public function timestamp() {
 		return $this->dateTime->getTimestamp();
 	}

@@ -1,5 +1,4 @@
 var SyFormPicture = {
-	pictures: {},
 
 	handleFileSelectBtn: function(input) {
 		var files = [].slice.call(input.files).reverse();
@@ -11,13 +10,14 @@ var SyFormPicture = {
 		$(input).closest('form').find('[type="submit"]').attr('disabled', 'disabled');
 		$(input).siblings('.loader').show();
 
-		this.pictures[$(input).attr('id')] = this.pictures[$(input).attr('id')] || {};
+		let hiddenField = $(input).siblings('input.picture-input-hidden');
+		hiddenField.data('_pictures', hiddenField.data('_pictures') || {});
 
 		var promises = [];
 		for (var i = 0; i < files.length; i++) {
 			var id = files[i].name.replace(/\W/g, '');
 			if ($(input).siblings('.picture-div').find('div[data-id="' + id + '"]').length === 0) {
-				$(input).siblings('.picture-div').append('<div data-id="' + id + '" style="position:relative;display:inline-block"></div>');
+				$(input).siblings('.picture-div').append('<div class="one-pic" data-id="' + id + '" style="position:relative;display:inline-block"></div>');
 			}
 			promises.push(new Promise(function(resolve) {
 				SyFormPicture.createThumbnail(files[i], input, id, resolve);
@@ -26,11 +26,11 @@ var SyFormPicture = {
 
 		Promise.all(promises).then(function(values) {
 			for (var i = 0; i < values.length; i++) {
-				SyFormPicture.pictures[$(input).attr('id')][values[i].id] = {image: values[i].image};
+				(hiddenField.data('_pictures'))[values[i].id] = {image: values[i].image};
 			}
 			$(input).siblings('.loader').hide();
-			$(input).siblings('input.picture-input-hidden').val(JSON.stringify(SyFormPicture.pictures[$(input).attr('id')]));
-			$(input).siblings('input.picture-input-hidden').change();
+			hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+			hiddenField.change();
 			$(input).closest('form').find('[type="submit"]').removeAttr('disabled');
 		});
 	},
@@ -52,8 +52,8 @@ var SyFormPicture = {
 					$(input).siblings('.loader').hide();
 					$(input).siblings('.picture-div').find('div[data-id="' + id + '"]').html(
 						'<img class="picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" />' +
-						'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm picture-rm" data-id="' + id + '" data-pid="' + $(input).attr('id') + '"><span class="fas fa-times"></span></button>' +
-						'<input type="text" class="form-control picture-caption" data-id="' + id + '" data-pid="' + $(input).attr('id') + '" placeholder="' + $(input).data('caption-placeholder') + '" />'
+						'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm picture-rm" data-id="' + id + '"><span class="fas fa-times"></span></button>' +
+						'<input type="text" class="form-control picture-caption" data-id="' + id + '" placeholder="' + $(input).data('caption-placeholder') + '" />'
 					);
 
 					var width = img.width;
@@ -87,30 +87,39 @@ var SyFormPicture = {
 	},
 
 	removePicture: function(btn) {
-		$(btn).parent().remove();
-		var id = $(btn).data('pid');
-		var i  = $(btn).data('id');
-		delete this.pictures[id][i];
-		$('#' + id).siblings('input.picture-input-hidden').val(JSON.stringify(this.pictures[id]));
-		$('#' + id).siblings('input.picture-input-hidden').change();
+		let pic = $(btn).closest('.one-pic');
+		let hiddenField = pic.parent().siblings('input.picture-input-hidden'); //supposedly pic.parent() == pic.closest('.picture-div')
+		pic.remove();
+		delete hiddenField.data('_pictures')[$(btn).data('id')];
+		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+		hiddenField.change();
 	},
 
 	updateCaption: function(input) {
-		var id = $(input).data('pid');
-		this.pictures[id][$(input).data('id')].caption = $(input).val();
-		$('#' + id).siblings('input.picture-input-hidden').val(JSON.stringify(this.pictures[id]));
-		$('#' + id).siblings('input.picture-input-hidden').change();
+		let hiddenField = $(input).closest('.picture-div').siblings('input.picture-input-hidden');
+		hiddenField.data('_pictures')[$(input).data('id')].caption = $(input).val();
+		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+		hiddenField.change();
+	},
+
+	bindHandlers: function(){
+		let self = this;
+		$('.picture-input-file').off('change');
+		$('.picture-input-file').on('change', function() {
+			self.handleFileSelectBtn(this);
+		});
+
+		$('.picture-div').off('click', '.picture-rm');
+		$('.picture-div').on('click', '.picture-rm', function() {
+			self.removePicture(this);
+		});
+
+		$('.picture-div').off('change', '.picture-caption');
+		$('.picture-div').on('change', '.picture-caption', function() {
+			self.updateCaption(this);
+		});
 	}
+
 };
 
-$('.picture-input-file').change(function() {
-	SyFormPicture.handleFileSelectBtn(this);
-});
-
-$('.picture-div').on('click', '.picture-rm', function() {
-	SyFormPicture.removePicture(this);
-});
-
-$('.picture-div').on('change', '.picture-caption', function() {
-	SyFormPicture.updateCaption(this);
-});
+SyFormPicture.bindHandlers();

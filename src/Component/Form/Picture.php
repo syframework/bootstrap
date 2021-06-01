@@ -26,7 +26,6 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'ICON'  => isset($this->options['icon'])  ? $this->options['icon']            : 'camera',
 			'LABEL' => isset($this->options['label']) ? $this->_($this->options['label']) : '',
 			'TITLE' => isset($this->options['title']) ? $this->_($this->options['title']) : '',
-			'PICTURE_ID' => uniqid('picture'),
 		]);
 
 		$js = new \Sy\Component\WebComponent();

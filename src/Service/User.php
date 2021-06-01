@@ -94,7 +94,7 @@ class User extends Crud {
 			$this->transaction(function() use($email, $password) {
 				// Generate nickname
 				$name = Str::generateNicknameFromEmail($email);
-	
+
 				$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
 				$token = sha1(uniqid());
 				$this->create([
@@ -245,6 +245,8 @@ class User extends Crud {
 
 		$decryptedId = $this->decrypt($_COOKIE['_x']);
 		$user = $this->retrieve(['id' => $decryptedId]);
+		if (empty($user)) return;
+
 		$hash = sha1($user['password'] . $fingerprint);
 		if ($hash === $_COOKIE['_y']) {
 			setcookie('_x', $_COOKIE['_x'], time() + 60 * 60 * 24 * 365, WEB_ROOT . '/');

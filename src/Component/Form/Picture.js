@@ -2,22 +2,22 @@ var SyFormPicture = {
 
 	handleFileSelectBtn: function(input) {
 		var files = [].slice.call(input.files).reverse();
-		var l = files.length + $(input).siblings('.picture-div').find('div[data-id]').length;
-		if (l > 20) {
+		var l = files.length + $(input).nextAll('.picture-div').first().find('div[data-id]').length;
+		if (l > $(input).data('img-max-count')) {
 			alert({ALERT_COUNT});
 			return;
 		}
 		$(input).closest('form').find('[type="submit"]').attr('disabled', 'disabled');
-		$(input).siblings('.loader').show();
+		$(input).nextAll('.loader').first().show();
 
-		let hiddenField = $(input).siblings('input.picture-input-hidden');
+		let hiddenField = $(input).prevAll('input.picture-input-hidden').first();
 		hiddenField.data('_pictures', hiddenField.data('_pictures') || {});
 
 		var promises = [];
 		for (var i = 0; i < files.length; i++) {
 			var id = files[i].name.replace(/\W/g, '');
-			if ($(input).siblings('.picture-div').find('div[data-id="' + id + '"]').length === 0) {
-				$(input).siblings('.picture-div').append('<div class="one-pic" data-id="' + id + '" style="position:relative;display:inline-block"></div>');
+			if ($(input).nextAll('.picture-div').first().find('div[data-id="' + id + '"]').length === 0) {
+				$(input).nextAll('.picture-div').first().append('<div class="one-pic" data-id="' + id + '" style="position:relative;display:inline-block"></div>');
 			}
 			promises.push(new Promise(function(resolve) {
 				SyFormPicture.createThumbnail(files[i], input, id, resolve);
@@ -28,7 +28,7 @@ var SyFormPicture = {
 			for (var i = 0; i < values.length; i++) {
 				(hiddenField.data('_pictures'))[values[i].id] = {image: values[i].image};
 			}
-			$(input).siblings('.loader').hide();
+			$(input).nextAll('.loader').first().hide();
 			hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
 			hiddenField.change();
 			$(input).closest('form').find('[type="submit"]').removeAttr('disabled');
@@ -46,11 +46,11 @@ var SyFormPicture = {
 		reader.onload = function() {
 			var img = new Image();
 			img.onload = function() {
-				if (img.width < 50 || img.heigth < 50) {
+				if (img.width < $(input).data('img-min-width') || img.heigth < $(input).data('img-min-height')) {
 					alert({ALERT_DIMENSION});
 				} else {
-					$(input).siblings('.loader').hide();
-					$(input).siblings('.picture-div').find('div[data-id="' + id + '"]').html(
+					$(input).nextAll('.loader').first().hide();
+					$(input).nextAll('.picture-div').first().find('div[data-id="' + id + '"]').html(
 						'<img class="picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" />' +
 						'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm picture-rm" data-id="' + id + '"><span class="fas fa-times"></span></button>' +
 						'<input type="text" class="form-control picture-caption" data-id="' + id + '" placeholder="' + $(input).data('caption-placeholder') + '" />'
@@ -59,13 +59,13 @@ var SyFormPicture = {
 					var width = img.width;
 					var height = img.height;
 
-					if (width > 750 || height > 750) {
+					if (width > $(input).data('img-max-width') || height > $(input).data('img-max-height')) {
 						if (width/height > 1) {
-							height = Math.round(height * 750 / width);
-							width = 750;
+							height = Math.round(height * $(input).data('img-max-height') / width);
+							width = $(input).data('img-max-width');
 						} else {
-							width = Math.round(width * 750 / height);
-							height = 750;
+							width = Math.round(width * $(input).data('img-max-width') / height);
+							height = $(input).data('img-max-height');
 						}
 					}
 
@@ -76,7 +76,7 @@ var SyFormPicture = {
 					ctx.drawImage(img, 0, 0, width, height);
 					callback({
 						id: id,
-						image: canvas.toDataURL("image/jpeg", 0.7).split(',')[1]
+						image: canvas.toDataURL("image/jpeg", $(input).data('img-quality')).split(',')[1]
 					});
 				}
 			};
@@ -88,7 +88,7 @@ var SyFormPicture = {
 
 	removePicture: function(btn) {
 		let pic = $(btn).closest('.one-pic');
-		let hiddenField = pic.parent().siblings('input.picture-input-hidden'); //supposedly pic.parent() == pic.closest('.picture-div')
+		let hiddenField = pic.parent().prevAll('input.picture-input-hidden').first(); //supposedly pic.parent() == pic.closest('.picture-div')
 		pic.remove();
 		delete hiddenField.data('_pictures')[$(btn).data('id')];
 		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
@@ -96,26 +96,26 @@ var SyFormPicture = {
 	},
 
 	updateCaption: function(input) {
-		let hiddenField = $(input).closest('.picture-div').siblings('input.picture-input-hidden');
+		let hiddenField = $(input).closest('.picture-div').prevAll('input.picture-input-hidden').first();
 		hiddenField.data('_pictures')[$(input).data('id')].caption = $(input).val();
 		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
 		hiddenField.change();
 	},
 
-	bindHandlers: function(){
+	bindHandlers: function() {
 		let self = this;
-		$('.picture-input-file').off('change');
-		$('.picture-input-file').on('change', function() {
+		//$('.picture-input-file').off('change');
+		$('body').on('change', '.picture-input-file', function() {
 			self.handleFileSelectBtn(this);
 		});
 
-		$('.picture-div').off('click', '.picture-rm');
-		$('.picture-div').on('click', '.picture-rm', function() {
+		//$('.picture-div').off('click', '.picture-rm');
+		$('body').on('click', '.picture-rm', function() {
 			self.removePicture(this);
 		});
 
-		$('.picture-div').off('change', '.picture-caption');
-		$('.picture-div').on('change', '.picture-caption', function() {
+		//$('.picture-div').off('change', '.picture-caption');
+		$('body').on('change', '.picture-caption', function() {
 			self.updateCaption(this);
 		});
 	}

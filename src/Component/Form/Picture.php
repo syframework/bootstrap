@@ -20,6 +20,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 	 * 'img-max-height' => 750 by default (image maximum width, will be resized if larger)
 	 * 'img-max-count'  => 20 by default (uploadable image number)
 	 * 'img-quality'    => 0.7 by default (jpg image compression quality)
+	 * 'required' => true | false by default
 	 */
 	public function __construct(array $options) {
 		parent::__construct();
@@ -56,6 +57,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'ICON'  => isset($this->options['icon'])  ? $this->options['icon']            : 'camera',
 			'LABEL' => isset($this->options['label']) ? $this->_($this->options['label']) : '',
 			'TITLE' => isset($this->options['title']) ? $this->_($this->options['title']) : '',
+			'REQUIRED'       => isset($this->options['required']) and $this->options['required'] ? 'required' : '',
 			'MULTIPLE'       => $imgMaxCount > 1 ? 'multiple' : '',
 			'IMG_MAX_COUNT'  => $imgMaxCount,
 			'IMG_MIN_WIDTH'  => $imgMinWidth,
@@ -65,14 +67,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'IMG_QUALITY'    => $imgQuality,
 		]);
 
-		$js = new \Sy\Component\WebComponent();
-		$js->setTemplateFile(__DIR__ . '/Picture.js');
-		$js->setVars([
-			'ALERT_IMAGE'     => json_encode($this->_('Selected file is not an image')),
-			'ALERT_DIMENSION' => json_encode($this->_('Picture is too small')),
-			'ALERT_COUNT'     => json_encode($imgMaxCount . ' ' . $this->_('pictures max')),
-		]);
-		$this->addJsCode($js);
+		$this->addJsCode(__DIR__ . '/Picture.js');
 	}
 
 }

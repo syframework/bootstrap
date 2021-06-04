@@ -19,7 +19,7 @@ var SyFormPicture = {
 			if ($(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').length === 0) {
 				$(input).nextAll('.sy-picture-div').first().append('<div class="sy-picture-container" data-id="' + id + '" style="position:relative;display:inline-block"></div>');
 			}
-			promises.push(new Promise(function(resolve, reject) {
+			promises.push(new Promise(function(resolve) {
 				SyFormPicture.createThumbnail(files[i], input, id, resolve);
 			}));
 		}

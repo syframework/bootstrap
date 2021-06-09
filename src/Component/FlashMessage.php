@@ -42,7 +42,7 @@ class FlashMessage extends \Sy\Component\WebComponent {
 		} else {
 			$this->setVar('TYPE', 'success');
 		}
-		$this->addJsCode($js);
+		$this->addJsCode($js, ['type' => 'text/javascript']);
 	}
 
 }

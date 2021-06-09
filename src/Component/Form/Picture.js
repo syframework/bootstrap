@@ -111,14 +111,14 @@ var SyFormPicture = {
 
 };
 
-$('body').on('change', '.sy-picture-input-file', function() {
+$('body').on('change.sy-picture', '.sy-picture-input-file', function() {
 	SyFormPicture.handleFileSelectBtn(this);
 });
 
-$('body').on('click', '.sy-picture-rm', function() {
+$('body').on('click.sy-picture', '.sy-picture-rm', function() {
 	SyFormPicture.removePicture(this);
 });
 
-$('body').on('change', '.sy-picture-caption', function() {
+$('body').on('change.sy-picture', '.sy-picture-caption', function() {
 	SyFormPicture.updateCaption(this);
 });

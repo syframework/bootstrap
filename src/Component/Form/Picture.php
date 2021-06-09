@@ -57,7 +57,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'ICON'  => isset($this->options['icon'])  ? $this->options['icon']            : 'camera',
 			'LABEL' => isset($this->options['label']) ? $this->_($this->options['label']) : '',
 			'TITLE' => isset($this->options['title']) ? $this->_($this->options['title']) : '',
-			'REQUIRED'       => isset($this->options['required']) ? 'required' : '',
+			'REQUIRED'       => (isset($this->options['required']) and $this->options['required']) ? 'required' : '',
 			'MULTIPLE'       => $imgMaxCount > 1 ? 'multiple' : '',
 			'IMG_MAX_COUNT'  => $imgMaxCount,
 			'IMG_MIN_WIDTH'  => $imgMinWidth,

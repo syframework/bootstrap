@@ -57,7 +57,6 @@ var SyFormPicture = {
 					return;
 				}
 
-				$(input).nextAll('.sy-picture-loader').first().hide();
 				$(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').html(
 					'<img class="sy-picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" />' +
 					'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="' + id + '"><span class="fas fa-times"></span></button>' +
@@ -107,6 +106,24 @@ var SyFormPicture = {
 		hiddenField.data('_pictures')[$(input).data('id')].caption = $(input).val();
 		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
 		hiddenField.change();
+	},
+
+	drawPictures: function(hidden) {
+		let val = $(hidden).val();
+		if (val === '') return;
+		let pictures = JSON.parse(val);
+		let html = '';
+		let placeholder = $(hidden).nextAll('input[type=file].sy-picture-input-file').first().data('caption-placeholder');
+		for (var id in pictures) {
+			var caption = pictures[id].caption === undefined ? '' : pictures[id].caption;
+			html += `
+			<div class="sy-picture-container" style="position:relative;display:inline-block">
+				<img class="sy-picture-img img-fluid rounded" src="data:image/png;base64,${pictures[id].image}" style="margin:10px;max-width:250px;max-height:250px" />
+				<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}"><span class="fas fa-times"></span></button>
+				<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
+			</div>`;
+		}
+		$(hidden).nextAll('.sy-picture-div').first().html(html);
 	}
 
 };
@@ -115,10 +132,18 @@ $('body').on('change.sy-picture', '.sy-picture-input-file', function() {
 	SyFormPicture.handleFileSelectBtn(this);
 });
 
+$('body').on('change.sy-picture', '.sy-picture-input-hidden', function() {
+	SyFormPicture.drawPictures(this);
+});
+
 $('body').on('click.sy-picture', '.sy-picture-rm', function() {
 	SyFormPicture.removePicture(this);
 });
 
 $('body').on('change.sy-picture', '.sy-picture-caption', function() {
 	SyFormPicture.updateCaption(this);
+});
+
+$(document).ready(function() {
+	$('.sy-picture-input-hidden').change();
 });

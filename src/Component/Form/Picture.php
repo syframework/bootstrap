@@ -3,6 +3,14 @@ namespace Sy\Bootstrap\Component\Form;
 
 class Picture extends \Sy\Component\Html\Form\Element {
 
+	/**
+	 * @var string
+	 */
+	private $value;
+
+	/**
+	 * @var array
+	 */
 	private $options;
 
 	/**
@@ -24,12 +32,25 @@ class Picture extends \Sy\Component\Html\Form\Element {
 	 */
 	public function __construct(array $options) {
 		parent::__construct();
+		$this->value   = '';
 		$this->options = $options;
 	}
 
 	public function __toString() {
 		$this->init();
 		return parent::__toString();
+	}
+
+	/**
+	 * @param string $value JSON
+	 * {
+	 *     "id1": {"image": "...", "caption": "..."},
+	 *     "id2": {"image": "...", "caption": "..."},
+	 *     ...
+	 * }
+	 */
+	public function setValue($value) {
+		$this->value = $value;
 	}
 
 	private function init() {
@@ -57,6 +78,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'ICON'  => isset($this->options['icon'])  ? $this->options['icon']            : 'camera',
 			'LABEL' => isset($this->options['label']) ? $this->_($this->options['label']) : '',
 			'TITLE' => isset($this->options['title']) ? $this->_($this->options['title']) : '',
+			'VALUE' => $this->value,
 			'REQUIRED'       => (isset($this->options['required']) and $this->options['required']) ? 'required' : '',
 			'MULTIPLE'       => $imgMaxCount > 1 ? 'multiple' : '',
 			'IMG_MAX_COUNT'  => $imgMaxCount,

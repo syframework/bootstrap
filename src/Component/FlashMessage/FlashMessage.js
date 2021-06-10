@@ -61,7 +61,7 @@ ready(() => {
 	document.getElementById('flash-message').addEventListener('mouseleave', () => {
 		timer = setTimeout(() => {
 			document.getElementById('flash-message').classList.remove('in');
-		}, timeout);
+		}, {TIMEOUT});
 	});
 	<!-- ELSE TIMEOUT_BLOCK -->
 	var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {

@@ -10,52 +10,58 @@ function flash(message, type, timeout) {
 	}
 
 	if (timeout === 0) {
-		$('#flash-message-modal h4').text(title);
-		$('#flash-message-modal p').text(message);
-		$('#flash-message-modal').modal({
+		if (document.querySelector('#flash-message-modal h4') !== null) {
+			document.querySelector('#flash-message-modal h4').innerText = title;
+		}
+		document.querySelector('#flash-message-modal p').innerText = message;
+		var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {
 			keyboard: false,
 			backdrop: 'static'
 		});
+		modal.show();
 		return;
 	}
 
-	if ($('#flash-message').hasClass('in')) return;
+	if (document.getElementById('flash-message').classList.contains('in')) return;
 
-	$('#flash-message span.h4').text($('<p/>').html(title).text());
-	$('#flash-message p').text($('<p/>').html(message).text());
-	$('#flash-message').removeClass('alert-success alert-info alert-warning alert-danger');
-	$('#flash-message').addClass('in alert-' + type);
+	if (document.querySelector('#flash-message span.h4') !== null) {
+		document.querySelector('#flash-message span.h4').innerText = title;
+	}
+	document.querySelector('#flash-message p').innerText = message;
+	document.getElementById('flash-message').classList.remove('alert-success', 'alert-info', 'alert-warning', 'alert-danger');
+	document.getElementById('flash-message').classList.add('in', 'alert-' + type);
 
 	var timer = setTimeout(function() {
-		$('#flash-message').removeClass('in');
+		document.getElementById('flash-message').classList.remove('in');
 	}, timeout);
 
-	$('#flash-message').mouseenter(function() {
-		clearTimeout(timer);
-	});
+	document.getElementById('flash-message').addEventListener('mouseenter', () => clearTimeout(timer));
 
-	$('#flash-message').mouseleave(function() {
-		timer = setTimeout(function() {
-			$('#flash-message').removeClass('in');
+	document.getElementById('flash-message').addEventListener('mouseleave', () => {
+		timer = setTimeout(() => {
+			document.getElementById('flash-message').classList.remove('in');
 		}, timeout);
 	});
 }
 <!-- BEGIN SESSION_BLOCK -->
-$(function() {
+var ready = (callback) => {
+	if (document.readyState != "loading") callback();
+	else document.addEventListener("DOMContentLoaded", callback);
+}
+
+ready(() => {
 	<!-- BEGIN TIMEOUT_BLOCK -->
-	$('#flash-message').toggleClass('in');
+	document.getElementById('flash-message').classList.toggle('in');
 	var timer = setTimeout(function() {
-		$('#flash-message').removeClass('in');
+		document.getElementById('flash-message').classList.remove('in');
 	}, {TIMEOUT});
 
-	$('#flash-message').mouseenter(function() {
-		clearTimeout(timer);
-	});
+	document.getElementById('flash-message').addEventListener('mouseenter', () => clearTimeout(timer));
 
-	$('#flash-message').mouseleave(function() {
-		timer = setTimeout(function() {
-			$('#flash-message').removeClass('in');
-		}, {TIMEOUT});
+	document.getElementById('flash-message').addEventListener('mouseleave', () => {
+		timer = setTimeout(() => {
+			document.getElementById('flash-message').classList.remove('in');
+		}, timeout);
 	});
 	<!-- ELSE TIMEOUT_BLOCK -->
 	var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {
@@ -65,6 +71,11 @@ $(function() {
 	modal.show();
 	<!-- END TIMEOUT_BLOCK -->
 
-	$.post(window.location, {flash_message_action: "clear"});
+	var formData = new FormData();
+	formData.append('flash_message_action', 'clear');
+	fetch(window.location, {
+		method: 'POST',
+		body: formData
+	});
 });
 <!-- END SESSION_BLOCK -->

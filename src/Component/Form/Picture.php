@@ -34,6 +34,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 		parent::__construct();
 		$this->value   = '';
 		$this->options = $options;
+		$this->setTemplateFile(__DIR__ . '/Picture.tpl');
 	}
 
 	public function __toString() {
@@ -55,7 +56,6 @@ class Picture extends \Sy\Component\Html\Form\Element {
 
 	private function init() {
 		$this->addTranslator(LANG_DIR);
-		$this->setTemplateFile(__DIR__ . '/Picture.tpl');
 
 		$imgMinWidth = isset($this->options['img-min-width']) ? intval($this->options['img-min-width']) : 50;
 		$imgMinWidth =  $imgMinWidth < 1 ? 1 : $imgMinWidth;

@@ -3,7 +3,7 @@ namespace Sy\Bootstrap\Component\Form\Element;
 
 class CodeArea extends \Sy\Component\Html\Form\Textarea {
 
-	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4';
+	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0';
 
 	private $theme = 'default';
 
@@ -39,7 +39,12 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$this->addCssLink($cdn . 'codemirror.min.css');
 		$this->addCssLink($cdn . 'addon/hint/show-hint.min.css');
 		$this->addCssLink($cdn . 'addon/fold/foldgutter.min.css');
+		$this->addCssLink($cdn . 'addon/dialog/dialog.min.css');
 		$this->addJsLink($cdn . 'codemirror.min.js');
+		$this->addJsLink($cdn . 'addon/dialog/dialog.min.js');
+		$this->addJsLink($cdn . 'addon/search/search.min.js');
+		$this->addJsLink($cdn . 'addon/search/searchcursor.min.js');
+		$this->addJsLink($cdn . 'addon/search/jump-to-line.min.js');
 	}
 
 	private function postInit() {

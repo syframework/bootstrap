@@ -11,7 +11,8 @@ var SyFormPicture = {
 		$(input).nextAll('.sy-picture-loader').first().show();
 
 		let hiddenField = $(input).prevAll('input.sy-picture-input-hidden').first();
-		hiddenField.data('_pictures', hiddenField.data('_pictures') || {});
+		let data = JSON.parse(hiddenField.val() || '{}');
+		//hiddenField.data('_pictures', hiddenField.data('_pictures') || {});
 
 		var promises = [];
 		for (var i = 0; i < files.length; i++) {
@@ -27,13 +28,13 @@ var SyFormPicture = {
 		Promise.all(promises).then(function(values) {
 			for (var i = 0; i < values.length; i++) {
 				if (values[i].image) {
-					(hiddenField.data('_pictures'))[values[i].id] = {image: values[i].image};
+					data[values[i].id] = {image: values[i].image};
 				} else {
 					$(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').remove();
 				}
 			}
 			$(input).nextAll('.sy-picture-loader').first().hide();
-			hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+			hiddenField.val(JSON.stringify(data));
 			hiddenField.change();
 			$(input).closest('form').find('[type="submit"]').removeAttr('disabled');
 		});
@@ -95,9 +96,10 @@ var SyFormPicture = {
 	removePicture: function(btn) {
 		let pic = $(btn).closest('.sy-picture-container');
 		let hiddenField = pic.parent().prevAll('input.sy-picture-input-hidden').first(); //supposedly pic.parent() == pic.closest('.sy-picture-div')
+		let data = JSON.parse(hiddenField.val() || '{}');
 		pic.remove();
-		delete hiddenField.data('_pictures')[$(btn).data('id')];
-		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+		delete data[$(btn).data('id')];
+		hiddenField.val(JSON.stringify(data));
 		hiddenField.change();
 	},
 
@@ -114,7 +116,7 @@ var SyFormPicture = {
 		let pictures = JSON.parse(val);
 		let html = '';
 		let placeholder = $(hidden).nextAll('input[type=file].sy-picture-input-file').first().data('caption-placeholder');
-		$(hidden).data('_pictures', $(hidden).data('_pictures') || {});
+		//$(hidden).data('_pictures', $(hidden).data('_pictures') || {});
 
 		for (var id in pictures) {
 			var caption = pictures[id].caption === undefined ? '' : pictures[id].caption;
@@ -124,7 +126,7 @@ var SyFormPicture = {
 				<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}"><span class="fas fa-times"></span></button>
 				<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
 			</div>`;
-			$(hidden).data('_pictures')[id] = {image: pictures[id].image, caption: caption};
+			//$(hidden).data('_pictures')[id] = {image: pictures[id].image, caption: caption};
 		}
 		$(hidden).nextAll('.sy-picture-div').first().html(html);
 	}

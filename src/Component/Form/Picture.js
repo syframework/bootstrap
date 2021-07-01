@@ -112,7 +112,7 @@ var SyFormPicture = {
 
 	drawPictures: function(hidden) {
 		let val = $(hidden).val();
-		if (val === '') val = {};
+		if (val === '') val = '{}';
 		let pictures = JSON.parse(val);
 		let html = '';
 		let placeholder = $(hidden).nextAll('input[type=file].sy-picture-input-file').first().data('caption-placeholder');

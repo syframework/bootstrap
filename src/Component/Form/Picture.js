@@ -104,8 +104,9 @@ var SyFormPicture = {
 
 	updateCaption: function(input) {
 		let hiddenField = $(input).closest('.sy-picture-div').prevAll('input.sy-picture-input-hidden').first();
-		hiddenField.data('_pictures')[$(input).data('id')].caption = $(input).val();
-		hiddenField.val(JSON.stringify(hiddenField.data('_pictures')));
+		let data = JSON.parse(hiddenField.val() || '{}');
+		data[$(input).data('id')].caption = $(input).val();
+		hiddenField.val(JSON.stringify(data));
 		hiddenField.change();
 	},
 

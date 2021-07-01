@@ -12,7 +12,6 @@ var SyFormPicture = {
 
 		let hiddenField = $(input).prevAll('input.sy-picture-input-hidden').first();
 		let data = JSON.parse(hiddenField.val() || '{}');
-		//hiddenField.data('_pictures', hiddenField.data('_pictures') || {});
 
 		var promises = [];
 		for (var i = 0; i < files.length; i++) {
@@ -112,11 +111,10 @@ var SyFormPicture = {
 
 	drawPictures: function(hidden) {
 		let val = $(hidden).val();
-		if (val === '') return;
+		if (val === '') val = {};
 		let pictures = JSON.parse(val);
 		let html = '';
 		let placeholder = $(hidden).nextAll('input[type=file].sy-picture-input-file').first().data('caption-placeholder');
-		//$(hidden).data('_pictures', $(hidden).data('_pictures') || {});
 
 		for (var id in pictures) {
 			var caption = pictures[id].caption === undefined ? '' : pictures[id].caption;
@@ -126,7 +124,6 @@ var SyFormPicture = {
 				<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}"><span class="fas fa-times"></span></button>
 				<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
 			</div>`;
-			//$(hidden).data('_pictures')[id] = {image: pictures[id].image, caption: caption};
 		}
 		$(hidden).nextAll('.sy-picture-div').first().html(html);
 	}

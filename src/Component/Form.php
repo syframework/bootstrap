@@ -375,7 +375,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$min = (int) $attributes['minlength'];
 			$textarea->addValidator(function($value) use($min, $textarea) {
 				if (mb_strlen($value) > $min) return true;
-				$textarea->setError($this->_("Text min length of %d characters", $min));
+				$textarea->setError($this->_('Text min length of %d characters', $min));
 				return false;
 			});
 		}
@@ -385,7 +385,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$max = (int) $attributes['maxlength'];
 			$textarea->addValidator(function($value) use($max, $textarea) {
 				if (mb_strlen($value) <= $max) return true;
-				$textarea->setError($this->_("Text max length of %d characters", $max));
+				$textarea->setError($this->_('Text max length of %d characters', $max));
 				return false;
 			});
 		}

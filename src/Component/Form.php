@@ -374,9 +374,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
 			$textarea->addValidator(function($value) use($min, $textarea) {
-				$l = strlen($value);
-				if ($l > $min) return true;
-				$this->setError($this->_("Text min length of %d characters", $min));
+				if (mb_strlen($value) > $min) return true;
+				$textarea->setError($this->_("Text min length of %d characters", $min));
 				return false;
 			});
 		}
@@ -385,9 +384,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
 			$textarea->addValidator(function($value) use($max, $textarea) {
-				$l = strlen($value);
-				if ($l <= $max) return true;
-				$this->setError($this->_("Text max length of %d characters", $max));
+				if (mb_strlen($value) <= $max) return true;
+				$textarea->setError($this->_("Text max length of %d characters", $max));
 				return false;
 			});
 		}
@@ -567,9 +565,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
 			$textInput->addValidator(function($value) use($min, $textInput) {
-				$l = mb_strlen($value);
-				if ($l > $min) return true;
-				$this->setError($this->_('Text min length of %d characters', $min));
+				if (mb_strlen($value) > $min) return true;
+				$textInput->setError($this->_('Text min length of %d characters', $min));
 				return false;
 			});
 		}
@@ -578,9 +575,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
 			$textInput->addValidator(function($value) use($max, $textInput) {
-				$l = mb_strlen($value);
-				if ($l <= $max) return true;
-				$this->setError($this->_('Text max length of %d characters', $max));
+				if (mb_strlen($value) <= $max) return true;
+				$textInput->setError($this->_('Text max length of %d characters', $max));
 				return false;
 			});
 		}

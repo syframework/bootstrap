@@ -311,7 +311,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Check if there is no addon
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {
 			// Textarea
-			$textarea = $div->addTextarea($attributes, $options);
+			$textarea = new Form\Textarea();
+			$textarea->setAttributes($attributes);
+			$textarea->setOptions($options);
+			$div->addElement($textarea);
 			$textarea->addClass('form-control');
 
 			// Size
@@ -344,7 +347,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 			}
 
 			// Textarea
-			$textarea = $inputGroupDiv->addTextarea($attributes, $options);
+			$textarea = new Form\Textarea();
+			$textarea->setAttributes($attributes);
+			$textarea->setOptions($options);
+			$div->addElement($textarea);
 			$textarea->addClass('form-control');
 
 			// Input group addon after
@@ -370,8 +376,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$textarea->addValidator(function($value) use($min, $textarea) {
 				$l = strlen($value);
 				if ($l > $min) return true;
-				$this->setError(sprintf($this->_("Text min length of %d characters"), $min));
-				$textarea->addClass('is-invalid');
+				$this->setError($this->_("Text min length of %d characters", $min));
 				return false;
 			});
 		}
@@ -382,8 +387,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$textarea->addValidator(function($value) use($max, $textarea) {
 				$l = strlen($value);
 				if ($l <= $max) return true;
-				$this->setError(sprintf($this->_("Text max length of %d characters"), $max));
-				$textarea->addClass('is-invalid');
+				$this->setError($this->_("Text max length of %d characters", $max));
 				return false;
 			});
 		}
@@ -563,10 +567,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
 			$textInput->addValidator(function($value) use($min, $textInput) {
-				$l = strlen($value);
+				$l = mb_strlen($value);
 				if ($l > $min) return true;
-				$this->setError(sprintf($this->_("Text min length of %d characters"), $min));
-				$textInput->addClass('is-invalid');
+				$this->setError($this->_('Text min length of %d characters', $min));
 				return false;
 			});
 		}
@@ -575,10 +578,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
 			$textInput->addValidator(function($value) use($max, $textInput) {
-				$l = strlen($value);
+				$l = mb_strlen($value);
 				if ($l <= $max) return true;
-				$this->setError(sprintf($this->_("Text max length of %d characters"), $max));
-				$textInput->addClass('is-invalid');
+				$this->setError($this->_('Text max length of %d characters', $max));
 				return false;
 			});
 		}

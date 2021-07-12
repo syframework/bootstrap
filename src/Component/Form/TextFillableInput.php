@@ -10,7 +10,7 @@ class TextFillableInput extends \Sy\Component\Html\Form\TextFillableInput {
 
 	public function setError($error) {
 		parent::setError($this->_($error));
-		$this->getParent()->addClass('has-error');
+		$this->addClass('is-invalid');
 	}
 
 }

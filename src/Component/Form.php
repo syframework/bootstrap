@@ -370,7 +370,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Min length validator
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
-			$textarea->addValidator(function($value, $element) use($min) {
+			$textarea->addValidator(function($value, $element) use($min, $options) {
 				if (mb_strlen($value) > $min) return true;
 				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
 				return false;
@@ -380,7 +380,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
-			$textarea->addValidator(function($value, $element) use($max) {
+			$textarea->addValidator(function($value, $element) use($max, $options) {
 				if (mb_strlen($value) <= $max) return true;
 				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
 				return false;
@@ -572,7 +572,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Min length validator
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
-			$input->addValidator(function($value, $element) use($min) {
+			$input->addValidator(function($value, $element) use($min, $options) {
 				if (mb_strlen($value) > $min) return true;
 				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
 				return false;
@@ -582,7 +582,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
-			$input->addValidator(function($value, $element) use($max) {
+			$input->addValidator(function($value, $element) use($max, $options) {
 				if (mb_strlen($value) <= $max) return true;
 				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
 				return false;

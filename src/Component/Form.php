@@ -372,7 +372,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$min = (int) $attributes['minlength'];
 			$textarea->addValidator(function($value, $element) use($min) {
 				if (mb_strlen($value) > $min) return true;
-				$element->setError($this->_('Text min length of %d characters', $min));
+				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
 				return false;
 			});
 		}
@@ -382,7 +382,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$max = (int) $attributes['maxlength'];
 			$textarea->addValidator(function($value, $element) use($max) {
 				if (mb_strlen($value) <= $max) return true;
-				$element->setError($this->_('Text max length of %d characters', $max));
+				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
 				return false;
 			});
 		}
@@ -499,7 +499,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 *
 	 * @param string $class
 	 * @param array $attributes
-	 * @param array $options label, help
+	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
@@ -574,7 +574,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$min = (int) $attributes['minlength'];
 			$input->addValidator(function($value, $element) use($min) {
 				if (mb_strlen($value) > $min) return true;
-				$element->setError($this->_('Text min length of %d characters', $min));
+				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
 				return false;
 			});
 		}
@@ -584,7 +584,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			$max = (int) $attributes['maxlength'];
 			$input->addValidator(function($value, $element) use($max) {
 				if (mb_strlen($value) <= $max) return true;
-				$element->setError($this->_('Text max length of %d characters', $max));
+				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
 				return false;
 			});
 		}

@@ -1,10 +1,10 @@
 <?php
 namespace Sy\Bootstrap\Component\Form;
 
-class TextFillableInput extends \Sy\Component\Html\Form\TextFillableInput {
+class OptionContainer extends \Sy\Component\Html\Form\OptionContainer {
 
-	public function __construct($type) {
-		parent::__construct($type);
+	public function __construct($name = '') {
+		parent::__construct($name);
 		$this->addTranslator(LANG_DIR);
 	}
 

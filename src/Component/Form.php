@@ -294,7 +294,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @param array $attributes
 	 * @param array $options
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
-	 * @return \Sy\Component\Html\Form\Textarea
+	 * @return Form\Textarea
 	 */
 	public function addTextarea(array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
@@ -394,7 +394,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @param array $attributes
 	 * @param array $options
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
-	 * @return \Sy\Component\Html\Form\OptionContainer
+	 * @return Form\OptionContainer
 	 */
 	public function addSelect(array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
@@ -494,6 +494,15 @@ abstract class Form extends \Sy\Component\Html\Form {
 		}
 	}
 
+	/**
+	 * Add input
+	 *
+	 * @param string $class
+	 * @param array $attributes
+	 * @param array $options label, help
+	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @return Form\TextFillableInput
+	 */
 	protected function addInput($class, array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
 		$div = $container->addDiv(['class' => 'mb-3']);
@@ -505,16 +514,16 @@ abstract class Form extends \Sy\Component\Html\Form {
 		}
 
 		// Input
-		$element = new Form\TextFillableInput($class);
-		$element->setAttributes($attributes);
-		$element->addClass('form-control');
+		$input = new Form\TextFillableInput($class);
+		$input->setAttributes($attributes);
+		$input->addClass('form-control');
 
 		// Check if there is no addon
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {
-			$element->setOptions($options);
-			$textInput = $div->addElement($element);
+			$input->setOptions($options);
+			$div->addElement($input);
 			if (isset($options['size'])) {
-				$textInput->addClass('form-control-' . $options['size']);
+				$input->addClass('form-control-' . $options['size']);
 			}
 		} else { // There is addon
 			// Label
@@ -540,8 +549,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 			}
 
 			// Input
-			$element->setOptions($options);
-			$textInput = $inputGroupDiv->addElement($element);
+			$input->setOptions($options);
+			$inputGroupDiv->addElement($input);
 
 			// Input group addon after
 			if (isset($options['addon-after'])) {
@@ -563,7 +572,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Min length validator
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
-			$textInput->addValidator(function($value, $element) use($min) {
+			$input->addValidator(function($value, $element) use($min) {
 				if (mb_strlen($value) > $min) return true;
 				$element->setError($this->_('Text min length of %d characters', $min));
 				return false;
@@ -573,14 +582,14 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
-			$textInput->addValidator(function($value, $element) use($max) {
+			$input->addValidator(function($value, $element) use($max) {
 				if (mb_strlen($value) <= $max) return true;
 				$element->setError($this->_('Text max length of %d characters', $max));
 				return false;
 			});
 		}
 
-		return $textInput;
+		return $input;
 	}
 
 	protected function addGroupButton($button, $container) {

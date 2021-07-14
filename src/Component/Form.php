@@ -499,7 +499,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 *
 	 * @param string $class
 	 * @param array $attributes
-	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength
+	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
@@ -511,6 +511,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 		}
 		if (isset($options['label'])) {
 			$options['label'] = $this->_($options['label']);
+		}
+		if (isset($attributes['pattern'])) {
+			$attributes['pattern'] = str_replace('{', '&#123;', $attributes['pattern']);
 		}
 
 		// Input
@@ -572,9 +575,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Min length validator
 		if (isset($attributes['minlength'])) {
 			$min = (int) $attributes['minlength'];
-			$input->addValidator(function($value, $element) use($min, $options) {
+			$error = isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min];
+			$input->addValidator(function($value, $element) use($min, $error) {
 				if (mb_strlen($value) > $min) return true;
-				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
+				$element->setError($this->_($error));
 				return false;
 			});
 		}
@@ -582,9 +586,21 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
 			$max = (int) $attributes['maxlength'];
-			$input->addValidator(function($value, $element) use($max, $options) {
+			$error = isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max];
+			$input->addValidator(function($value, $element) use($max, $error) {
 				if (mb_strlen($value) <= $max) return true;
-				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
+				$element->setError($this->_($error));
+				return false;
+			});
+		}
+
+		// Pattern validator
+		if (isset($attributes['pattern'])) {
+			$pattern = '/^(?:' . $attributes['pattern'] . ')$/';
+			$error = isset($options['error-msg-pattern']) ? $options['error-msg-pattern'] : 'Pattern error';
+			$input->addValidator(function($value, $element) use($pattern, $error) {
+				if (preg_match($pattern, $value) === 1) return true;
+				$element->setError($this->_($error));
 				return false;
 			});
 		}

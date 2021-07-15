@@ -44,7 +44,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			['validator' => function($p) {return is_null($p);}]
 		);
 		$f->addTextInput(
-			['name' => 'sy_lastname', 'value' => 'Your lastname'],
+			['name' => 'sy_lastname', 'value' => 'Your lastname', 'required' => 'required'],
 			['validator' => function($p) {return $p === 'Your lastname';}]
 		);
 		return $this->addElement($f);

@@ -38,7 +38,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 	public function addAntiSpamField() {
 		$f = new \Sy\Component\Html\Form\FieldContainer('div');
-		$f->addClass('d-none');
+		$f->setAttribute('style', 'height:0');
 		$f->addTextInput(
 			['name' => 'sy_firstname'],
 			['validator' => function($p) {return is_null($p);}]

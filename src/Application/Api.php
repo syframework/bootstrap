@@ -22,10 +22,8 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	public function dispatch() {
 		$this->actionDispatch(ACTION_TRIGGER);
 
-		// If no action method found, check if a plugin api class exists
-		$c = $this->action;
-		if (is_null($c)) $this->notFound();
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($c));
+		// Check if a plugin api class exists
+		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($this->action));
 		if (class_exists($class)) new $class();
 
 		parent::dispatch();

@@ -64,7 +64,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 	}
 
 	public function __call($name, $arguments) {
-		$this->forbidden();
+		$this->notFound();
 	}
 
 }

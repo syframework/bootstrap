@@ -25,12 +25,13 @@ abstract class Api extends \Sy\Component\WebComponent {
 	}
 
 	abstract public function security();
-	
+
 	public function dispatch() {
 		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
-		if (empty($method)) return;
+		if (empty($method)) $this->notFound();
 		$method .= 'Action';
 		$this->$method();
+		$this->notFound();
 	}
 
 	public function response($code, $data = array()) {
@@ -48,6 +49,10 @@ abstract class Api extends \Sy\Component\WebComponent {
 
 	public function serverError($data = array()) {
 		$this->response(500, $data);
+	}
+
+	public function notFound($data = array()) {
+		$this->response(404, $data);
 	}
 
 	public function forbidden($data = array()) {

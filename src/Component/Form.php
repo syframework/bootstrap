@@ -40,11 +40,11 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$f = new \Sy\Component\Html\Form\FieldContainer('div');
 		$f->setAttribute('style', 'height:0;overflow:hidden');
 		$f->addTextInput(
-			['name' => 'sy_firstname'],
+			['name' => 'sy_firstname', 'autocomplete' => 'off'],
 			['validator' => function($p) {return is_null($p);}]
 		);
 		$f->addTextInput(
-			['name' => 'sy_lastname', 'value' => 'Your lastname', 'required' => 'required'],
+			['name' => 'sy_lastname', 'value' => 'Your lastname', 'required' => 'required', 'autocomplete' => 'off'],
 			['validator' => function($p) {return $p === 'Your lastname';}]
 		);
 		return $this->addElement($f);

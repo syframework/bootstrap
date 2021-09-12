@@ -16,16 +16,16 @@ class Button extends \Sy\Component\WebComponent {
 	 * @param string $label The button label text
 	 * @param string $icon Font Awesome icon name
 	 * @param string $color default|primary|info|warning|danger
-	 * @param boolean $block Button block or not
+	 * @param string $width Button width: auto 100 75 50 25
 	 * @param string $size xs|sm|lg
 	 */
-	public function __construct($id, $label, $icon, $color = 'secondary', $block = true, $size = '') {
+	public function __construct($id, $label, $icon, $color = 'secondary', $width = '100', $size = '') {
 		parent::__construct();
 		$this->id = $id;
 		$this->label = $label;
 		$this->icon = $icon;
 		$this->color = $color;
-		$this->block = $block;
+		$this->width = $width;
 		$this->size = $size;
 		$this->dialog = new Dialog($id, '');
 	}
@@ -42,6 +42,16 @@ class Button extends \Sy\Component\WebComponent {
 		return $this->dialog;
 	}
 
+	/**
+	 * Set the font awesome icon on the button
+	 *
+	 * @param string $icon 'fas fa-[ICON_NAME]'
+	 * @return void
+	 */
+	public function setIcon($icon) {
+		$this->icon = $icon;
+	}
+
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Button.html');
@@ -51,7 +61,7 @@ class Button extends \Sy\Component\WebComponent {
 			'LABEL' => $this->_($this->label),
 			'ICON'  => $this->icon,
 			'COLOR' => $this->color,
-			'BLOCK' => $this->block ? 'w-100' : '',
+			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
 		]);
 

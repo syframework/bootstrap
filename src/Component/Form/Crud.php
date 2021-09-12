@@ -9,7 +9,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	 * @var Container
 	 */
 	private $serviceContainer;
-	
+
 	/**
 	 * @var string
 	 */

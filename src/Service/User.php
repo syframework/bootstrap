@@ -64,6 +64,8 @@ class User extends Crud {
 		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException;
 
 		// Session
+		session_destroy(); // Security: renew PHPSESSID on sign in
+		session_start();
 		$fingerprint = preg_replace("/[^a-zA-Z]/", '', $_SERVER['HTTP_USER_AGENT']);
 		$_SESSION['user_id'] = $user['id'];
 		$_SESSION['fingerprint'] = $fingerprint;
@@ -249,6 +251,8 @@ class User extends Crud {
 
 		$hash = sha1($user['password'] . $fingerprint);
 		if ($hash === $_COOKIE['_y']) {
+			session_destroy(); // Security: renew PHPSESSID on sign in
+			session_start();
 			setcookie('_x', $_COOKIE['_x'], time() + 60 * 60 * 24 * 365, WEB_ROOT . '/');
 			setcookie('_y', $hash, time() + 60 * 60 * 24 * 365, WEB_ROOT . '/');
 			$_SESSION['user_id'] = $user['id'];

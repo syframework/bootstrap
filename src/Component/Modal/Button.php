@@ -7,8 +7,9 @@ class Button extends \Sy\Component\WebComponent {
 	private $label;
 	private $icon;
 	private $color;
-	private $block;
+	private $width;
 	private $size;
+	private $title;
 	private $dialog;
 
 	/**
@@ -17,7 +18,7 @@ class Button extends \Sy\Component\WebComponent {
 	 * @param string $icon Font Awesome icon name
 	 * @param string $color default|primary|info|warning|danger
 	 * @param string $width Button width: auto 100 75 50 25
-	 * @param string $size xs|sm|lg
+	 * @param string $size sm|lg
 	 */
 	public function __construct($id, $label, $icon, $color = 'secondary', $width = '100', $size = '') {
 		parent::__construct();
@@ -27,6 +28,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->color = $color;
 		$this->width = $width;
 		$this->size = $size;
+		$this->title = '';
 		$this->dialog = new Dialog($id, '');
 	}
 
@@ -52,6 +54,26 @@ class Button extends \Sy\Component\WebComponent {
 		$this->icon = $icon;
 	}
 
+	/**
+	 * Set the button size
+	 *
+	 * @param string $size sm or lg
+	 * @return void
+	 */
+	public function setSize($size) {
+		$this->size = $size;
+	}
+
+	/**
+	 * Set the button title
+	 *
+	 * @param string $title
+	 * @return void
+	 */
+	public function setTitle($title) {
+		$this->title = $this->_($title);
+	}
+
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Button.html');
@@ -63,6 +85,7 @@ class Button extends \Sy\Component\WebComponent {
 			'COLOR' => $this->color,
 			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
+			'TITLE' => empty($this->title) ? '' : 'title="' . $this->title . '" data-title="' . $this->title . '"',
 		]);
 
 		$this->setComponent('DIALOG', $this->dialog);

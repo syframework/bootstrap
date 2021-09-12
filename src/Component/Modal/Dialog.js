@@ -7,12 +7,19 @@
 		if (title.text() !== '') return;
 		title.html(button.html());
 	});
-	
+
 	$('.modal').each(function () {
 		if ($(this).has('div.alert-danger:not(:empty)').length > 0) {
 			var modal = bootstrap.Modal.getInstance(this)
 			modal.show();
 			return false;
+		}
+	});
+
+	$('.modal[id]').each(function() {
+		var $ids = $('.modal[id=' + this.id + ']');
+		if ($ids.length > 1) {
+			$ids.not(':first').remove();
 		}
 	});
 })();

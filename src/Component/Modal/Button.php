@@ -56,7 +56,7 @@ class Button extends \Sy\Component\WebComponent {
 			'COLOR' => $this->color,
 			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
-			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-title="' . $this->_($this->title) . '"',
+			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
 		]);
 
 		$this->setComponent('DIALOG', $this->dialog);

@@ -7,8 +7,8 @@ class Button extends ModalButton {
 
 	private $url;
 
-	public function __construct($label, $url = '') {
-		parent::__construct('shareModal', $label, 'share-alt');
+	public function __construct($label = '', $url = '', $icon = 'share-alt', $color = 'secondary', $width = '100', $size = '', $title = '') {
+		parent::__construct('shareModal', $label, $icon, $color, $width, $size, $title);
 		$this->url = $url;
 	}
 

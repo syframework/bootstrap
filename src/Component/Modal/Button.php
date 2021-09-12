@@ -19,8 +19,9 @@ class Button extends \Sy\Component\WebComponent {
 	 * @param string $color default|primary|info|warning|danger
 	 * @param string $width Button width: auto 100 75 50 25
 	 * @param string $size sm|lg
+	 * @param string $title Button title
 	 */
-	public function __construct($id, $label, $icon, $color = 'secondary', $width = '100', $size = '') {
+	public function __construct($id, $label = '', $icon = '', $color = 'secondary', $width = '100', $size = '', $title = '') {
 		parent::__construct();
 		$this->id = $id;
 		$this->label = $label;
@@ -28,7 +29,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->color = $color;
 		$this->width = $width;
 		$this->size = $size;
-		$this->title = '';
+		$this->title = $title;
 		$this->dialog = new Dialog($id, '');
 	}
 
@@ -44,36 +45,6 @@ class Button extends \Sy\Component\WebComponent {
 		return $this->dialog;
 	}
 
-	/**
-	 * Set the font awesome icon on the button
-	 *
-	 * @param string $icon 'fas fa-[ICON_NAME]'
-	 * @return void
-	 */
-	public function setIcon($icon) {
-		$this->icon = $icon;
-	}
-
-	/**
-	 * Set the button size
-	 *
-	 * @param string $size sm or lg
-	 * @return void
-	 */
-	public function setSize($size) {
-		$this->size = $size;
-	}
-
-	/**
-	 * Set the button title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title) {
-		$this->title = $this->_($title);
-	}
-
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Button.html');
@@ -81,11 +52,11 @@ class Button extends \Sy\Component\WebComponent {
 		$this->setVars([
 			'ID'    => $this->id,
 			'LABEL' => $this->_($this->label),
-			'ICON'  => $this->icon,
+			'ICON'  => empty($this->icon) ? '' : 'fas fa-fw fa-' . $this->icon,
 			'COLOR' => $this->color,
 			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
-			'TITLE' => empty($this->title) ? '' : 'title="' . $this->title . '" data-title="' . $this->title . '"',
+			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-title="' . $this->_($this->title) . '"',
 		]);
 
 		$this->setComponent('DIALOG', $this->dialog);

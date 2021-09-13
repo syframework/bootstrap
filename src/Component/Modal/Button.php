@@ -59,7 +59,11 @@ class Button extends \Sy\Component\WebComponent {
 			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
 		]);
 
-		$this->setComponent('DIALOG', $this->dialog);
+		$js = new \Sy\Component();
+		$js->setTemplateFile(__DIR__ . '/Button.js');
+		$js->setVar('ID', $this->id);
+		$js->setComponent('DIALOG', $this->dialog);
+		$this->addJsCode($js);
 	}
 
 }

@@ -10,6 +10,7 @@ class Button extends \Sy\Component\WebComponent {
 	private $width;
 	private $size;
 	private $title;
+	private $attributes;
 	private $dialog;
 
 	/**
@@ -20,8 +21,9 @@ class Button extends \Sy\Component\WebComponent {
 	 * @param string $width Button width: auto 100 75 50 25
 	 * @param string $size sm|lg
 	 * @param string $title Button title
+	 * @param array $attributes Additionnal button attributes
 	 */
-	public function __construct($id, $label = '', $icon = '', $color = 'secondary', $width = '100', $size = '', $title = '') {
+	public function __construct($id, $label = '', $icon = '', $color = 'secondary', $width = '100', $size = '', $title = '', $attributes = []) {
 		parent::__construct();
 		$this->id = $id;
 		$this->label = $label;
@@ -30,6 +32,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->width = $width;
 		$this->size = $size;
 		$this->title = $title;
+		$this->attributes = $attributes;
 		$this->dialog = new Dialog($id, '');
 	}
 
@@ -57,6 +60,7 @@ class Button extends \Sy\Component\WebComponent {
 			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
 			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
+			'ATTR'  => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes))
 		]);
 
 		$js = new \Sy\Component();

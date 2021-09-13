@@ -23,7 +23,7 @@ class Buttons extends \Sy\Component\WebComponent {
 		} else {
 			$this->logError('Constant CLIPBOARD_JS need to be defined');
 		}
-		$this->addJsCode(file_get_contents(__DIR__ . '/Buttons.js'));
+		$this->addJsCode(__DIR__ . '/Buttons.js');
 		$this->setVar('URL', $this->url);
 	}
 

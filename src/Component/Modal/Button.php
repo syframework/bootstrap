@@ -67,6 +67,9 @@ class Button extends \Sy\Component\WebComponent {
 		$js->setTemplateFile(__DIR__ . '/Button.js');
 		$js->setComponent('DIALOG', $this->dialog);
 		$this->addJsCode($js);
+
+		// Need to be set for merging dialog javascript
+		$this->setComponent('DIALOG', $this->dialog);
 	}
 
 }

@@ -15,11 +15,4 @@
 			return false;
 		}
 	});
-
-	$('.modal[id]').each(function() {
-		var $ids = $('.modal[id=' + this.id + ']');
-		if ($ids.length > 1) {
-			$ids.not(':first').remove();
-		}
-	});
 })();

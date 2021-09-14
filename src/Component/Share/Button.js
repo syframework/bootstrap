@@ -6,7 +6,7 @@
 			$(this).find('.share-url').val(url);
 			$(this).find('.popup').data('url', url);
 		}
-		var title = (button.text() === '') ? button.html() + button.data('title') : button.html();
+		var title = (button.text() === '') ? button.html() + button.data('bs-title') : button.html();
 		$(this).find('.modal-title').html(title);
 	});
 })();

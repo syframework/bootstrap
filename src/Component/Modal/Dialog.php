@@ -89,10 +89,10 @@ class Dialog extends \Sy\Component\WebComponent {
 
 		// Footer
 		if (!is_null($this->footer)) {
-			if ($this->body instanceof \Sy\Component\WebComponent) {
-				$this->setComponent('BODY', $this->body);
+			if ($this->footer instanceof \Sy\Component\WebComponent) {
+				$this->setComponent('FOOTER', $this->body);
 			} else {
-				$this->setVar('BODY', $this->body);
+				$this->setVar('FOOTER', $this->body);
 			}
 			$this->setBlock('FOOTER_BLOCK');
 		}

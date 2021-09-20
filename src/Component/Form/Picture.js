@@ -135,10 +135,6 @@ $('body').on('change.sy-picture', '.sy-picture-input-file', function() {
 	SyFormPicture.handleFileSelectBtn(this);
 });
 
-$('body').on('change.sy-picture', '.sy-picture-input-hidden', function() {
-	SyFormPicture.drawPictures(this);
-});
-
 $('body').on('click.sy-picture', '.sy-picture-rm', function() {
 	SyFormPicture.removePicture(this);
 });
@@ -147,6 +143,24 @@ $('body').on('change.sy-picture', '.sy-picture-caption', function() {
 	SyFormPicture.updateCaption(this);
 });
 
-$(document).ready(function() {
-	$('.sy-picture-input-hidden').change();
+document.querySelectorAll('.sy-picture-input-hidden').forEach(input => {
+	SyFormPicture.drawPictures(input);
 });
+
+(function() {
+	let observer = new MutationObserver(mutations => {
+
+		for (let mutation of mutations) {
+			if (mutation.type !== 'attributes') continue;
+
+			if (mutation.attributeName !== 'value') continue;
+
+			if (mutation.target.matches('.sy-picture-input-hidden')) {
+				SyFormPicture.drawPictures(mutation.target);
+			}
+		}
+
+	});
+
+	observer.observe(document.body, { childList: true, subtree: true, attributeFilter: ['value'] });
+})();

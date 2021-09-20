@@ -124,7 +124,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$js->setTemplateFile(__DIR__ . '/Form/Tel.js');
 		$js->setVars([
 			'INTLTELINPUT_UTILS_JS' => INTLTELINPUT_UTILS_JS,
-			'WEB_ROOT' => WEB_ROOT
+			'WEB_ROOT' => WEB_ROOT,
+			'TOP_COUNTRIES' => defined('INTLTELINPUT_TOP_COUNTRIES') ? '"' . implode('","', INTLTELINPUT_TOP_COUNTRIES) . '"' : ''
 		]);
 		$this->addJsCode($js->__toString());
 

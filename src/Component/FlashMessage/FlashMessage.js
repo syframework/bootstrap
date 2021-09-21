@@ -11,9 +11,9 @@ function flash(message, type, timeout) {
 
 	if (timeout === 0) {
 		if (document.querySelector('#flash-message-modal h4') !== null) {
-			document.querySelector('#flash-message-modal h4').innerText = title;
+			document.querySelector('#flash-message-modal h4').innerHTML = title;
 		}
-		document.querySelector('#flash-message-modal p').innerText = message;
+		document.querySelector('#flash-message-modal p').innerHTML = message;
 		var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {
 			keyboard: false,
 			backdrop: 'static'
@@ -25,9 +25,9 @@ function flash(message, type, timeout) {
 	if (document.getElementById('flash-message').classList.contains('in')) return;
 
 	if (document.querySelector('#flash-message span.h4') !== null) {
-		document.querySelector('#flash-message span.h4').innerText = title;
+		document.querySelector('#flash-message span.h4').innerHTML = title;
 	}
-	document.querySelector('#flash-message p').innerText = message;
+	document.querySelector('#flash-message p').innerHTML = message;
 	document.getElementById('flash-message').classList.remove('alert-success', 'alert-info', 'alert-warning', 'alert-danger');
 	document.getElementById('flash-message').classList.add('in', 'alert-' + type);
 

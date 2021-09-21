@@ -17,20 +17,28 @@
 			preferredCountries: [{TOP_COUNTRIES}]
 		});
 
+		var iti = window.intlTelInputGlobals.getInstance(input);
+
 		var reset = function (input) {
 			input.classList.remove('is-invalid');
 			input.parentElement.nextElementSibling.textContent = input.dataset.help;
 			input.parentElement.nextElementSibling.classList.replace('text-danger', 'text-muted');
+			input.setCustomValidity('');
 		};
 
 		input.addEventListener('blur', (e) => {
 			reset(e.target);
 			if (e.target.value.trim()) {
-				var iti = window.intlTelInputGlobals.getInstance(e.target);
-				if (!iti.isValidNumber()) {
+				if (iti.isValidNumber()) {
+					let hidden = input.form.querySelector('input[name="' + input.dataset.name + '"]');
+					let number = iti.getNumber();
+					hidden.value = number;
+					hidden.setAttribute('value', number);
+				} else {
 					e.target.classList.add('is-invalid');
 					e.target.parentElement.nextElementSibling.textContent = e.target.dataset.error;
 					e.target.parentElement.nextElementSibling.classList.replace('text-muted', 'text-danger');
+					e.target.setCustomValidity(e.target.dataset.error);
 				}
 			}
 		});
@@ -43,25 +51,10 @@
 			reset(e.target);
 		});
 
-		input.closest('form').addEventListener('submit', (e) => {
-			if (input.value === '') return;
-			var iti = window.intlTelInputGlobals.getInstance(input);
-			if (!iti.isValidNumber()) {
-				input.classList.add('is-invalid');
-				input.parentElement.nextElementSibling.textContent = input.dataset.error;
-				input.parentElement.nextElementSibling.classList.replace('text-muted', 'text-danger');
-				e.preventDefault();
-				return;
-			}
-			e.target.querySelector('input[name="' + input.dataset.name + '"]').value = iti.getNumber();
-		});
-
 		input.closest('form').querySelector('input[name="' + input.dataset.name + '"]').addEventListener('change', (e) => {
-			var iti = window.intlTelInputGlobals.getInstance(input);
 			iti.setNumber(e.target.value);
 		});
 
-		var iti = window.intlTelInputGlobals.getInstance(input);
 		iti.setNumber(input.closest('form').querySelector('input[name="' + input.dataset.name + '"]').value);
 
 	}

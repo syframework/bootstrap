@@ -134,15 +134,20 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$attributes['data-help'] = isset($options['help']) ? $this->_($options['help']) : '';
 		$options['help'] = isset($options['help']) ? $options['help'] : '';
 
-		// Add a hidden input
-		$a = ['name' => $attributes['name'], 'class' => 'tel-hidden-input d-none'];
+		// Add a hidden text input
+		$a = ['name' => $attributes['name'], 'class' => 'tel-hidden-input visually-hidden'];
 		if (isset($attributes['required'])) {
 			$a['required'] = $attributes['required'];
 		}
-		parent::addTextInput($a);
+		if (isset($attributes['value'])) {
+			$a['value'] = $attributes['value'];
+		}
 		$attributes['name'] = $attributes['name'] . '-raw';
 
-		return $this->addInput('tel', $attributes, $options, $container);
+		// Add a visible tel input
+		$input = $this->addInput('tel', $attributes, $options, $container);
+		$input->getParent()->addTextInput($a);
+		return $input;
 	}
 
 	/**

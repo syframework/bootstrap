@@ -3,10 +3,12 @@ namespace Sy\Bootstrap\Service;
 
 use Sy\Debug\Debugger;
 use Sy\Cache\SimpleCache;
+use Sy\Event\EventDispatcher;
 
 /**
  * @method static Container getInstance()
  * @property-read Debugger $debug Debug and log service
+ * @property-read EventDispatcher $event Event dispatcher service
  * @property-read User $user User service
  * @property-read Mail $mail Mail service
  * @property-read Crud $page Page service
@@ -20,6 +22,9 @@ class Container extends \Sy\Container {
 
 		$this->debug = function () {
 			return Debugger::getInstance();
+		};
+		$this->event = function () {
+			return new EventDispatcher();
 		};
 		$this->user = function () {
 			return new User();

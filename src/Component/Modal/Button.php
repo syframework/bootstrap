@@ -52,6 +52,12 @@ class Button extends \Sy\Component\WebComponent {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Button.html');
 
+		// Class attribute
+		if (isset($this->attributes['class'])) {
+			$this->setVar('CLASS', $this->attributes['class']);
+			unset($this->attributes['class']);
+		}
+
 		$this->setVars([
 			'ID'    => $this->id,
 			'LABEL' => $this->_($this->label),

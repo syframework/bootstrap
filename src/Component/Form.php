@@ -182,7 +182,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$attributes['class'] = 'datetime-utc';
 		$input = $this->addDateTimeLocal($attributes, $options, $container);
 		$input->getParent()->addHidden(['name' => $name]);
-		$this->addJsCode(__DIR__ . '/DateTime.js');
+		$this->addJsCode(__DIR__ . '/Form/DateTime.js');
 		return $input;
 	}
 

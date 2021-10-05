@@ -15,6 +15,15 @@ class Url {
 		self::$converters[] = $converter;
 	}
 
+	/**
+	 * Build an URL
+	 *
+	 * @param string $controller
+	 * @param string|array $action
+	 * @param array $parameters
+	 * @param string $anchor
+	 * @return string
+	 */
 	public static function build($controller, $action = null, array $parameters = array(), $anchor = null) {
 		$params = $parameters;
 		$params[CONTROLLER_TRIGGER] = $controller;
@@ -24,7 +33,7 @@ class Url {
 		}
 		foreach (self::$converters as $converter) {
 			$url = $converter->paramsToUrl($params);
-			if (!is_null($url)) return $url;
+			if (!is_null($url)) return $url . (empty($anchor) ? '' : "#$anchor");
 		}
 		return $_SERVER['PHP_SELF'] . (empty($params) ? '' : '?' . http_build_query($params)) . (empty($anchor) ? '' : "#$anchor");
 	}

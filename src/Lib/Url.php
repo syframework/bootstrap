@@ -16,24 +16,29 @@ class Url {
 	}
 
 	/**
-	 * Build an URL
+	 * Build an URL. See examples: https://syframework.alwaysdata.net/url-build
 	 *
-	 * @param string $controller
-	 * @param string|array $action
-	 * @param array $parameters
-	 * @param string $anchor
+	 * @param string $controller Controller name.
+	 * @param string|array $action Action name. Can be a string like 'a/b/c' or an array like ['a', 'b', 'c']
+	 * @param array $parameters Associative array representing URL parameters
+	 * @param string $anchor URL anchor.
 	 * @return string
 	 */
 	public static function build($controller, $action = null, array $parameters = array(), $anchor = null) {
 		$params = $parameters;
 		$params[CONTROLLER_TRIGGER] = $controller;
 		if (!is_null($action)) {
-			$action = is_array($action) ? implode('/', $action) : $action;
-			$params[ACTION_TRIGGER] = $action;
+			$params[ACTION_TRIGGER] = is_array($action) ? implode('/', $action) : $action;
 		}
 		foreach (self::$converters as $converter) {
 			$url = $converter->paramsToUrl($params);
 			if (!is_null($url)) return $url . (empty($anchor) ? '' : "#$anchor");
+		}
+		if (!is_null($action)) {
+			$action = is_array($action) ? $action : explode('/', $action);
+			$a = array_shift($action);
+			$params[ACTION_TRIGGER] = $a;
+			$params[ACTION_PARAM] = $action;
 		}
 		return $_SERVER['PHP_SELF'] . (empty($params) ? '' : '?' . http_build_query($params)) . (empty($anchor) ? '' : "#$anchor");
 	}

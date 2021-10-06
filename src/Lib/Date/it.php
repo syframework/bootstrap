@@ -29,5 +29,5 @@ return array (
   'a minute ago' => 'un minuto fa',
   '%i minutes ago' => 'ci sono %i minuti',
   'just now' => 'al momento',
-  'Y-m-d' => 'd/m/Y',
+  'yyyy-MM-dd' => 'dd/MM/yyyy',
 );

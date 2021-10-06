@@ -177,11 +177,18 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @return Form\TextFillableInput
 	 */
 	public function addDateTime(array $attributes = [], array $options = [], $container = null) {
-		$name = $attributes['name'];
-		unset($attributes['name']);
+		list('name' => $name, 'value' => $value) = $attributes;
+		unset($attributes['name'], $attributes['value']);
 		$attributes['class'] = 'datetime-utc';
+
+		// Value must be in UTC in format "yyyy-mm-ddThh:mmZ"
+		if (!empty($value)) {
+			$date = new \Sy\Bootstrap\Lib\Date($value);
+			$value = $date->f("yyyy-MM-dd'T'HH:mm'Z'");
+		}
+
 		$input = $this->addDateTimeLocal($attributes, $options, $container);
-		$input->getParent()->addHidden(['name' => $name]);
+		$input->getParent()->addHidden(['name' => $name, 'value' => $value]);
 		$this->addJsCode(__DIR__ . '/Form/DateTime.js');
 		return $input;
 	}

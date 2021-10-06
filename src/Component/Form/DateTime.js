@@ -1,23 +1,17 @@
 (function()  {
 	function initDateTimeUTC(element) {
 		element.addEventListener('blur', function() {
-			updateDateTimeUTC(this);
+			let hidden = element.nextElementSibling;
+			let d = new Date(element.value);
+			hidden.value = d.toISOString();
 		});
 
-		if (element.getAttribute('value')) {
-			let v = new Date(element.getAttribute('value'));
-			let d = new Date(Date.UTC(v.getFullYear(), v.getMonth(), v.getDate(), v.getHours(), v.getMinutes()));
+		let hidden = element.nextElementSibling;
+		if (hidden.getAttribute('value')) {
+			let d = new Date(hidden.getAttribute('value'));
 			let s = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + 'T' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
 			element.value = s;
-			updateDateTimeUTC(element);
 		}
-	}
-
-	function updateDateTimeUTC(element) {
-		let hidden = element.nextElementSibling;
-		let d = new Date(element.value);
-		let s = d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2) + 'T' + ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2);
-		hidden.value = s;
 	}
 
 	document.querySelectorAll('.datetime-utc').forEach(el => initDateTimeUTC(el));

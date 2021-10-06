@@ -53,7 +53,7 @@ class Date {
 	 * @return string
 	 */
 	public function date() {
-		return $this->f($this->translator->translate('Y-m-d'));
+		return $this->f($this->translator->translate('yyyy-MM-dd'));
 	}
 
 	/**

@@ -17,7 +17,7 @@ class AddForm extends \Sy\Bootstrap\Component\Form {
 
 		$this->setAttributes([
 			'id'    => 'new-msg-form',
-			'action'=> \Sy\Bootstrap\Lib\Url::build('api', 'message')
+			'action'=> \Sy\Bootstrap\Lib\Url::build('api', 'message/create')
 		]);
 		$this->addHidden(['name' => 'action', 'value' => 'create']); // to catch action in Api
 		$this->addHidden(['name' => 'item_id', 'value' => $this->itemId]);

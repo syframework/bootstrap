@@ -20,7 +20,7 @@ class DeleteForm extends \Sy\Bootstrap\Component\Form {
 			'class'            => 'message-delete-form',
 			'data-message-id'  => $this->messageId,
 			'data-message-del' => $this->_('Are you sure to delete?'),
-			'action'           => \Sy\Bootstrap\Lib\Url::build('api', 'message')
+			'action'           => \Sy\Bootstrap\Lib\Url::build('api', 'message/delete')
 		]);
 
 		$this->addHidden(['name' => 'action', 'value' => 'delete']); // to catch action in Api

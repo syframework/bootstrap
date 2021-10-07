@@ -8,7 +8,7 @@ class EditForm extends \Sy\Bootstrap\Component\Form {
 
 		$this->setAttributes([
 			'id'     => 'edit-msg-form',
-			'action' => \Sy\Bootstrap\Lib\Url::build('api', 'message')
+			'action' => \Sy\Bootstrap\Lib\Url::build('api', 'message/update')
 		]);
 		$this->addHidden(['name' => 'action', 'value' => 'update']); // to catch action in Api
 		$this->addHidden(['name' => 'message_id', 'value' => ''], ['required' => true]);

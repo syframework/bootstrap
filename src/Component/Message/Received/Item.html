@@ -1,0 +1,46 @@
+<div class="message-item well pb-0 {NEW}" id="message-{ID}" data-id="{ID}">
+	<div class="sms-container">
+		<div class="table sms">
+			<div class="tr">
+				<div class="td img">
+					{PROFILE_IMG}
+				</div>
+				<div class="td message">
+					<div>
+						<blockquote class="blockquote photoswipe-gallery">{MESSAGE}</blockquote>
+						<footer class="blockquote-footer">
+							<a class="text-muted" href="{URL}">{AUTHOR}</a>, <span class="date" data-date="{DATETIME}">{DATE}</span>.
+						</footer>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix mt-1">
+		<div>
+			<button class="btn btn-primary btn-sm message-toggle mb-2 {CMT_BTN_HIDDEN}" data-id="{ID}"><span class="fas fa-comment"></span> {"Reply"} (<span id="reply-nb-{ID}">{NB_REPLY}</span>) <span class="caret"></span></button>
+			<div class="float-end mb-2">
+				{SHARE_BTN}
+				<!-- BEGIN EDIT_BTN_BLOCK -->
+				<button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#edit-msg-modal" data-message-id="{ID}" data-message="{MESSAGE_RAW}" title="{'Edit message'}" data-bs-title="{'Edit message'}"><span class="fas fa-pencil-alt fa-fw"></span></button>
+				<!-- END EDIT_BTN_BLOCK -->
+				{DEL_BTN_FORM}
+			</div>
+		</div>
+	</div>
+	<div id="reply-div-{ID}" class="comment-form" {CMT_DIV_HIDDEN}>
+		<div class="comment" id="reply-feed-div-{ID}">
+			{REPLY_FEED}
+		</div>
+		<div class="alert alert-danger" id="reply-alert-div-{ID}" hidden></div>
+		<div class="mb-1">
+			{REPLY_FORM}
+		</div>
+		<!-- BEGIN CONNECT_BTN_BLOCK -->
+		<div class="text-center">
+			<a href="{CONNECT_URL}" class="btn btn-primary btn-block mb-1" rel="nofollow"><span class="fas fa-power-off"></span> {"Sign in to send a message"}</a>
+		</div>
+		<!-- END CONNECT_BTN_BLOCK -->
+		<div class="text-center {CMT_BTN_HIDDEN}"><a href="#" class="message-toggle" data-id="{ID}"><span class="fas fa-angle-up fa-lg"></span></a></div>
+	</div>
+</div>

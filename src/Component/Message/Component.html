@@ -1,0 +1,23 @@
+<div class="modal fade" id="new-msg-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{"Add a new message"}</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<div id="new-msg-div" class="alert alert-danger mt-1" style="display:none"></div>
+				{ADD_FORM}
+			</div>
+		</div>
+	</div>
+</div>
+{EDIT_MSG_MODAL}
+<p>
+	<button type="button" class="btn btn-primary btn-lg btn-block" data-bs-toggle="modal" data-bs-target="#new-msg-modal">
+		<span class="fas fa-pencil-alt"></span> {"Add a new message"}
+	</button>
+</p>
+<div id="message-feed">
+{FEED}
+</div>

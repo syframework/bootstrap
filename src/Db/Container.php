@@ -6,6 +6,8 @@ use Sy\Bootstrap\Lib\Str;
 /**
  * @method static Container getInstance()
  * @property-read \Sy\Bootstrap\Db\User $user User Db service
+ * @property-read \Sy\Bootstrap\Db\Message\Received $messageReceived Message Db service
+ * @property-read \Sy\Bootstrap\Db\Message\Reply $messageReply Message reply Db service
  */
 class Container extends \Sy\Container {
 
@@ -14,6 +16,14 @@ class Container extends \Sy\Container {
 
 		$this->user = function () {
 			return new \Sy\Bootstrap\Db\User();
+		};
+
+		$this->messageReceived = function () {
+			return new \Sy\Bootstrap\Db\Message\Received();
+		};
+
+		$this->messageReply = function () {
+			return new \Sy\Bootstrap\Db\Message\Reply();
 		};
 	}
 

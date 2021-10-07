@@ -22,7 +22,7 @@ class AddForm extends \Sy\Bootstrap\Component\Form {
 		$this->setAttributes([
 			'class'           => 'message-reply-form',
 			'data-message-id' => $this->messageId,
-			'action'          => \Sy\Bootstrap\Lib\Url::build('api', 'messageReply')
+			'action'          => \Sy\Bootstrap\Lib\Url::build('api', 'message/createReply')
 		]);
 		$this->addHidden(['name' => 'action', 'value' => 'create']); // to catch action in Api
 		$this->addHidden(['name' => 'message_id', 'value' => $this->messageId, 'required' => 'required']);

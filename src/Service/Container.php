@@ -14,6 +14,8 @@ use Sy\Event\EventDispatcher;
  * @property-read Crud $page Page service
  * @property-read Crud $pageHistory Page service
  * @property-read SimpleCache $cache Cache service
+ * @property-read Message\Received $messageReceived Message service
+ * @property-read Message\Reply $messageReply Message reply service
  */
 class Container extends \Sy\Container {
 
@@ -41,6 +43,24 @@ class Container extends \Sy\Container {
 		$this->cache = function() {
 			return new SimpleCache(CACHE_DIR);
 		};
+
+		$this->messageReceived = function () {
+			$s = new \Sy\Bootstrap\Service\Message\Received();
+
+			// Setup message event listener
+			$this->setupMessageListeners();
+
+			return $s;
+		};
+
+		$this->messageReply = function () {
+			$s = new \Sy\Bootstrap\Service\Message\Reply();
+
+			// Setup message reply event listener
+			$this->setupMessageReplyListeners();
+
+			return $s;
+		};
 	}
 
 	public function get($id) {
@@ -57,6 +77,14 @@ class Container extends \Sy\Container {
 				throw new \Sy\Container\NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
 			}
 		}
+	}
+
+	protected function setupMessageListeners() {
+
+	}
+
+	protected function setupMessageReplyListeners() {
+
 	}
 
 }

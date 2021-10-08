@@ -41,7 +41,8 @@ class Reply extends \Sy\Bootstrap\Service\Crud {
 			// Dispatch event after message reply deleted
 			$service = \Project\Service\Container::getInstance();
 			$service->event->dispatch(new Event('message.reply.deleted', [
-				'repId' => $res['id']
+				'repId' => $res['id'],
+				'msgId' => $res['message_id'],
 			]));
 
 			// Delete pictures

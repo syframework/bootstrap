@@ -38,6 +38,12 @@ class Reply extends \Sy\Bootstrap\Service\Crud {
 			$res = parent::retrieve($pk);
 			$ret = parent::delete($pk);
 
+			// Dispatch event after message reply deleted
+			$service = \Project\Service\Container::getInstance();
+			$service->event->dispatch(new Event('message.reply.deleted', [
+				'repId' => $res['id']
+			]));
+
 			// Delete pictures
 			if (!empty($res['user_id'])) {
 				$dir = UPLOAD_DIR . '/photo/message/' . $res['message_id'] . '/reply/' . $res['id'] . '/user/' . $res['user_id'];

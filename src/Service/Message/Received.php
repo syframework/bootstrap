@@ -87,6 +87,7 @@ class Received extends \Sy\Bootstrap\Service\Crud {
 			// Dispatch an event before message delete
 			$service = \Project\Service\Container::getInstance();
 			$service->event->dispatch(new Event('message.delete', [
+				'msgId'    => $res['id'],
 				'itemId'   => $res['item_id'],
 				'itemType' => $res['item_type'],
 				'userId'   => $res['user_id']
@@ -96,6 +97,7 @@ class Received extends \Sy\Bootstrap\Service\Crud {
 
 			// Dispatch an event after message delete
 			$service->event->dispatch(new Event('message.deleted', [
+				'msgId'    => $res['id'],
 				'itemId'   => $res['item_id'],
 				'itemType' => $res['item_type'],
 				'userId'   => $res['user_id']

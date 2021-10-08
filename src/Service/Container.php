@@ -45,21 +45,11 @@ class Container extends \Sy\Container {
 		};
 
 		$this->messageReceived = function () {
-			$s = new \Sy\Bootstrap\Service\Message\Received();
-
-			// Setup message event listener
-			$this->setupMessageListeners();
-
-			return $s;
+			return new \Sy\Bootstrap\Service\Message\Received();
 		};
 
 		$this->messageReply = function () {
-			$s = new \Sy\Bootstrap\Service\Message\Reply();
-
-			// Setup message reply event listener
-			$this->setupMessageReplyListeners();
-
-			return $s;
+			return new \Sy\Bootstrap\Service\Message\Reply();
 		};
 	}
 
@@ -77,14 +67,6 @@ class Container extends \Sy\Container {
 				throw new \Sy\Container\NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
 			}
 		}
-	}
-
-	protected function setupMessageListeners() {
-
-	}
-
-	protected function setupMessageReplyListeners() {
-
 	}
 
 }

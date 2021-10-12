@@ -58,11 +58,10 @@ class Crud {
 			return $this->getDbCrud()->create($fields);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
-			} else {
-				throw new Crud\Exception('Create error', 0, $e);
+			if ($e->getCode() === 1062) {
+				throw new Crud\DuplicateEntryException($e->getMessage(), 0, $e);
 			}
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -78,11 +77,10 @@ class Crud {
 			return $this->getDbCrud()->createMany($data);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
-			} else {
-				throw new Crud\Exception($e->getMessage(), 0, $e);
+			if ($e->getCode() === 1062) {
+				throw new Crud\DuplicateEntryException($e->getMessage(), 0, $e);
 			}
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -114,11 +112,10 @@ class Crud {
 			return $this->getDbCrud()->update($pk, $bind);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			if ($e instanceof \Sy\Db\IntegrityConstraintViolationException) {
-				throw new Crud\DuplicateEntryException('Integrity constraint violation', 0, $e);
-			} else {
-				throw new Crud\Exception('Update error', 0, $e);
+			if ($e->getCode() === 1062) {
+				throw new Crud\DuplicateEntryException($e->getMessage(), 0, $e);
 			}
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -134,7 +131,7 @@ class Crud {
 			return $this->getDbCrud()->delete($pk);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Delete error', 0, $e);
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -149,7 +146,7 @@ class Crud {
 			return $this->getDbCrud()->retrieveAll($parameters);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('retrieve all error', 0, $e);
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -179,7 +176,7 @@ class Crud {
 			return $this->getDbCrud()->change($fields, $updates);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Change error', 0, $e);
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -195,7 +192,7 @@ class Crud {
 			return $this->getDbCrud()->count($where);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Count error', 0, $e);
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
@@ -210,18 +207,18 @@ class Crud {
 			return $this->getDbCrud()->getColumns();
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
-			throw new Crud\Exception('Get columns error', 0, $e);
+			throw new Crud\Exception($e->getMessage(), 0, $e);
 		}
 	}
 
 	public function __call($name, $arguments) {
 		try {
 			return call_user_func_array([$this->getDbCrud(), $name], $arguments);
-		} catch(\Sy\Db\IntegrityConstraintViolationException $e) {
-			$this->logWarning($e);
-			throw new Crud\DuplicateEntryException("$name error: " . $e->getMessage(), 0, $e);
 		} catch(\Sy\Db\Exception $e) {
 			$this->logWarning($e);
+			if ($e->getCode() === 1062) {
+				throw new Crud\DuplicateEntryException("$name error: " . $e->getMessage(), 0, $e);
+			}
 			throw new Crud\Exception("$name error: " . $e->getMessage(), 0, $e);
 		}
 	}

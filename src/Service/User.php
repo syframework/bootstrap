@@ -112,10 +112,10 @@ class User extends Crud {
 			});
 		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
 			$this->logWarning($e);
-			throw new User\SignUpException('Database error');
+			throw new User\SignUpException('Database error', 0, $e);
 		} catch(\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
-			throw new User\SignUpException('Mail error');
+			throw new User\SignUpException('Mail error', 0, $e);
 		}
 	}
 

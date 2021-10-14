@@ -52,7 +52,7 @@ class Container extends \Sy\Container {
 				$this->$id = function () use ($class) {
 					return new $class();
 				};
-				return $this->$id;
+				return $this->get($id);
 			} else {
 				throw new \Sy\Container\NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
 			}

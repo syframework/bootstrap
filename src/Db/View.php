@@ -16,4 +16,8 @@ class View {
 		return $this->crud->retrieve($pk);
 	}
 
+	public function retrieveAll(array $parameters = []) {
+		return $this->crud->retrieveAll($parameters);
+	}
+
 }

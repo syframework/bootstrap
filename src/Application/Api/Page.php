@@ -88,7 +88,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 					'status' => 'ok'
 				]);
 			}
-		} catch (\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->serverError([
 				'status' => 'ko',
 				'message' => $this->_('Database error')

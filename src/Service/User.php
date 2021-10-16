@@ -110,7 +110,7 @@ class User extends Crud {
 				$service = \Sy\Bootstrap\Service\Container::getInstance();
 				$service->mail->sendWelcome($email, $password, $token);
 			});
-		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch(\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			throw new User\SignUpException('Database error', 0, $e);
 		} catch(\Sy\Mail\Exception $e) {

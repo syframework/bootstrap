@@ -29,7 +29,7 @@ class User extends \Sy\Component\WebComponent {
 		} catch(\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Activation error'));
-		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch(\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Database error'));
 		} finally {
@@ -48,7 +48,7 @@ class User extends \Sy\Component\WebComponent {
 		} catch(\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Report error'));
-		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch(\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			\Sy\Bootstrap\Lib\FlashMessage::setError($this->_('Database error'));
 		} finally {

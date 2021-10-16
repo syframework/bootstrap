@@ -39,7 +39,7 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 		} catch(\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Error'));
-		} catch(\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch(\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Database error'));
 		}

@@ -46,7 +46,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 		} catch (\Sy\Bootstrap\Service\User\SignInException $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('ID or password error'));
-		} catch (\Sy\Bootstrap\Service\Crud\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Error'));
 		}

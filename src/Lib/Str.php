@@ -160,6 +160,17 @@ class Str {
 		return preg_replace('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><a href="//$1.$2$3" target="_blank"><img class="figure-img img-fluid rounded" src="//$1.$2$3" alt="$6" /></a><figcaption class="figure-caption text-center">$6</figcaption></figure>', $string);
 	}
 
+	/**
+	 * Extract image URL from a given string
+	 *
+	 * @param string $string
+	 * @return array
+	 */
+	public static function extractImgUrl($string) {
+		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
+		return $matches[0];
+	}
+
 	public static function convertYoutube($string) {
 		return preg_replace(
 			"/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",

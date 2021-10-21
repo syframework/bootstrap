@@ -14,7 +14,9 @@ class Crud extends \Sy\Db\MySql\Crud {
 		$this->setConfig(DATABASE_CONFIG);
 		$service = Container::getInstance();
 		$this->db->setLogger($service->debug->getLogger());
-		$this->setCacheEngine($service->cache);
+		if (defined('DB_CRUD_CACHE') and DB_CRUD_CACHE) {
+			$this->setCacheEngine($service->cache);
+		}
 	}
 
 }

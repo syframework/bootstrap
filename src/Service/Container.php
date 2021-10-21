@@ -39,7 +39,6 @@ class Container extends \Sy\Container {
 			return new Crud('pageHistory');
 		};
 		$this->cache = function() {
-			if (!defined('CACHE_DIR')) return null;
 			return new SimpleCache(CACHE_DIR);
 		};
 	}

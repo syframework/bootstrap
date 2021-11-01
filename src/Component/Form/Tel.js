@@ -28,9 +28,9 @@
 
 		input.addEventListener('blur', (e) => {
 			reset(e.target);
+			let hidden = input.form.querySelector('input[name="' + input.dataset.name + '"]');
 			if (e.target.value.trim()) {
 				if (iti.isValidNumber()) {
-					let hidden = input.form.querySelector('input[name="' + input.dataset.name + '"]');
 					let number = iti.getNumber();
 					hidden.value = number;
 					hidden.setAttribute('value', number);
@@ -40,6 +40,8 @@
 					e.target.parentElement.nextElementSibling.classList.replace('text-muted', 'text-danger');
 					e.target.setCustomValidity(e.target.dataset.error);
 				}
+			} else {
+				hidden.value = '';
 			}
 		});
 

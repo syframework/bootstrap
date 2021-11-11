@@ -1,5 +1,5 @@
 $(function() {
-	$('.popup').click(function(e) {
+	$('body').on('click', '.popup', function(e) {
 		e.preventDefault();
 		var width  = $(this).data('width'),
 			height = $(this).data('height'),

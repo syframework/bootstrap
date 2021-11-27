@@ -150,20 +150,7 @@ class Crud {
 	}
 
 	public function __call($name, $arguments) {
-		try {
-			return call_user_func_array([$this->getDbCrud(), $name], $arguments);
-		} catch(\Sy\Db\Exception $e) {
-			$this->logWarning($e);
-			if ($e->getCode() === 1062) {
-				throw new Crud\DuplicateEntryException("$name error: " . $e->getMessage(), 0, $e);
-			}
-			throw new Crud\Exception("$name error: " . $e->getMessage(), 0, $e);
-		}
-	}
-
-	protected function logWarning($message) {
-		$service = Container::getInstance();
-		$service->debug->logWarning($message);
+		return call_user_func_array([$this->getDbCrud(), $name], $arguments);
 	}
 
 }

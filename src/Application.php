@@ -17,7 +17,7 @@ abstract class Application {
 		// Set language
 		$service = Service\Container::getInstance();
 		$user = $service->user->getCurrentUser();
-		if ($user->isConnected() and ($user->language !== $this->session('sy_language'))) {
+		if ($user->isConnected() and ($user->language !== \Sy\Http::session('sy_language'))) {
 			$service->user->setLanguage($user->language);
 		}
 		if (is_null($this->session('sy_language'))) {

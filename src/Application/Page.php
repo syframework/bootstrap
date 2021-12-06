@@ -56,6 +56,11 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->setDescription(HeadData::getDescription());
 		$this->addBody($this->body);
 
+		// Activate the web debug tool bar
+		if (getenv('ENVIRONMENT') === 'dev') {
+			$this->enableDebugBar();
+		}
+
 		$this->postInit();
 	}
 

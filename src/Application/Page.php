@@ -15,7 +15,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Project page body
 		$namespace = implode('\\', array_slice(explode('\\', get_class($this)), 0, -1));
-		$body = $namespace . '\\Body';
+		$body = $namespace . '\\Page\\Body';
 		$this->body = new $body($pageId);
 	}
 

@@ -38,12 +38,6 @@ abstract class Body extends \Sy\Component\WebComponent {
 		// hack to select the default menu
 		if ($method === 'home') $_GET[ACTION_TRIGGER] = 'home';
 		if (in_array($method, ['__construct', '__call', 'indexAction', '_menu'])) return;
-
-		// Default meta og
-		\Sy\Bootstrap\Lib\HeadData::addMeta('og:type', 'website');
-		\Sy\Bootstrap\Lib\HeadData::addMeta('og:image', PROJECT_URL . WEB_ROOT . '/assets/img/logo.png');
-		\Sy\Bootstrap\Lib\HeadData::addMeta('og:site_name', PROJECT);
-
 		$this->$method();
 	}
 

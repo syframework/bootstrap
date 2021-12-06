@@ -16,7 +16,11 @@ abstract class Page extends \Sy\Component\Html\Page {
 		// Project page body
 		$namespace = implode('\\', array_slice(explode('\\', get_class($this)), 0, -1));
 		$body = $namespace . '\\Page\\Body';
-		$this->body = new $body($pageId);
+		try {
+			$this->body = new $body($pageId);
+		} catch (Page\NotFoundException $e) {
+			$this->body = new $body(404);
+		}
 	}
 
 	public function __toString() {

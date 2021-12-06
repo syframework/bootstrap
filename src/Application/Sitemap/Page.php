@@ -20,11 +20,11 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 	 * @return array
 	 */
 	public function getUrls() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
-
 		$urls = [];
-		// Page
-		$service->page->foreachRow(function($row) use($urls) {
+
+		// Pages with alias
+		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service->page->foreachRow(function($row) use(&$urls) {
 			$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $row['lang']);
 			if (is_null($loc)) return;
 

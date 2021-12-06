@@ -15,6 +15,8 @@ class HeadData {
 
 	private static $bodyAttributes = [];
 
+	private static $jsonLd = [];
+
 	public static function getTitle() {
 		return self::$title;
 	}
@@ -64,6 +66,14 @@ class HeadData {
 
 	public static function getBodyAttributes() {
 		return self::$bodyAttributes;
+	}
+
+	public static function addJsonLd(array $jsonLd) {
+		static::$jsonLd[] = $jsonLd;
+	}
+
+	public static function getJsonLd() {
+		return self::$jsonLd;
 	}
 
 }

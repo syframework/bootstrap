@@ -1,45 +1,75 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
-use Sy\Bootstrap\Lib\Url;
+use Sy\Bootstrap\Lib\HeadData;
 
-class Page extends \Sy\Bootstrap\Component\Page {
+abstract class Page extends \Sy\Component\Html\Page {
+
+	private $body;
 
 	/**
-	 * User connection page
+	 * @param string|null $pageId
 	 */
-	public function user_connection() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
-		if ($service->user->getCurrentUser()->isConnected()) {
-			$this->redirect(WEB_ROOT . '/');
+	public function __construct($pageId = null) {
+		parent::__construct();
+
+		// Project page body
+		$namespace = implode('\\', array_slice(explode('\\', get_class($this)), 0, -1));
+		$body = $namespace . '\\Body';
+		$this->body = new $body($pageId);
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
+	}
+
+	private function init() {
+		$this->addTranslator(LANG_DIR);
+
+		$this->preInit();
+
+		// Meta
+		foreach (HeadData::getMeta() as $meta) {
+			$this->setMeta($meta['name'], $meta['content'], $meta['http-equiv']);
 		}
-		$this->__call('user-connection', ['CONTENT' => [
-			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
-		]]);
-		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
-	}
 
-	/**
-	 * User reset password page
-	 */
-	public function user_password() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
-		$user = $service->user->retrieve(['email' => $this->get('email')]);
-		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
-			$this->redirect(WEB_ROOT . '/');
+		// Canonical
+		$canonical = HeadData::getCanonical();
+		if (!empty($canonical)) {
+			$this->addLink(['rel' => 'canonical', 'href' => $canonical]);
 		}
-		$this->__call('user-password', ['CONTENT' => [
-			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email'))
-		]]);
+
+		// Lang
+		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		HeadData::setHtmlAttribute('lang', $lang);
+
+		// JSON-LD
+		$this->setJsonLd(HeadData::getJsonLd());
+
+		// Html & Body attributes
+		$this->setHtmlAttributes(HeadData::getHtmlAttributes());
+		$this->setBodyAttributes(HeadData::getBodyAttributes());
+
+		// Title, description and body
+		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
+		$this->setDescription(HeadData::getDescription());
+		$this->addBody($this->body);
+
+		// Flash message created as soon as possible to handle clear request
+		$flashMessage = new Component\FlashMessage();
+
+		$this->body = new WebComponent();
+		$this->body->addTranslator(LANG_DIR);
+		$this->body->setTemplateFile(__DIR__ . '/Application.html');
+		$this->body->setComponent('CONTENT', $controller);
+		$this->body->setComponent('FLASH_MESSAGE', $flashMessage);
+
+		$this->postInit();
 	}
 
-	/**
-	 * Return navigation menu, can return null
-	 *
-	 * @return \Sy\Bootstrap\Component\Nav\Menu
-	 */
-	protected function _menu() {
-		return null;
-	}
+	abstract protected function preInit();
+
+	abstract protected function postInit();
 
 }

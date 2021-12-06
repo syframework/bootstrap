@@ -1,79 +1,65 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
-use Sy\Bootstrap\Lib\Str;
+class Sitemap extends \Sy\Component\WebComponent {
 
-class Sitemap extends \Sy\Bootstrap\Component\Sitemap {
-
-	private $plugins = array('Place', 'Article');
+	private $providers;
 
 	public function __construct() {
 		parent::__construct();
+		$this->providers = [];
+	}
 
-		// Check if a plugin sitemap class exists
-		$class = 'Sy\\Bootstrap\\Application\\Sitemap\\' . ucfirst(Str::snakeToCaml($this->get(ACTION_TRIGGER)));
-		if (class_exists($class)) {
-			$sitemap = new $class();
-			$sitemap->init();
-		}
-
+	public function __toString() {
 		$this->actionDispatch(ACTION_TRIGGER, 'index');
+		return parent::__toString();
+	}
+
+	/**
+	 * @param string $name
+	 * @param \Sy\Bootstrap\Application\Sitemap\IProvider $provider
+	 * @return void
+	 */
+	public function addProvider(string $name, \Sy\Bootstrap\Application\Sitemap\IProvider $provider) {
+		$this->providers[$name] = $provider;
 	}
 
 	public function indexAction() {
 		$this->setTemplateFile(__DIR__ . '/Sitemap/Index.xml');
 
-		foreach ($this->plugins as $plugin) {
-			$class = 'Sy\\Bootstrap\\Application\\Sitemap\\' . $plugin;
-			if (class_exists($class)) {
-				$sitemap = new $class();
-				$urls = $sitemap->index();
-
-				foreach ($urls as $url) {
-					$this->setVar('URL', $url);
-					$this->setBlock('SITEMAP_BLOCK');
-				}
+		foreach ($this->providers as $provider) {
+			foreach ($provider->getIndexUrls() as $url) {
+				$this->setVar('URL', $url);
+				$this->setBlock('SITEMAP_BLOCK');
 			}
 		}
-
-		// pages with alias
-		$this->setVar('URL', PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('sitemap', 'page'));
-		$this->setBlock('SITEMAP_BLOCK');
-
-		$this->out();
 	}
 
-	public function pageAction() {
+	public function __call($name, $arguments) {
+		if (!str_ends_with($name, 'Action')) return;
+		$name = substr_replace($name, '', -6);
+		if (!isset($this->providers[$name])) return;
+
 		$this->setTemplateFile(__DIR__ . '/Sitemap/Sitemap.xml');
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
 
-		// Page
-		$service->page->foreachRow(function($row) {
-			$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $row['lang']);
-			if (is_null($loc)) return;
+		foreach ($this->providers[$name]->getUrls() as $url) {
+			$this->setVar('LOC', $url['loc']);
 
-			$date = new \Sy\Bootstrap\Lib\Date($row['updated_at']);
-			$this->setVars([
-				'LOC'  => PROJECT_URL . '/' . $loc,
-			]);
-			$alt = json_decode($row['alternate'], true);
-			if (count($alt) > 1) {
-				foreach ($alt as $lang) {
-					$this->setVars([
-						'LANG' => $lang,
-						'HREF' => PROJECT_URL . '/' . \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang),
-					]);
-					$this->setBlock('ALT_BLOCK');
-				}
+			foreach ($url['alternate'] as $lang => $href) {
+				$this->setVars([
+					'LANG' => $lang,
+					'HREF' => $href,
+				]);
+				$this->setBlock('ALT_BLOCK');
 			}
-			$this->setBlock('URL_BLOCK');
-		}, [
-			'SELECT'   => "t_page.*, CONCAT('[', GROUP_CONCAT(CONCAT('\"', b.lang, '\"')), ']') AS 'alternate'",
-			'JOIN'     => 'LEFT JOIN t_page b ON t_page.id = b.id',
-			'GROUP BY' => 't_page.id, t_page.lang'
-		]);
 
-		$this->out();
+			if (isset($url['lastmod'])) {
+				$this->setVar('LAST', $url['lastmod']);
+				$this->setBlock('LAST_BLOCK');
+			}
+
+			$this->setBlock('URL_BLOCK');
+		}
 	}
 
 }

@@ -11,7 +11,8 @@ class Sitemap extends \Sy\Component\WebComponent {
 	}
 
 	public function __toString() {
-		$this->actionDispatch(ACTION_TRIGGER, 'index');
+		$method = $this->get(ACTION_TRIGGER, 'index') . 'Action';
+		$this->$method();
 		return parent::__toString();
 	}
 
@@ -45,12 +46,14 @@ class Sitemap extends \Sy\Component\WebComponent {
 		foreach ($this->providers[$name]->getUrls() as $url) {
 			$this->setVar('LOC', $url['loc']);
 
-			foreach ($url['alternate'] as $lang => $href) {
-				$this->setVars([
-					'LANG' => $lang,
-					'HREF' => $href,
-				]);
-				$this->setBlock('ALT_BLOCK');
+			if (isset($url['alternate'])) {
+				foreach ($url['alternate'] as $lang => $href) {
+					$this->setVars([
+						'LANG' => $lang,
+						'HREF' => $href,
+					]);
+					$this->setBlock('ALT_BLOCK');
+				}
 			}
 
 			if (isset($url['lastmod'])) {

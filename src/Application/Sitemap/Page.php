@@ -43,6 +43,8 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 			'JOIN'     => 'LEFT JOIN t_page b ON t_page.id = b.id',
 			'GROUP BY' => 't_page.id, t_page.lang'
 		]);
+
+		return $urls;
 	}
 
 }

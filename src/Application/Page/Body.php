@@ -48,6 +48,10 @@ abstract class Body extends \Sy\Component\WebComponent {
 	}
 
 	public function __call($name, $arguments) {
+		// Flash message created as soon as possible to handle clear request
+		$flashMessage = new \Sy\Bootstrap\Component\FlashMessage();
+		$arguments['LAYOUT']['FLASH_MESSAGE'] = $flashMessage;
+
 		$name = str_replace('_', '-', $name);
 		$this->setTemplateFile(__DIR__ . '/Body.html');
 
@@ -83,11 +87,7 @@ abstract class Body extends \Sy\Component\WebComponent {
 		}
 		if (isset($arguments['LAYOUT'])) {
 			foreach ($arguments['LAYOUT'] as $k => $v) {
-				if ($v instanceof \Sy\Component) {
-					$layout->setComponent($k, $v);
-				} else {
-					$layout->setVar($k, $v);
-				}
+				$layout->setVar($k, $v);
 			}
 		}
 
@@ -106,11 +106,7 @@ abstract class Body extends \Sy\Component\WebComponent {
 		}
 		if (isset($arguments['CONTENT'])) {
 			foreach ($arguments['CONTENT'] as $k => $v) {
-				if ($v instanceof \Sy\Component) {
-					$content->setComponent($k, $v);
-				} else {
-					$content->setVar($k, $v);
-				}
+				$content->setVar($k, $v);
 			}
 		}
 		$layout->setVars([

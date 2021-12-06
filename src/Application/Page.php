@@ -56,15 +56,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->setDescription(HeadData::getDescription());
 		$this->addBody($this->body);
 
-		// Flash message created as soon as possible to handle clear request
-		$flashMessage = new Component\FlashMessage();
-
-		$this->body = new WebComponent();
-		$this->body->addTranslator(LANG_DIR);
-		$this->body->setTemplateFile(__DIR__ . '/Application.html');
-		$this->body->setComponent('CONTENT', $controller);
-		$this->body->setComponent('FLASH_MESSAGE', $flashMessage);
-
 		$this->postInit();
 	}
 

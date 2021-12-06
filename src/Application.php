@@ -20,7 +20,7 @@ abstract class Application {
 		if ($user->isConnected() and ($user->language !== \Sy\Http::session('sy_language'))) {
 			$service->user->setLanguage($user->language);
 		}
-		if (is_null($this->session('sy_language'))) {
+		if (is_null(\Sy\Http::session('sy_language'))) {
 			$l = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : LANG;
 			$service->user->setLanguage($l);
 		}
@@ -32,7 +32,7 @@ abstract class Application {
 		}
 
 		// Find controller class
-		$class = $this->controllerClass($this->get(CONTROLLER_TRIGGER, 'page'));
+		$class = $this->controllerClass(\Sy\Http::get(CONTROLLER_TRIGGER, 'page'));
 		if (is_null($class)) {
 			$page = $this->controllerClass('page');
 			$this->controller = new $page(404);

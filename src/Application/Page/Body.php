@@ -144,7 +144,7 @@ abstract class Body extends \Sy\Component\WebComponent {
 
 		// Javascript code
 		$js = new \Sy\Component();
-		$js->setTemplateFile(__DIR__ . '/Page/Page.js');
+		$js->setTemplateFile(__DIR__ . '/Body.js');
 
 		// Update inline
 		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {

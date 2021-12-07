@@ -17,14 +17,16 @@ class Sitemap extends \Sy\Component\WebComponent {
 	}
 
 	/**
-	 * @param string $name
-	 * @param \Sy\Bootstrap\Application\Sitemap\IProvider $provider
-	 * @return void
+	 * @param string $name Sitemap name
+	 * @param \Sy\Bootstrap\Application\Sitemap\IProvider $provider Sitemap urls provider
 	 */
 	public function addProvider(string $name, \Sy\Bootstrap\Application\Sitemap\IProvider $provider) {
 		$this->providers[$name] = $provider;
 	}
 
+	/**
+	 * Generate the sitemap index
+	 */
 	public function indexAction() {
 		$this->setTemplateFile(__DIR__ . '/Sitemap/Index.xml');
 
@@ -36,6 +38,12 @@ class Sitemap extends \Sy\Component\WebComponent {
 		}
 	}
 
+	/**
+	 * Generate a simple sitemap using its name
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 */
 	public function __call($name, $arguments) {
 		if (!str_ends_with($name, 'Action')) return;
 		$name = substr_replace($name, '', -6);

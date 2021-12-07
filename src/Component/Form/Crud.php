@@ -87,14 +87,14 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 			if ($row['Comment'] === 'hidden') {
 				$field = $this->addHidden(['name'  => 'form[' . $row['Field'] . ']']);
 				if (!empty($item)) {
-					$field->setAttribute('value', $item[$row['Field']]);
+					$field->setAttribute('value', $item[$row['Field']] ?? '');
 				}
 				$this->fields[$row['Field']] = $field;
 				continue;
 			} elseif ($row['Comment'] === 'readonly') {
 				$field = $this->addTextInput(['disabled' => 'disabled'], ['label' => $this->fieldLabel($row['Field'])]);
 				if (!empty($item)) {
-					$field->setAttribute('value', $item[$row['Field']]);
+					$field->setAttribute('value', $item[$row['Field']] ?? '');
 				}
 				$this->fields[$row['Field']] = $field;
 				continue;
@@ -115,7 +115,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 				if ($row['Type'] === 'text' or $row['Comment'] === 'textarea') {
 					$field->setContent([$item[$row['Field']]]);
 				} else {
-					$field->setAttribute('value', $item[$row['Field']]);
+					$field->setAttribute('value', $item[$row['Field']] ?? '');
 				}
 			}
 			$this->fields[$row['Field']] = $field;

@@ -22,6 +22,7 @@ class HeadData {
 	}
 
 	public static function setTitle($title) {
+		if (empty($title)) return;
 		self::$title = $title;
 		self::addMeta('og:title', $title);
 	}
@@ -31,6 +32,7 @@ class HeadData {
 	}
 
 	public static function setDescription($description) {
+		if (empty($description)) return;
 		self::$description = $description;
 		self::addMeta('og:description', $description);
 	}
@@ -40,6 +42,7 @@ class HeadData {
 	}
 
 	public static function setCanonical($url) {
+		if (empty($url)) return;
 		self::$canonical = $url;
 		self::addMeta('og:url', $url);
 	}

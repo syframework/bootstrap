@@ -13,6 +13,7 @@ class Sitemap extends \Sy\Component\WebComponent {
 	public function __toString() {
 		$method = $this->get(ACTION_TRIGGER, 'index') . 'Action';
 		$this->$method();
+		header('Content-Type: application/xml; charset=utf-8');
 		return parent::__toString();
 	}
 

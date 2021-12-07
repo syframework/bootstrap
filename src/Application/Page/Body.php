@@ -44,7 +44,7 @@ abstract class Body extends \Sy\Component\WebComponent {
 	public function __call($name, $arguments) {
 		// Flash message created as soon as possible to handle clear request
 		$flashMessage = new \Sy\Bootstrap\Component\FlashMessage();
-		$arguments['LAYOUT']['FLASH_MESSAGE'] = $flashMessage;
+		$arguments['LAYOUT']['_FLASH_MESSAGE'] = $flashMessage;
 
 		$name = str_replace('_', '-', $name);
 		$this->setTemplateFile(__DIR__ . '/Body.html');

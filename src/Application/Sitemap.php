@@ -47,7 +47,10 @@ class Sitemap extends \Sy\Component\WebComponent {
 	public function __call($name, $arguments) {
 		if (!str_ends_with($name, 'Action')) return;
 		$name = substr_replace($name, '', -6);
-		if (!isset($this->providers[$name])) return;
+		if (!isset($this->providers[$name])) {
+			header('HTTP/1.0 404 Not Found');
+			return;
+		}
 
 		$this->setTemplateFile(__DIR__ . '/Sitemap/Sitemap.xml');
 

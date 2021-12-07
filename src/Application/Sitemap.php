@@ -48,7 +48,7 @@ class Sitemap extends \Sy\Component\WebComponent {
 		if (!str_ends_with($name, 'Action')) return;
 		$name = substr_replace($name, '', -6);
 		if (!isset($this->providers[$name])) {
-			header('HTTP/1.0 404 Not Found');
+			http_response_code(404);
 			return;
 		}
 

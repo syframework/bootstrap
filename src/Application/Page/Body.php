@@ -125,7 +125,7 @@ abstract class Body extends \Sy\Component\WebComponent {
 
 		// No toolbar for 404 page
 		if ($name === '404') {
-			header('HTTP/1.0 404 Not Found');
+			http_response_code(404);
 			return;
 		}
 

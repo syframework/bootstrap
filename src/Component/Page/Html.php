@@ -50,8 +50,32 @@ class Html extends \Sy\Bootstrap\Component\Form {
 	public function submitAction() {
 		try {
 			$this->validatePost();
-			file_put_contents(TPL_DIR . "/Application/Page/content/$this->lang/$this->id.html", $this->post('content'));
-			$this->setSuccess($this->_('HTML updated successfully'));
+
+			// HTML
+			if (!file_exists(TPL_DIR . "/Application/Page/content/$this->lang")) {
+				mkdir(TPL_DIR . "/Application/Page/content/$this->lang");
+			}
+			if (!empty($this->post('content'))) {
+				file_put_contents(TPL_DIR . "/Application/Page/content/$this->lang/$this->id.html", $this->post('content'));
+			}
+
+			// CSS
+			if (!file_exists(TPL_DIR . '/Application/Page/css')) {
+				mkdir(TPL_DIR . '/Application/Page/css');
+			}
+			if (!empty($this->post('css'))) {
+				file_put_contents(TPL_DIR . "/Application/Page/css/$this->id.scss", $this->post('css'));
+			}
+
+			// JS
+			if (!file_exists(TPL_DIR . '/Application/Page/js')) {
+				mkdir(TPL_DIR . '/Application/Page/js');
+			}
+			if (!empty($this->post('js'))) {
+				file_put_contents(TPL_DIR . "/Application/Page/js/$this->id.js", $this->post('js'));
+			}
+
+			$this->setSuccess($this->_('Source code updated successfully'));
 		} catch(\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));

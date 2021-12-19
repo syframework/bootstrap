@@ -38,8 +38,8 @@ class Css extends \Sy\Bootstrap\Component\Form {
 		// css hack
 		$this->addCssCode('.CodeMirror-hints {z-index: 1051;}');
 
-		if (file_exists(TPL_DIR . "/Application/Page/css/$this->id.css")) {
-			$codeArea->addText(file_get_contents(TPL_DIR . "/Application/Page/css/$this->id.css"));
+		if (file_exists(TPL_DIR . "/Application/Page/css/$this->id.scss")) {
+			$codeArea->addText(file_get_contents(TPL_DIR . "/Application/Page/css/$this->id.scss"));
 		}
 
 		$this->addElement($codeArea);

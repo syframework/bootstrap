@@ -185,36 +185,28 @@ abstract class Body extends \Sy\Component\WebComponent {
 			$js->setBlock('DELETE_BLOCK');
 		}
 
-		// HTML Code
-		if ($service->user->getCurrentUser()->hasPermission('page-html')) {
+		// Code
+		if ($service->user->getCurrentUser()->hasPermission('page-code')) {
+			// HTML Code
 			$this->setComponent('HTML_FORM', new \Sy\Bootstrap\Component\Page\Html($name, $lang));
 			$this->setVar('FORM_HTML_ID', 'form_html_' . $name);
 			$js->setVars([
 				'CM_HTML_ID' => 'codearea_html_' . $name,
 			]);
-			$js->setBlock('HTML_BLOCK');
-			$this->setBlock('HTML_BTN_BLOCK');
-			$this->setBlock('HTML_MODAL_BLOCK');
-		}
 
-		// CSS Code
-		if ($service->user->getCurrentUser()->hasPermission('page-css')) {
+			// CSS Code
 			$this->setComponent('CSS_FORM', new \Sy\Bootstrap\Component\Page\Css($name));
 			$this->setVar('FORM_CSS_ID', 'form_css_' . $name);
 			$js->setVar('CM_CSS_ID', 'codearea_css_' . $name);
-			$js->setBlock('CSS_BLOCK');
-			$this->setBlock('CSS_BTN_BLOCK');
-			$this->setBlock('CSS_MODAL_BLOCK');
-		}
 
-		// JS Code
-		if ($service->user->getCurrentUser()->hasPermission('page-js')) {
+			// JS Code
 			$this->setComponent('JS_FORM', new \Sy\Bootstrap\Component\Page\Js($name));
 			$this->setVar('FORM_JS_ID', 'form_js_' . $name);
 			$js->setVar('CM_JS_ID', 'codearea_js_' . $name);
-			$js->setBlock('JS_BLOCK');
-			$this->setBlock('JS_BTN_BLOCK');
-			$this->setBlock('JS_MODAL_BLOCK');
+
+			$js->setBlock('CODE_BLOCK');
+			$this->setBlock('CODE_BTN_BLOCK');
+			$this->setBlock('CODE_MODAL_BLOCK');
 		}
 
 		// Add javascript code

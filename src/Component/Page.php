@@ -1,17 +1,11 @@
 <?php
 namespace Sy\Bootstrap\Component;
 
-use Sy\Bootstrap\Lib\Url;
 use Sy\Bootstrap\Lib\HeadData;
 
 abstract class Page extends \Sy\Component\Html\Page {
 
 	private $body;
-
-	public function __construct() {
-		parent::__construct();
-
-	}
 
 	public function __toString() {
 		$this->init();

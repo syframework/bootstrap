@@ -72,7 +72,7 @@ $(function() {
 		changed = false;
 	}
 
-	$('#btn-page-update-start').click(function(e) {
+	$('#sy-btn-page-update-start').click(function(e) {
 		e.preventDefault();
 		$.getJSON('{GET_URL}', function(res) {
 			if (res.status === 'ok') {
@@ -153,13 +153,13 @@ $(function() {
 						{ name: 'colors', items: [ 'TextColor', 'BGColor' ] }
 					];
 				}
-				$('#btn-page-update-start').hide();
-				$('#btn-page-update-stop').removeClass("d-none");
+				$('#sy-btn-page-update-start').hide();
+				$('#sy-btn-page-update-stop').removeClass("d-none");
 			}
 		});
 	});
 
-	$('#btn-page-update-stop').click(function(e) {
+	$('#sy-btn-page-update-stop').click(function(e) {
 		e.preventDefault();
 		if (changed) {
 			save(true);
@@ -172,45 +172,56 @@ $(function() {
 		if (changed) save();
 	}, 60000);
 <!-- END UPDATE_BLOCK -->
+
 <!-- BEGIN DELETE_BLOCK -->
-	$('#btn-page-delete').click(function(e) {
+	$('#sy-btn-page-delete').click(function(e) {
 		e.preventDefault();
 		if (confirm($('<div />').html("{CONFIRM_DELETE}").text())) {
 			$('#{DELETE_FORM_ID}').submit();
 		}
 	});
 <!-- END DELETE_BLOCK -->
-<!-- BEGIN HTML_BLOCK -->
-	$('#html-modal').on('shown.bs.modal', function (e) {
-		CodeMirror['{CM_HTML_ID}'].setSize(null, window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight() - 20);
+
+<!-- BEGIN CODE_BLOCK -->
+	let codeEditorHeight;
+	let htmlLoaded = false;
+
+	$('#sy-code-modal').on('shown.bs.modal', function (e) {
+		codeEditorHeight = window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight();
+		CodeMirror['{CM_HTML_ID}'].setSize(null, codeEditorHeight);
 		CodeMirror['{CM_HTML_ID}'].refresh();
+
+		if (htmlLoaded) return;
 		$.getJSON('{GET_URL}', function(res) {
 			if (res.status === 'ok') {
 				CodeMirror['{CM_HTML_ID}'].setValue(res.content);
 				CodeMirror['{CM_HTML_ID}'].clearHistory();
+				htmlLoaded = true;
 			}
 		});
 	});
-<!-- END HTML_BLOCK -->
-<!-- BEGIN CSS_BLOCK -->
-	$('#css-modal').on('shown.bs.modal', function (e) {
-		CodeMirror['{CM_CSS_ID}'].setSize(null, window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight() - 20);
+
+	$('#sy-css-tab').on('shown.bs.tab', function (e) {
+		CodeMirror['{CM_CSS_ID}'].setSize(null, codeEditorHeight);
 		CodeMirror['{CM_CSS_ID}'].refresh();
 	});
-<!-- END CSS_BLOCK -->
-<!-- BEGIN JS_BLOCK -->
-	$('#js-modal').on('shown.bs.modal', function (e) {
-		CodeMirror['{CM_JS_ID}'].setSize(null, window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight() - 20);
+
+	$('#sy-js-tab').on('shown.bs.tab', function (e) {
+		CodeMirror['{CM_JS_ID}'].setSize(null, codeEditorHeight);
 		CodeMirror['{CM_JS_ID}'].refresh();
 	});
-	$('#js-modal form').submit(function(e) {
+
+	$('#sy-code-modal form').submit(function(e) {
 		let code = CodeMirror['{CM_JS_ID}'].getValue();
-		try { 
+		try {
 			eval(code);
 		} catch(err) {
 			alert('JS code error');
 			e.preventDefault();
 		}
+
+		this.js.value = code;
+		this.css.value = CodeMirror['{CM_CSS_ID}'].getValue();
 	});
-<!-- END JS_BLOCK -->
+<!-- END CODE_BLOCK -->
 });

@@ -19,7 +19,7 @@ class Html extends \Sy\Bootstrap\Component\Form {
 
 		$codeArea = new \Sy\Bootstrap\Component\Form\Element\CodeArea();
 		$codeArea->setAttributes([
-			'name' => 'content',
+			'name' => 'html',
 			'id'   => 'codearea_html_' . $this->id,
 			'placeholder' => 'HTML Code here...'
 		]);
@@ -45,6 +45,9 @@ class Html extends \Sy\Bootstrap\Component\Form {
 		$this->addCssCode('.CodeMirror-hints {z-index: 1051;}');
 
 		$this->addElement($codeArea);
+
+		$this->addHidden(['name' => 'css']);
+		$this->addHidden(['name' => 'js']);
 	}
 
 	public function submitAction() {
@@ -55,8 +58,8 @@ class Html extends \Sy\Bootstrap\Component\Form {
 			if (!file_exists(TPL_DIR . "/Application/Page/content/$this->lang")) {
 				mkdir(TPL_DIR . "/Application/Page/content/$this->lang");
 			}
-			if (!empty($this->post('content'))) {
-				file_put_contents(TPL_DIR . "/Application/Page/content/$this->lang/$this->id.html", $this->post('content'));
+			if (!empty($this->post('html'))) {
+				file_put_contents(TPL_DIR . "/Application/Page/content/$this->lang/$this->id.html", $this->post('html'));
 			}
 
 			// CSS

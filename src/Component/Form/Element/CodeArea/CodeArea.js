@@ -1,4 +1,4 @@
-CodeArea['{TEXT_AREA_ID}'] = (function() {
+(function() {
 	var editor = ace.edit("{CODE_AREA_ID}");
 	editor.setTheme("ace/theme/{THEME}");
 	editor.session.setMode("ace/mode/{MODE}");

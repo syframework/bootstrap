@@ -38,7 +38,7 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		// id
 		if (is_null($this->getAttribute('id'))) $this->setAttribute('id', uniqid());
 
-		$codeAreaId = uniqid();
+		$codeAreaId = 'codearea_' . $this->getAttribute('id');
 		$this->setVar('CODE_AREA_ID', $codeAreaId);
 
 		// js code

@@ -186,7 +186,7 @@ $(function() {
 	let htmlLoaded = false;
 
 	$('#sy-code-modal').on('shown.bs.modal', function (e) {
-		CodeArea('{CM_HTML_ID}').resize();
+		CodeArea['{CM_HTML_ID}'].resize();
 
 		if (htmlLoaded) return;
 		$.getJSON('{GET_URL}', function(res) {
@@ -198,11 +198,11 @@ $(function() {
 	});
 
 	$('#sy-css-tab').on('shown.bs.tab', function (e) {
-		CodeArea('{CM_CSS_ID}').resize();
+		CodeArea['{CM_CSS_ID}'].resize();
 	});
 
 	$('#sy-js-tab').on('shown.bs.tab', function (e) {
-		CodeArea('{CM_JS_ID}').resize();
+		CodeArea['{CM_JS_ID}'].resize();
 	});
 
 	$('#sy-code-modal form').submit(function(e) {

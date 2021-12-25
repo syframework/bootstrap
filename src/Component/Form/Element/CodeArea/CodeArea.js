@@ -16,5 +16,6 @@
 			$('#{TEXT_AREA_ID}').closest('form').submit();
 		}
 	});
+	editor.setOption('enableLiveAutocompletion', true);
 	return editor;
 })();

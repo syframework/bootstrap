@@ -23,7 +23,7 @@ class Html extends \Sy\Bootstrap\Component\Form {
 			'id'   => 'codearea_html_' . $this->id,
 			'placeholder' => 'HTML Code here...'
 		]);
-		$codeArea->setMode('html');
+		$codeArea->setMode('php');
 
 		$this->addElement($codeArea);
 

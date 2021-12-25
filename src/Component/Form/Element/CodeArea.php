@@ -30,8 +30,8 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 	private function preInit() {
 		$this->setTemplateFile(__DIR__ . '/CodeArea/CodeArea.tpl', 'php');
 		$cdn = $this->cdn . '/';
-		$this->addCssLink($cdn . 'ace.js');
-		$this->addCssLink($cdn . 'ext-language_tools.min.js');
+		$this->addJsLink($cdn . 'ace.js');
+		$this->addJsLink($cdn . 'ext-language_tools.min.js');
 	}
 
 	private function postInit() {

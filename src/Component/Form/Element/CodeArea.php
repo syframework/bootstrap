@@ -32,11 +32,21 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$cdn = $this->cdn . '/';
 		$this->addJsLink($cdn . 'ace.js');
 		$this->addJsLink($cdn . 'ext-language_tools.min.js');
+		$this->addCssCode('
+			pre.ace-editor {
+				width: 100%;
+				height: 100%;
+				font-size: 16px;
+			}
+		');
 	}
 
 	private function postInit() {
 		// id
 		if (is_null($this->getAttribute('id'))) $this->setAttribute('id', uniqid());
+
+		// Hide textarea
+		$this->setAttribute('hidden', 'hidden');
 
 		$codeAreaId = 'codearea_' . $this->getAttribute('id');
 		$this->setVar('CODE_AREA_ID', $codeAreaId);

@@ -23,26 +23,7 @@ class Html extends \Sy\Bootstrap\Component\Form {
 			'id'   => 'codearea_html_' . $this->id,
 			'placeholder' => 'HTML Code here...'
 		]);
-		$codeArea->setMode('text/html');
-		$codeArea->setParams([
-			'addon/display/placeholder',
-			'addon/fold/foldcode',
-			'addon/fold/foldgutter',
-			'addon/fold/xml-fold',
-			'addon/fold/comment-fold',
-			'addon/edit/matchtags',
-			'addon/edit/closetag',
-			'addon/hint/show-hint',
-			'addon/hint/xml-hint',
-			'addon/hint/html-hint',
-			'mode/xml/xml',
-			'mode/javascript/javascript',
-			'mode/css/css',
-			'mode/htmlmixed/htmlmixed'
-		]);
-
-		// css hack
-		$this->addCssCode('.CodeMirror-hints {z-index: 1051;}');
+		$codeArea->setMode('html');
 
 		$this->addElement($codeArea);
 

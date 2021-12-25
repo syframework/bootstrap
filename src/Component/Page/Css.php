@@ -21,22 +21,7 @@ class Css extends \Sy\Bootstrap\Component\Form {
 			'id'   => 'codearea_css_' . $this->id,
 			'placeholder' => 'CSS Code here...'
 		]);
-		$codeArea->setMode('text/css');
-		$codeArea->setParams([
-			'addon/display/placeholder',
-			'addon/fold/foldcode',
-			'addon/fold/foldgutter',
-			'addon/fold/brace-fold',
-			'addon/fold/comment-fold',
-			'addon/hint/show-hint',
-			'addon/hint/css-hint',
-			'addon/edit/closebrackets',
-			'addon/edit/matchbrackets',
-			'mode/css/css'
-		]);
-
-		// css hack
-		$this->addCssCode('.CodeMirror-hints {z-index: 1051;}');
+		$codeArea->setMode('css');
 
 		if (file_exists(TPL_DIR . "/Application/Page/css/$this->id.scss")) {
 			$codeArea->addText(file_get_contents(TPL_DIR . "/Application/Page/css/$this->id.scss"));

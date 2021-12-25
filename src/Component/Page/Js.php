@@ -21,22 +21,7 @@ class Js extends \Sy\Bootstrap\Component\Form {
 			'id'   => 'codearea_js_' . $this->id,
 			'placeholder' => 'JS Code here...'
 		]);
-		$codeArea->setMode('text/javascript');
-		$codeArea->setParams([
-			'addon/display/placeholder',
-			'addon/fold/foldcode',
-			'addon/fold/foldgutter',
-			'addon/fold/brace-fold',
-			'addon/fold/comment-fold',
-			'addon/hint/show-hint',
-			'addon/hint/javascript-hint',
-			'addon/edit/closebrackets',
-			'addon/edit/matchbrackets',
-			'mode/javascript/javascript',
-		]);
-
-		// css hack
-		$this->addCssCode('.CodeMirror-hints {z-index: 1051;}');
+		$codeArea->setMode('javascript');
 
 		if (file_exists(TPL_DIR . "/Application/Page/js/$this->id.js")) {
 			$codeArea->addText(file_get_contents(TPL_DIR . "/Application/Page/js/$this->id.js"));

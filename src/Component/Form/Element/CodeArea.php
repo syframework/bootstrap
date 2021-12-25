@@ -3,17 +3,14 @@ namespace Sy\Bootstrap\Component\Form\Element;
 
 class CodeArea extends \Sy\Component\Html\Form\Textarea {
 
-	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.64.0';
+	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13';
 
-	private $theme = 'default';
+	private $theme = 'chrome';
 
-	private $mode;
-
-	private $params;
+	private $mode = 'text';
 
 	public function __construct() {
 		parent::__construct();
-		$this->params = [];
 		$this->preInit();
 	}
 
@@ -30,45 +27,30 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$this->mode = $mode;
 	}
 
-	public function setParams($params) {
-		$this->params = $params;
-	}
-
 	private function preInit() {
+		$this->setTemplateFile(__DIR__ . '/CodeArea/CodeArea.tpl', 'php');
 		$cdn = $this->cdn . '/';
-		$this->addCssLink($cdn . 'codemirror.min.css');
-		$this->addCssLink($cdn . 'addon/hint/show-hint.min.css');
-		$this->addCssLink($cdn . 'addon/fold/foldgutter.min.css');
-		$this->addCssLink($cdn . 'addon/dialog/dialog.min.css');
-		$this->addJsLink($cdn . 'codemirror.min.js');
-		$this->addJsLink($cdn . 'addon/dialog/dialog.min.js');
-		$this->addJsLink($cdn . 'addon/search/search.min.js');
-		$this->addJsLink($cdn . 'addon/search/searchcursor.min.js');
-		$this->addJsLink($cdn . 'addon/search/jump-to-line.min.js');
+		$this->addCssLink($cdn . 'ace.js');
+		$this->addCssLink($cdn . 'ext-language_tools.min.js');
 	}
 
 	private function postInit() {
 		// id
 		if (is_null($this->getAttribute('id'))) $this->setAttribute('id', uniqid());
 
-		// parameters
-		$cdn = $this->cdn . '/';
-		if ($this->theme !== 'default') $this->addCssLink($cdn . 'theme/' . $this->theme . '.min.css');
-		foreach ($this->params as $param) {
-			$this->addJsLink($cdn . $param . '.min.js');
-		}
+		$codeAreaId = uniqid();
+		$this->setVar('CODE_AREA_ID', $codeAreaId);
 
 		// js code
 		$js = new \Sy\Component();
 		$js->setTemplateFile(__DIR__ . '/CodeArea/CodeArea.js');
 		$js->setVars([
-			'CODE_AREA_ID' => $this->getAttribute('id'),
-			'THEME'        => $this->theme
+			'CODE_AREA_ID' => $codeAreaId,
+			'TEXT_AREA_ID' => $this->getAttribute('id'),
+			'THEME'        => $this->theme,
+			'MODE'         => $this->mode,
+			'PLACEHOLDER'  => $this->getAttribute('placeholder'),
 		]);
-		if (!empty($this->mode)) {
-			$js->setVar('MODE', $this->mode);
-			$js->setBlock('MODE_BLOCK');
-		}
 		$this->addJsCode($js);
 	}
 

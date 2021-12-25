@@ -183,9 +183,12 @@ $(function() {
 <!-- END DELETE_BLOCK -->
 
 <!-- BEGIN CODE_BLOCK -->
+	let codeEditorHeight;
 	let htmlLoaded = false;
 
 	$('#sy-code-modal').on('shown.bs.modal', function (e) {
+		codeEditorHeight = window.innerHeight - $(this).find('.modal-header').outerHeight() - $(this).find('.modal-footer').outerHeight();
+		$('#codearea_{CM_HTML_ID}').height(codeEditorHeight);
 		ace.edit('codearea_{CM_HTML_ID}').resize();
 
 		if (htmlLoaded) return;
@@ -198,10 +201,12 @@ $(function() {
 	});
 
 	$('#sy-css-tab').on('shown.bs.tab', function (e) {
+		$('#codearea_{CM_CSS_ID}').height(codeEditorHeight);
 		ace.edit('codearea_{CM_CSS_ID}').resize();
 	});
 
 	$('#sy-js-tab').on('shown.bs.tab', function (e) {
+		$('#codearea_{CM_JS_ID}').height(codeEditorHeight);
 		ace.edit('codearea_{CM_JS_ID}').resize();
 	});
 

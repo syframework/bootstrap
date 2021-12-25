@@ -32,13 +32,6 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$cdn = $this->cdn . '/';
 		$this->addJsLink($cdn . 'ace.js');
 		$this->addJsLink($cdn . 'ext-language_tools.min.js');
-		$this->addCssCode('
-			pre.ace_editor {
-				width: 100%;
-				height: 100%;
-				font-size: 16px;
-			}
-		');
 	}
 
 	private function postInit() {

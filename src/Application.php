@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap;
 
+use Sy\Bootstrap\Lib\Str;
 use Sy\Bootstrap\Lib\Url;
 
 abstract class Application {
@@ -58,9 +59,9 @@ abstract class Application {
 	 */
 	protected function controllerClass($name) {
 		$namespace = implode('\\', array_slice(explode('\\', get_class($this)), 0, -1));
-		$class = $namespace . '\\Application\\' . ucfirst($name);
+		$class = $namespace . '\\Application\\' . ucfirst(Str::snakeToCaml($name));
 		if (class_exists($class)) return $class;
-		$class = __NAMESPACE__ . '\\Application\\' . ucfirst($name);
+		$class = __NAMESPACE__ . '\\Application\\' . ucfirst(Str::snakeToCaml($name));
 		if (class_exists($class)) return $class;
 		return null;
 	}

@@ -1,0 +1,5 @@
+<?php
+namespace Sy\Bootstrap\Application\Page;
+
+class Exception extends \Exception {}
+class NotFoundException extends Exception {}

@@ -249,6 +249,3 @@ abstract class Body extends \Sy\Component\WebComponent {
 	}
 
 }
-
-class Exception extends \Exception {}
-class NotFoundException extends Exception {}

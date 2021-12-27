@@ -21,7 +21,7 @@ class Css extends \Sy\Bootstrap\Component\Form {
 			'id'   => 'codearea_css_' . $this->id,
 			'placeholder' => 'CSS Code here...'
 		]);
-		$codeArea->setMode('css');
+		$codeArea->setMode('scss');
 
 		if (file_exists(TPL_DIR . "/Application/Page/css/$this->id.scss")) {
 			$codeArea->addText(file_get_contents(TPL_DIR . "/Application/Page/css/$this->id.scss"));

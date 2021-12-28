@@ -17,5 +17,6 @@
 		}
 	});
 	editor.setOption('enableLiveAutocompletion', true);
+	editor.setOption('enableEmmet', true);
 	return editor;
 })();

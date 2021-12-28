@@ -146,6 +146,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Add a visible tel input
 		$input = $this->addInput('tel', $attributes, $options, $container);
+		$input->addClass('w-100');
 		$input->getParent()->addTextInput($a);
 		return $input;
 	}

@@ -14,12 +14,12 @@ class Dialog extends \Sy\Component\WebComponent {
 	private $title;
 
 	/**
-	 * @var mixed String or WebComponent
+	 * @var mixed String or WebComponent or Array of String or WebComponent
 	 */
 	private $body;
 
 	/**
-	 * @var mixed String or WebCcomponent
+	 * @var mixed String or WebCcomponent or Array of String or WebComponent
 	 */
 	private $footer;
 
@@ -31,8 +31,8 @@ class Dialog extends \Sy\Component\WebComponent {
 	/**
 	 * @param string $id
 	 * @param string $title
-	 * @param string|WebComponent $body
-	 * @param string|WebComponent $footer
+	 * @param string|WebComponent|array $body
+	 * @param string|WebComponent|array $footer
 	 */
 	public function __construct($id, $title = null, $body = null, $footer = null) {
 		parent::__construct();
@@ -48,18 +48,36 @@ class Dialog extends \Sy\Component\WebComponent {
 		return parent::__toString();
 	}
 
+	/**
+	 * @param string $title
+	 */
 	public function setTitle($title) {
 		$this->title = $title;
 	}
 
-	public function setBody($body) {
-		$this->body = $body;
+	/**
+	 * @param mixed $body String or WebComponent or Array of String or WebComponent
+	 */
+	public function setBody(...$body) {
+		// Flatten array
+		$res = [];
+		array_walk_recursive($body, function($a) use (&$res) { $res[] = $a; });
+		$this->body = $res;
 	}
 
-	public function setFooter($footer) {
-		$this->footer = $footer;
+	/**
+	 * @param mixed $footer String or WebComponent or Array of String or WebComponent
+	 */
+	public function setFooter(...$footer) {
+		// Flatten array
+		$res = [];
+		array_walk_recursive($footer, function($a) use (&$res) { $res[] = $a; });
+		$this->footer = $res;
 	}
 
+	/**
+	 * @param string $size sm | lg | xl | fullscreen
+	 */
 	public function setSize($size) {
 		$this->size = $size;
 	}
@@ -80,12 +98,24 @@ class Dialog extends \Sy\Component\WebComponent {
 
 		// Body
 		if (!is_null($this->body)) {
-			$this->setVar('BODY', $this->body);
+			if (is_array($this->body)) {
+				foreach ($this->body as $body) {
+					$this->setVar('BODY', $body, true);
+				}
+			} else {
+				$this->setVar('BODY', $this->body);
+			}
 		}
 
 		// Footer
 		if (!is_null($this->footer)) {
-			$this->setVar('FOOTER', $this->footer);
+			if (is_array($this->footer)) {
+				foreach ($this->footer as $footer) {
+					$this->setVar('FOOTER', $this->footer, true);
+				}
+			} else {
+				$this->setVar('FOOTER', $this->footer);
+			}
 			$this->setBlock('FOOTER_BLOCK');
 		}
 

@@ -118,6 +118,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addTel(array $attributes = [], array $options = [], $container = null) {
 		// Add Intl tel input JS and CSS
+		$this->addCssCode('.iti{width:100%}');
 		$this->addCssLink(INTLTELINPUT_CSS);
 		$this->addJsLink(INTLTELINPUT_JS);
 		$js = new \Sy\Component();

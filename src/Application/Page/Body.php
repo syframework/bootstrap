@@ -111,6 +111,13 @@ abstract class Body extends \Sy\Component\WebComponent {
 		if (!empty($menu)) {
 			$layout->setComponent('_NAV', $menu);
 		}
+
+		// Set magic constants
+		if (defined('MAGIC_CONSTANTS')) {
+			$content->setVars(MAGIC_CONSTANTS);
+			$layout->setVars(MAGIC_CONSTANTS);
+		}
+
 		$layout->setComponent('_CONTENT', $content);
 		$this->setComponent('LAYOUT', $layout);
 		$this->setBlock('LAYOUT_BLOCK');

@@ -103,19 +103,16 @@ abstract class Body extends \Sy\Component\WebComponent {
 				$content->setVar($k, $v);
 			}
 		}
-		$layout->setVars([
-			'_PROJECT'  => PROJECT,
-			'_WEB_ROOT' => WEB_ROOT,
-		]);
+
 		$menu = array_key_exists('MENU', $arguments) ? $arguments['MENU'] : $this->_menu();
 		if (!empty($menu)) {
 			$layout->setComponent('_NAV', $menu);
 		}
 
-		// Set magic constants
-		if (defined('MAGIC_CONSTANTS')) {
-			$content->setVars(MAGIC_CONSTANTS);
-			$layout->setVars(MAGIC_CONSTANTS);
+		// Set magic slots
+		if (defined('MAGIC_VARS')) {
+			$content->setVars(MAGIC_VARS);
+			$layout->setVars(MAGIC_VARS);
 		}
 
 		$layout->setComponent('_CONTENT', $content);

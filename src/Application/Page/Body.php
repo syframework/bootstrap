@@ -113,7 +113,7 @@ class Body extends \Sy\Component\WebComponent {
 	 *
 	 * @param string $pageId
 	 */
-	private function init($pageId) {
+	protected function init($pageId) {
 		$name = $pageId;
 		$this->setTemplateFile(__DIR__ . '/Body.html');
 

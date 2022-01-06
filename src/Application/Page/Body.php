@@ -21,10 +21,7 @@ class Body extends \Sy\Component\WebComponent {
 	 */
 	public function __construct($pageId = null) {
 		parent::__construct();
-		// hack to select the default menu
-		if (is_null($this->get(CONTROLLER_TRIGGER))) {
-			$_GET[CONTROLLER_TRIGGER] = 'page';
-		}
+
 		// Flash message created as soon as possible to handle clear request
 		$this->layoutVars = [
 			'_FLASH_MESSAGE' => new \Sy\Bootstrap\Component\FlashMessage()
@@ -33,8 +30,6 @@ class Body extends \Sy\Component\WebComponent {
 		$this->addTranslator(LANG_DIR);
 
 		$pageId = is_null($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string) $pageId;
-		// hack to select the default menu
-		if ($pageId === 'home') $_GET[ACTION_TRIGGER] = 'home';
 		$this->init($pageId);
 	}
 
@@ -64,13 +59,13 @@ class Body extends \Sy\Component\WebComponent {
 	 */
 	public function __call($name, $arguments) {
 		if (isset($arguments['LAYOUT'])) {
-			$this->addLayoutVars($arguments['LAYOUT']);
+			$this->setLayoutVars($arguments['LAYOUT']);
 		}
 		if (isset($arguments['CONTENT'])) {
-			$this->addContentVars($arguments['CONTENT']);
+			$this->setContentVars($arguments['CONTENT']);
 		}
 		if (isset($arguments['MENU'])) {
-			$this->addLayoutVars(['_NAV' => $arguments['MENU']]);
+			$this->setLayoutVars(['_NAV' => $arguments['MENU']]);
 		}
 	}
 
@@ -82,7 +77,7 @@ class Body extends \Sy\Component\WebComponent {
 		if (!method_exists($this, '_menu')) return;
 		$menu = $this->_menu();
 		if (is_null($menu)) return;
-		$this->addLayoutVars(['_NAV' => $menu]);
+		$this->setLayoutVars(['_NAV' => $menu]);
 	}
 
 	/**
@@ -121,6 +116,10 @@ class Body extends \Sy\Component\WebComponent {
 	private function init($pageId) {
 		$name = $pageId;
 		$this->setTemplateFile(__DIR__ . '/Body.html');
+
+		// For menu selection
+		$_GET[CONTROLLER_TRIGGER] = 'page';
+		$_GET[ACTION_TRIGGER] = $pageId;
 
 		// Rel canonical
 		$get = $_GET;

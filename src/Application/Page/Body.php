@@ -2,51 +2,124 @@
 namespace Sy\Bootstrap\Application\Page;
 
 use Sy\Bootstrap\Lib\Url;
+use Sy\Component\WebComponent;
 
-abstract class Body extends \Sy\Component\WebComponent {
-
-	private $method;
+class Body extends \Sy\Component\WebComponent {
 
 	/**
 	 * @var array
 	 */
-	private $translators;
+	private $layoutVars;
 
-	public function __construct($method = null) {
+	/**
+	 * @var array
+	 */
+	private $contentVars;
+
+	/**
+	 * @param string $pageId
+	 */
+	public function __construct($pageId = null) {
 		parent::__construct();
 		// hack to select the default menu
 		if (is_null($this->get(CONTROLLER_TRIGGER))) {
 			$_GET[CONTROLLER_TRIGGER] = 'page';
 		}
-		$this->method = $method;
-		$this->translators = array();
-		$this->addTranslator(LANG_DIR);
-		$this->actionDispatch(ACTION_TRIGGER, 'index');
-	}
-
-	public function addTranslator($directory, $type = 'php', $lang = '') {
-		parent::addTranslator($directory, $type, $lang);
-		$this->translators[] = array(
-			'directory' => $directory,
-			'type' => $type,
-			'lang' => $lang
-		);
-	}
-
-	public function indexAction() {
-		$method = is_null($this->method) ? str_replace('-', '_', $this->get(ACTION_TRIGGER, 'home')) : (string) $this->method;
-		// hack to select the default menu
-		if ($method === 'home') $_GET[ACTION_TRIGGER] = 'home';
-		if (in_array($method, ['__construct', '__call', 'indexAction', '_menu'])) return;
-		$this->$method();
-	}
-
-	public function __call($name, $arguments) {
 		// Flash message created as soon as possible to handle clear request
-		$flashMessage = new \Sy\Bootstrap\Component\FlashMessage();
-		$arguments['LAYOUT']['_FLASH_MESSAGE'] = $flashMessage;
+		$this->layoutVars = [
+			'_FLASH_MESSAGE' => new \Sy\Bootstrap\Component\FlashMessage()
+		];
+		$this->contentVars = [];
+		$this->addTranslator(LANG_DIR);
 
-		$name = str_replace('_', '-', $name);
+		$pageId = is_null($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string) $pageId;
+		// hack to select the default menu
+		if ($pageId === 'home') $_GET[ACTION_TRIGGER] = 'home';
+		$this->init($pageId);
+	}
+
+	/**
+	 * Merge vars with layout vars
+	 *
+	 * @param array $vars
+	 */
+	public function setLayoutVars(array $vars) {
+		$this->layoutVars = array_merge($this->layoutVars, $vars);
+	}
+
+	/**
+	 * Merge vars with content vars
+	 *
+	 * @param array $vars
+	 */
+	public function setContentVars(array $vars) {
+		$this->contentVars = array_merge($this->contentVars, $vars);
+	}
+
+	/**
+	 * Deprecated use on body method
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 */
+	public function __call($name, $arguments) {
+		if (isset($arguments['LAYOUT'])) {
+			$this->addLayoutVars($arguments['LAYOUT']);
+		}
+		if (isset($arguments['CONTENT'])) {
+			$this->addContentVars($arguments['CONTENT']);
+		}
+		if (isset($arguments['MENU'])) {
+			$this->addLayoutVars(['_NAV' => $arguments['MENU']]);
+		}
+	}
+
+	/**
+	 * Executed before every page body method
+	 */
+	public function all() {
+		// Deprecated _menu method
+		if (!method_exists($this, '_menu')) return;
+		$menu = $this->_menu();
+		if (is_null($menu)) return;
+		$this->addLayoutVars(['_NAV' => $menu]);
+	}
+
+	/**
+	 * User connection page
+	 */
+	public function user_connection() {
+		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		if ($service->user->getCurrentUser()->isConnected()) {
+			$this->redirect(WEB_ROOT . '/');
+		}
+		$this->__call('user-connection', ['CONTENT' => [
+			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
+		]]);
+		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
+	}
+
+	/**
+	 * User reset password page
+	 */
+	public function user_password() {
+		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$user = $service->user->retrieve(['email' => $this->get('email')]);
+		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
+			$this->redirect(WEB_ROOT . '/');
+		}
+		$this->__call('user-password', ['CONTENT' => [
+			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email'))
+		]]);
+	}
+
+	/**
+	 * Initialyze the body layout and content using page id
+	 *
+	 * @param string $pageId
+	 */
+	private function init($pageId) {
+		$name = $pageId;
 		$this->setTemplateFile(__DIR__ . '/Body.html');
 
 		// Rel canonical
@@ -68,22 +141,21 @@ abstract class Body extends \Sy\Component\WebComponent {
 		if (empty($page) and $name === '404') return;
 		if (empty($page)) throw new NotFoundException();
 
-		// Show page content
+		// Meta title & description
 		\Sy\Bootstrap\Lib\HeadData::setTitle($page['title']);
 		\Sy\Bootstrap\Lib\HeadData::setDescription($page['description']);
 
+		// Execute user defined method
+		$this->all();
+		$method = str_replace('-', '_', $pageId);
+		$this->$method();
+
 		// Layout file
 		$l = file_exists(TPL_DIR . "/Application/Page/layout/$name.html") ? $name : '_default';
-		$layout = new \Sy\Component\WebComponent();
+		$layout = new WebComponent();
 		$layout->setTemplateFile(TPL_DIR . "/Application/Page/layout/$l.html");
-		foreach ($this->translators as $translator) {
-			$layout->addTranslator($translator['directory'], $translator['type'], $translator['lang']);
-		}
-		if (isset($arguments['LAYOUT'])) {
-			foreach ($arguments['LAYOUT'] as $k => $v) {
-				$layout->setVar($k, $v);
-			}
-		}
+		$layout->setTranslators($this->getTranslators());
+		$layout->setVars($this->layoutVars);
 
 		// Content file
 		$f = TPL_DIR . "/Application/Page/content/$lang/$name.html";
@@ -93,21 +165,10 @@ abstract class Body extends \Sy\Component\WebComponent {
 		if (!file_exists($f)) {
 			touch($f);
 		}
-		$content = new \Sy\Component\WebComponent();
+		$content = new WebComponent();
 		$content->setTemplateFile($f);
-		foreach ($this->translators as $translator) {
-			$content->addTranslator($translator['directory'], $translator['type'], $translator['lang']);
-		}
-		if (isset($arguments['CONTENT'])) {
-			foreach ($arguments['CONTENT'] as $k => $v) {
-				$content->setVar($k, $v);
-			}
-		}
-
-		$menu = array_key_exists('MENU', $arguments) ? $arguments['MENU'] : $this->_menu();
-		if (!empty($menu)) {
-			$layout->setComponent('_NAV', $menu);
-		}
+		$content->setTranslators($this->getTranslators());
+		$content->setVars($this->contentVars);
 
 		// Set magic slots
 		if (defined('MAGIC_VARS')) {
@@ -215,41 +276,6 @@ abstract class Body extends \Sy\Component\WebComponent {
 
 		// Add javascript code
 		$this->addJsCode($js);
-	}
-
-	/**
-	 * Return navigation menu, can return null
-	 *
-	 * @return \Sy\Bootstrap\Component\Nav\Menu
-	 */
-	abstract protected function _menu();
-
-	/**
-	 * User connection page
-	 */
-	public function user_connection() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
-		if ($service->user->getCurrentUser()->isConnected()) {
-			$this->redirect(WEB_ROOT . '/');
-		}
-		$this->__call('user-connection', ['CONTENT' => [
-			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
-		]]);
-		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
-	}
-
-	/**
-	 * User reset password page
-	 */
-	public function user_password() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
-		$user = $service->user->retrieve(['email' => $this->get('email')]);
-		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
-			$this->redirect(WEB_ROOT . '/');
-		}
-		$this->__call('user-password', ['CONTENT' => [
-			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email'))
-		]]);
 	}
 
 }

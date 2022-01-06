@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Application\Page;
 
+use Sy\Bootstrap\Lib\HeadData;
 use Sy\Bootstrap\Lib\Url;
 use Sy\Component\WebComponent;
 
@@ -115,19 +116,28 @@ class Body extends \Sy\Component\WebComponent {
 	 */
 	protected function init($pageId) {
 		$name = $pageId;
-		$this->setTemplateFile(__DIR__ . '/Body.html');
 
 		// For menu selection
 		$_GET[CONTROLLER_TRIGGER] = 'page';
 		$_GET[ACTION_TRIGGER] = $pageId;
 
+		// Execute user defined method
+		$this->all();
+		$method = str_replace('-', '_', $pageId);
+		$this->$method();
+
+		// Redirection detected
+		if ($_GET[ACTION_TRIGGER] !== $pageId) return;
+
 		// Rel canonical
-		$get = $_GET;
-		unset($get[CONTROLLER_TRIGGER]);
-		unset($get[ACTION_TRIGGER]);
-		unset($get['sy_language']);
-		$url = PROJECT_URL . Url::build('page', $name, $get);
-		\Sy\Bootstrap\Lib\HeadData::setCanonical($url);
+		if (empty(HeadData::getCanonical())) {
+			$get = $_GET;
+			unset($get[CONTROLLER_TRIGGER]);
+			unset($get[ACTION_TRIGGER]);
+			unset($get['sy_language']);
+			$url = PROJECT_URL . Url::build('page', $name, $get);
+			HeadData::setCanonical($url);
+		}
 
 		// Detect language
 		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
@@ -141,13 +151,8 @@ class Body extends \Sy\Component\WebComponent {
 		if (empty($page)) throw new NotFoundException();
 
 		// Meta title & description
-		\Sy\Bootstrap\Lib\HeadData::setTitle($page['title']);
-		\Sy\Bootstrap\Lib\HeadData::setDescription($page['description']);
-
-		// Execute user defined method
-		$this->all();
-		$method = str_replace('-', '_', $pageId);
-		$this->$method();
+		if (empty(HeadData::getTitle())) HeadData::setTitle($page['title']);
+		if (empty(HeadData::getDescription())) HeadData::setDescription($page['description']);
 
 		// Layout file
 		$l = file_exists(TPL_DIR . "/Application/Page/layout/$name.html") ? $name : '_default';
@@ -176,6 +181,7 @@ class Body extends \Sy\Component\WebComponent {
 		}
 
 		$layout->setComponent('_CONTENT', $content);
+		$this->setTemplateFile(__DIR__ . '/Body.html');
 		$this->setComponent('LAYOUT', $layout);
 		$this->setBlock('LAYOUT_BLOCK');
 

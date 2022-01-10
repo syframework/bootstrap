@@ -535,9 +535,6 @@ abstract class Form extends \Sy\Component\Html\Form {
 	protected function addInput($class, array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
 		$div = $container->addDiv(['class' => 'mb-3']);
-		if (!empty($options['floating-label'])) {
-			$div->addClass('floating-label');
-		}
 		if (isset($attributes['placeholder'])) {
 			$attributes['placeholder'] = $this->_($attributes['placeholder']);
 		}
@@ -552,6 +549,13 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$input = new Form\TextFillableInput($class);
 		$input->setAttributes($attributes);
 		$input->addClass('form-control');
+
+		// Floating label
+		if (!empty($options['floating-label'])) {
+			$div->addClass('form-floating');
+			$input->setAttribute('placeholder', $input->getAttribute('label'));
+			$input->setOption('label-position', 'after');
+		}
 
 		// Check if there is no addon
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {

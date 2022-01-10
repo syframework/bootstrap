@@ -535,6 +535,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	protected function addInput($class, array $attributes = [], array $options = [], $container = null) {
 		if (is_null($container)) $container = $this;
 		$div = $container->addDiv(['class' => 'mb-3']);
+		if (!empty($options['floating-label'])) {
+			$div->addClass('floating-label');
+		}
 		if (isset($attributes['placeholder'])) {
 			$attributes['placeholder'] = $this->_($attributes['placeholder']);
 		}

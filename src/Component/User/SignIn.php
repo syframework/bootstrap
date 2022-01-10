@@ -10,14 +10,19 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 		$this->addAntiSpamField();
 		$this->addCsrfField();
 
-		$f = $this->addFieldset();
+		$fieldset = $this->addFieldset();
 		$this->addEmail(
 			[
 				'id'       => 'signin-email',
 				'name'     => 'email',
 				'required' => 'required',
 			],
-			['label' => $this->_('E-mail')], $f
+			[
+				'label'          => 'E-mail',
+				'placeholder'    => 'E-mail',
+				'floating-label' => true
+			],
+			$fieldset
 		);
 		$this->addPassword(
 			[
@@ -25,9 +30,14 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 				'name'     => 'password',
 				'required' => 'required',
 			],
-			['label' => $this->_('Password')], $f
+			[
+				'label'          => 'Password',
+				'placeholder'    => 'Password',
+				'floating-label' => true
+			],
+			$fieldset
 		);
-		$this->addButton('Sign In', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-power-off'], $f);
+		$this->addButton('Sign In', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-power-off'], $fieldset);
 	}
 
 	public function submitAction() {

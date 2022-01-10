@@ -321,7 +321,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 	/**
 	 * @param array $attributes
-	 * @param array $options
+	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\Textarea
 	 */
@@ -339,6 +339,13 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$textarea = new Form\Textarea();
 		$textarea->setAttributes($attributes);
 		$textarea->addClass('form-control');
+
+		// Floating label
+		if (!empty($options['floating-label'])) {
+			$div->addClass('form-floating');
+			$textarea->setAttribute('placeholder', $options['label']);
+			$textarea->setOption('label-position', 'after');
+		}
 
 		// Check if there is no addon
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {
@@ -437,6 +444,12 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$select->setAttributes($attributes);
 		$select->addClass('form-select');
 
+		// Floating label
+		if (!empty($options['floating-label'])) {
+			$div->addClass('form-floating');
+			$select->setOption('label-position', 'after');
+		}
+
 		// Check if there is no addon
 		if (!isset($options['addon-before']) and !isset($options['addon-after']) and !isset($options['btn-before']) and !isset($options['btn-after'])) {
 			// Selectbox
@@ -528,7 +541,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 *
 	 * @param string $class
 	 * @param array $attributes
-	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern
+	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
 	 * @param \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
@@ -553,7 +566,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		// Floating label
 		if (!empty($options['floating-label'])) {
 			$div->addClass('form-floating');
-			$input->setAttribute('placeholder', $input->getAttribute('label'));
+			$input->setAttribute('placeholder', $options['label']);
 			$input->setOption('label-position', 'after');
 		}
 

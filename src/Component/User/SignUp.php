@@ -21,7 +21,8 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 				'required' => 'required',
 			],
 			[
-				'label' => 'E-mail'
+				'label'          => 'E-mail',
+				'floating-label' => true
 			]
 		);
 

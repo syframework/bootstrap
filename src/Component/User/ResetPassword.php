@@ -15,24 +15,28 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 
 		$this->addPassword(
 			[
-				'name'     => 'new_password',
-				'required' => 'required',
+				'name'         => 'new_password',
+				'required'     => 'required',
 				'autocomplete' => 'new-password',
+				'minlength'    => 8
 			],
 			[
-				'label'     => 'New password',
-				'validator' => [$this, 'passwordValidator']
+				'label'          => 'New password',
+				'floating-label' => true,
+				'validator'      => [$this, 'passwordValidator']
 			]
 		);
 		$this->addPassword(
 			[
-				'name'     => 'new_password_bis',
-				'required' => 'required',
+				'name'         => 'new_password_bis',
+				'required'     => 'required',
 				'autocomplete' => 'new-password',
+				'minlength'    => 8
 			],
 			[
-				'label' => 'Confirm new password',
-				'validator' => function($value) {
+				'label'          => 'Confirm new password',
+				'floating-label' => true,
+				'validator'      => function($value) {
 					$password = $this->post('new_password');
 					if (!empty($value) and $value === $password) return true;
 					$this->setError($this->_('Password error'));
@@ -64,7 +68,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 	}
 
 	public function passwordValidator($value) {
-		if (strlen($value) < 6) {
+		if (strlen($value) < 8) {
 			$this->setError($this->_('Password too short'));
 			return false;
 		}

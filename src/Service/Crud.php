@@ -25,7 +25,7 @@ class Crud {
 	 */
 	public function getDbContainer() {
 		if (!isset($this->dbContainer)) {
-			$this->dbContainer = \Sy\Bootstrap\Db\Container::getInstance();
+			$this->dbContainer = \Project\Db\Container::getInstance();
 		}
 		return $this->dbContainer;
 	}

@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Model;
 
-use Sy\Bootstrap\Service\Container;
-
 class User {
 
 	/**
@@ -21,7 +19,7 @@ class User {
 	private $settings;
 
 	public function __construct($id) {
-		$service           = Container::getInstance();
+		$service           = \Project\Service\Container::getInstance();
 		$this->data        = $service->user->retrieve(['id' => $id]);
 		$this->permissions = null;
 		$this->settings    = null;
@@ -56,7 +54,7 @@ class User {
 	public function hasPermission($permission) {
 		if (!$this->data) return false;
 		if (is_null($this->permissions)) {
-			$service           = Container::getInstance();
+			$service           = \Project\Service\Container::getInstance();
 			$this->permissions = $service->user->getPermissions($this->data['id']);
 		}
 		return in_array($permission, $this->permissions);
@@ -71,7 +69,7 @@ class User {
 	public function getSetting($key) {
 		if (!$this->data) return null;
 		if (is_null($this->settings)) {
-			$service        = Container::getInstance();
+			$service        = \Project\Service\Container::getInstance();
 			$this->settings = $service->user->getSettings($this->data['id']);
 		}
 		return (isset($this->settings[$key]) ? $this->settings[$key] : null);
@@ -85,7 +83,7 @@ class User {
 	 * @return void
 	 */
 	public function setSetting($key, $value) {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$service->user->setSetting($this->data['id'], $key, $value);
 	}
 

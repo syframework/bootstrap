@@ -47,7 +47,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 		parent::init();
 
 		// Email field
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$mail = '';
 		if ($service->user->getCurrentUser()->isConnected()) {
 			$mail = $service->user->getCurrentUser()->email;

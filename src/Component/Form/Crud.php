@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Component\Form;
 
-use Sy\Bootstrap\Service\Container;
-
 class Crud extends \Sy\Bootstrap\Component\Form {
 
 	/**
@@ -127,7 +125,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	 */
 	public function getServiceContainer() {
 		if (empty($this->serviceContainer)) {
-			$this->serviceContainer = Container::getInstance();
+			$this->serviceContainer = \Project\Service\Container::getInstance();
 		}
 		return $this->serviceContainer;
 	}

@@ -33,7 +33,7 @@ class AliasManager {
 			}
 		}
 		if (empty($path[$alias])) return null;
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$service->user->setLanguage($lang);
 		return $path[$alias];
 	}

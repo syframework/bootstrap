@@ -23,7 +23,7 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 		$urls = [];
 
 		// Pages with alias
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$service->page->foreachRow(function($row) use(&$urls) {
 			$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $row['lang']);
 			if (is_null($loc)) return;

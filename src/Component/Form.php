@@ -51,7 +51,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	public function addCsrfField() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$token = $service->user->getCsrfToken();
 		$js = new \Sy\Component();
 		$js->setTemplateFile(__DIR__ . '/Form/Form.js');

@@ -16,7 +16,7 @@ abstract class Application {
 	 */
 	public function __construct() {
 		// Set language
-		$service = Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$user = $service->user->getCurrentUser();
 		if ($user->isConnected() and ($user->language !== \Sy\Http::session('sy_language'))) {
 			$service->user->setLanguage($user->language);

@@ -41,7 +41,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 	public function submitAction() {
 		try {
 			$this->validatePost();
-			$service = \Sy\Bootstrap\Service\Container::getInstance();
+			$service = \Project\Service\Container::getInstance();
 			$service->user->signIn($this->post('email'), $this->post('password'));
 			$this->setSuccess($this->_('You are connected'), \Sy\Bootstrap\Lib\Url::getReferer());
 		} catch (\Sy\Component\Html\Form\Exception $e) {

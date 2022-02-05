@@ -27,7 +27,7 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 	public function submitAction() {
 		try {
 			$this->validatePost();
-			$service = \Sy\Bootstrap\Service\Container::getInstance();
+			$service = \Project\Service\Container::getInstance();
 			$service->user->forgetPassword($this->post('email'));
 			$this->setSuccess($this->_('An e-mail has been sent'));
 		} catch (\Sy\Component\Html\Form\Exception $e) {

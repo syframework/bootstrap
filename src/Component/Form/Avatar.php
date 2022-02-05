@@ -33,7 +33,7 @@ class Avatar extends \Sy\Component\WebComponent {
 		$this->addJsLink(CROPPER_JS);
 		$this->addCssLink(CROPPER_CSS);
 
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$this->setVars([
 			'IMG_SRC'    => $this->src,
 			'SIZE'       => $this->size,

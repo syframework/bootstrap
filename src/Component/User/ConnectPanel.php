@@ -12,7 +12,6 @@ class ConnectPanel extends \Sy\Component\WebComponent {
 
 	private function init() {
 		$this->addTranslator(LANG_DIR);
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
 
 		\Sy\Bootstrap\Lib\HeadData::setTitle($this->_('Sign In'));
 

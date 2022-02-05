@@ -1,12 +1,10 @@
 <?php
 namespace Sy\Bootstrap\Application\Editor;
 
-use Sy\Bootstrap\Service\Container;
-
 class Page extends \Sy\Bootstrap\Component\Api {
 
 	public function security() {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		if (!$service->user->getCurrentUser()->hasPermission('page-update')) {
 			$this->forbidden([
 				'status' => 'ko',

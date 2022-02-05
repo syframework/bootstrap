@@ -54,7 +54,7 @@ class User extends Crud {
 			} else {
 				$pwd = Str::generatePassword();
 				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
-				$service = \Sy\Bootstrap\Service\Container::getInstance();
+				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
 				throw new User\ActivateAccountException;
 			}
@@ -107,7 +107,7 @@ class User extends Crud {
 					'token'    => $token,
 					'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']))
 				]);
-				$service = \Sy\Bootstrap\Service\Container::getInstance();
+				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($email, $password, $token);
 			});
 		} catch(\Sy\Db\MySql\Exception $e) {
@@ -175,7 +175,7 @@ class User extends Crud {
 	public function forgetPassword($email) {
 		try {
 			$user = $this->retrieve(['email' => $email]);
-			$service = \Sy\Bootstrap\Service\Container::getInstance();
+			$service = \Project\Service\Container::getInstance();
 
 			// No user
 			if (empty($user)) throw new User\Exception('User not found');

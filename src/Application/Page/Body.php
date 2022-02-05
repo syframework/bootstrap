@@ -85,7 +85,7 @@ class Body extends \Sy\Component\WebComponent {
 	 * User connection page
 	 */
 	public function user_connection() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		if ($service->user->getCurrentUser()->isConnected()) {
 			$this->redirect(WEB_ROOT . '/');
 		}
@@ -99,7 +99,7 @@ class Body extends \Sy\Component\WebComponent {
 	 * User reset password page
 	 */
 	public function user_password() {
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$user = $service->user->retrieve(['email' => $this->get('email')]);
 		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
 			$this->redirect(WEB_ROOT . '/');
@@ -143,7 +143,7 @@ class Body extends \Sy\Component\WebComponent {
 		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
 
 		// Retrieve page
-		$service = \Sy\Bootstrap\Service\Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$page = $service->page->retrieve(['id' => $name, 'lang' => $lang]);
 
 		// No page found

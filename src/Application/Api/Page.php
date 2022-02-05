@@ -1,12 +1,10 @@
 <?php
 namespace Sy\Bootstrap\Application\Api;
 
-use Sy\Bootstrap\Service\Container;
-
 class Page extends \Sy\Bootstrap\Component\Api {
 
 	public function security() {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		if (!$service->user->getCurrentUser()->hasPermission('page-update')) {
 			$this->forbidden([
 				'status' => 'ko',
@@ -42,7 +40,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 	 * @return void
 	 */
 	public function postAction() {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		try {
 			// Update page
 			$id      = $this->post('id');

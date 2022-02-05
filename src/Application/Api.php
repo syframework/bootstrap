@@ -2,7 +2,6 @@
 namespace Sy\Bootstrap\Application;
 
 use Sy\Bootstrap\Lib\Str;
-use Sy\Bootstrap\Service\Container;
 
 class Api extends \Sy\Bootstrap\Component\Api {
 
@@ -33,7 +32,7 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	 * Upload avatar
 	 */
 	public function avatarAction() {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$id = $service->user->getCurrentUser()->id;
 
 		// Csrf check
@@ -61,7 +60,7 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	 * For refreshing the csrf form input
 	 */
 	public function csrfAction() {
-		$service = Container::getInstance();
+		$service = \Project\Service\Container::getInstance();
 		$this->ok([
 			'csrf' => $service->user->getCsrfToken()
 		]);

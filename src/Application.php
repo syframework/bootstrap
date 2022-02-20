@@ -15,6 +15,12 @@ abstract class Application {
 	 * Application constructor
 	 */
 	public function __construct() {
+		// Extract url data
+		if (URL_REWRITING) {
+			$this->initUrlConverter();
+			Url::analyse();
+		}
+
 		// Set language
 		$service = \Project\Service\Container::getInstance();
 		$user = $service->user->getCurrentUser();
@@ -24,12 +30,6 @@ abstract class Application {
 		if (is_null(\Sy\Http::session('sy_language'))) {
 			$l = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : LANG;
 			$service->user->setLanguage($l);
-		}
-
-		// Extract url data
-		if (URL_REWRITING) {
-			$this->initUrlConverter();
-			Url::analyse();
 		}
 
 		// Find controller class

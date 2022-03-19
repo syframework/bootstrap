@@ -292,8 +292,9 @@ class User extends Crud {
 		parent::delete($pk);
 
 		// Delete uploaded pictures
-		if (empty($res['id'])) return;
-		Upload::delete(UPLOAD_DIR . '/avatar/' . $res['id'] . '.png');
+		if (empty($res['email'])) return;
+		$md5 = md5(strtolower(trim($res['email'])));
+		Upload::delete(UPLOAD_DIR . "/avatar/$md5.png");
 	}
 }
 

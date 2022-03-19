@@ -58,14 +58,15 @@ class Url {
 	/**
 	 * Get the avatar url
 	 *
-	 * @param mixed $id the user id
+	 * @param string $email the user email
 	 */
-	public static function avatar($id) {
-		if (file_exists(AVATAR_DIR . "/$id.png")) {
-			return PROJECT_URL . AVATAR_ROOT . "/$id.png";
+	public static function avatar($email) {
+		$md5 = md5(strtolower(trim($email)));
+		if (file_exists(AVATAR_DIR . "/$md5.png")) {
+			return PROJECT_URL . AVATAR_ROOT . "/$md5.png";
 		} else {
-			$n = count(glob(DEFAULT_AVATAR_DIR . '/*.svg'));
-			return DEFAULT_AVATAR_ROOT . '/' . ((intval($id) % $n) + 1) . '.svg';
+			// TO DO: libravatar federated servers
+			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://avatars.dicebear.com/api/avataaars/$md5.svg");
 		}
 	}
 

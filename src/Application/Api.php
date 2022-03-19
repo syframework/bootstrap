@@ -33,12 +33,13 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	 */
 	public function avatarAction() {
 		$service = \Project\Service\Container::getInstance();
-		$id = $service->user->getCurrentUser()->id;
+		$email = $service->user->getCurrentUser()->email;
+		$md5 = md5(strtolower(trim($email)));
 
 		// Csrf check
 		if ($service->user->getCsrfToken() !== $this->post('__csrf')) exit;
 
-		$fileName = AVATAR_DIR . '/' . "$id.png";
+		$fileName = AVATAR_DIR . '/' . "$md5.png";
 		\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
 		\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
 		exit;

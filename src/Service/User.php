@@ -267,7 +267,7 @@ class User extends Crud {
 	 * @return string Encrypted text
 	 */
 	protected function encrypt($text) {
-		return base64_encode(openssl_encrypt($text, 'AES-256-CBC', 'AAROLD1234567890', 0, '1234567890DLORAA'));
+		return base64_encode(openssl_encrypt($text, 'AES-256-CBC', defined('PROJECT_KEY') ? PROJECT_KEY : ''));
 	}
 
 	/**
@@ -275,7 +275,7 @@ class User extends Crud {
 	 * @return string Decrypted text
 	 */
 	protected function decrypt($text) {
-		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', 'AAROLD1234567890', 0, '1234567890DLORAA');
+		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', defined('PROJECT_KEY') ? PROJECT_KEY : '');
 	}
 
 	/**

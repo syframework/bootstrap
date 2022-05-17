@@ -44,7 +44,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 
 		// 2. Use xxxAction() where xxx is the action attribute
 		if (!empty($this->action)) {
-			$method = Str::snakeToCaml($this->action);
+			$method = Str::snakeToCaml($this->action) . 'Action';
 			if (method_exists($this, $method)) {
 				return $this->$method();
 			}

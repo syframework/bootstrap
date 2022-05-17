@@ -11,10 +11,10 @@ class Api extends \Sy\Bootstrap\Component\Api {
 			$origin = $_SERVER['HTTP_REFERER'];
 		}
 		if (empty($origin)) {
-			$this->forbidden();
+			throw new \Sy\Bootstrap\Component\Api\ForbiddenException('No HTTP origin found');
 		}
 		if ($_SERVER['SERVER_NAME'] !== parse_url($origin)['host']) {
-			$this->forbidden();
+			throw new \Sy\Bootstrap\Component\Api\ForbiddenException('Server name do not match with HTTP origin');
 		}
 	}
 

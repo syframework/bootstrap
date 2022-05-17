@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Component;
 
+use Sy\Bootstrap\Component\Api\ForbiddenException;
 use Sy\Bootstrap\Lib\Str;
 
 abstract class Api extends \Sy\Component\WebComponent {
@@ -22,6 +23,8 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$this->addTranslator(LANG_DIR);
 			$this->security();
 			$this->dispatch();
+		} catch(ForbiddenException $e) {
+			$this->forbidden(['message' => $e->getMessage()]);
 		} catch(\Throwable $e) {
 			$this->serverError(['message' => $e->getMessage()]);
 		}
@@ -90,3 +93,9 @@ abstract class Api extends \Sy\Component\WebComponent {
 	}
 
 }
+
+namespace Sy\Bootstrap\Component\Api;
+
+class Exception extends \Exception {}
+
+class ForbiddenException extends Exception {}

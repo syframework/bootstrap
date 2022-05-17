@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Component;
 
+use Sy\Bootstrap\Lib\Str;
+
 abstract class Api extends \Sy\Component\WebComponent {
 
 	protected $action;
@@ -12,6 +14,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 	public function __construct() {
 		try {
 			parent::__construct();
+			$this->setTemplateContent('{RESPONSE}');
 			$this->action = $this->request(ACTION_TRIGGER);
 			$param = $this->request(ACTION_PARAM, ['']);
 			$this->method = array_shift($param);
@@ -27,10 +30,30 @@ abstract class Api extends \Sy\Component\WebComponent {
 	abstract public function security();
 
 	public function dispatch() {
+		// 1. User xxx() where xxx is the method attribute
+		if (!empty($this->method)) {
+			$method = Str::snakeToCaml($this->method);
+			if (!method_exists($this, $method)) {
+				return $this->notFound();
+			}
+			return $this->$method();
+		}
+
+		// 2. Use xxxAction() where xxx is the action attribute
+		if (!empty($this->action)) {
+			$method = Str::snakeToCaml($this->action);
+			if (method_exists($this, $method)) {
+				return $this->$method();
+			}
+		}
+
+		// 3. Use xxxAction() where xxx is HTTP method: get, post etc...
 		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 		if (empty($method)) $this->notFound();
 		$method .= 'Action';
-		$this->$method();
+		if (method_exists($this, $method)) {
+			return $this->$method();
+		}
 		$this->notFound();
 	}
 
@@ -38,9 +61,8 @@ abstract class Api extends \Sy\Component\WebComponent {
 		http_response_code($code);
 		if (!empty($data)) {
 			header('Content-Type: application/json');
-			echo json_encode($data);
+			$this->setVar('RESPONSE', json_encode($data));
 		}
-		exit;
 	}
 
 	public function requestError($data = array()) {

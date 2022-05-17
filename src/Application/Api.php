@@ -19,8 +19,6 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	}
 
 	public function dispatch() {
-		$this->actionDispatch(ACTION_TRIGGER);
-
 		// Check if a plugin api class exists
 		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($this->action));
 		if (class_exists($class)) new $class();

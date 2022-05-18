@@ -9,6 +9,8 @@ abstract class Api extends \Sy\Component\WebComponent {
 
 	protected $method;
 
+	protected $verb;
+
 	protected $param;
 
 	public function __construct() {
@@ -19,6 +21,10 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$param = $this->request(ACTION_PARAM, ['']);
 			$this->method = array_shift($param);
 			$this->param = $param;
+
+			// HTTP method
+			$this->verb = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
+
 			$this->addTranslator(LANG_DIR);
 			$this->security();
 			$this->dispatch();
@@ -52,9 +58,8 @@ abstract class Api extends \Sy\Component\WebComponent {
 		}
 
 		// 3. Use xxxAction() where xxx is HTTP method: get, post etc...
-		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
-		if (empty($method)) $this->notFound();
-		$method .= 'Action';
+		if (empty($this->verb)) throw new Api\Exception('No HTTP method defined');
+		$method = $this->verb . 'Action';
 		if (method_exists($this, $method)) {
 			return $this->$method();
 		}

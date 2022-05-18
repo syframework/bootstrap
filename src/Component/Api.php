@@ -1,7 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Component;
 
-use Sy\Bootstrap\Component\Api\ForbiddenException;
 use Sy\Bootstrap\Lib\Str;
 
 abstract class Api extends \Sy\Component\WebComponent {
@@ -23,7 +22,9 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$this->addTranslator(LANG_DIR);
 			$this->security();
 			$this->dispatch();
-		} catch(ForbiddenException $e) {
+		} catch(Api\NotFoundException $e) {
+			$this->notFound(['message' => $e->getMessage()]);
+		} catch(Api\ForbiddenException $e) {
 			$this->forbidden(['message' => $e->getMessage()]);
 		} catch(\Throwable $e) {
 			$this->serverError(['message' => $e->getMessage()]);
@@ -37,7 +38,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 		if (!empty($this->method)) {
 			$method = Str::snakeToCaml($this->method);
 			if (!method_exists($this, $method)) {
-				return $this->notFound();
+				throw new Api\NotFoundException('Method ' . $method . ' not found in class ' . get_class($this));
 			}
 			return $this->$method();
 		}
@@ -57,7 +58,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 		if (method_exists($this, $method)) {
 			return $this->$method();
 		}
-		$this->notFound();
+		throw new Api\NotFoundException('No action method found');
 	}
 
 	public function response($code, $data = array()) {
@@ -99,3 +100,5 @@ namespace Sy\Bootstrap\Component\Api;
 class Exception extends \Exception {}
 
 class ForbiddenException extends Exception {}
+
+class NotFoundException extends Exception {}

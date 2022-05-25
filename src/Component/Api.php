@@ -23,7 +23,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$this->param = $param;
 
 			// HTTP method
-			$this->verb = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
+			$this->verb = isset($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : '';
 
 			$this->addTranslator(LANG_DIR);
 			$this->security();

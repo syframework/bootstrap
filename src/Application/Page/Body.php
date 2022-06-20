@@ -89,9 +89,9 @@ class Body extends \Sy\Component\WebComponent {
 		if ($service->user->getCurrentUser()->isConnected()) {
 			$this->redirect(WEB_ROOT . '/');
 		}
-		$this->__call('user-connection', ['CONTENT' => [
-			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
-		]]);
+		$this->setContentVars([
+			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel()
+		]);
 		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
 	}
 
@@ -104,9 +104,9 @@ class Body extends \Sy\Component\WebComponent {
 		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
 			$this->redirect(WEB_ROOT . '/');
 		}
-		$this->__call('user-password', ['CONTENT' => [
+		$this->setContentVars([
 			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email'))
-		]]);
+		]);
 	}
 
 	/**

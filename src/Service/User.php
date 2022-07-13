@@ -111,10 +111,8 @@ class User extends Crud {
 				$service->mail->sendWelcome($email, $password, $token);
 			});
 		} catch(\Sy\Db\MySql\Exception $e) {
-			$this->logWarning($e);
 			throw new User\SignUpException('Database error', 0, $e);
 		} catch(\Sy\Mail\Exception $e) {
-			$this->logWarning($e);
 			throw new User\SignUpException('Mail error', 0, $e);
 		}
 	}
@@ -192,7 +190,6 @@ class User extends Crud {
 			$this->update(['email' => $email], ['token' => $token]);
 			$service->mail->sendForgetPassword($email, $token);
 		} catch(\Sy\Mail\Exception $e) {
-			$this->logWarning($e);
 			throw new User\Exception('Mail error');
 		}
 	}

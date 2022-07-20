@@ -99,7 +99,7 @@ class User extends Crud {
 
 				$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
 				$token = sha1(uniqid());
-				$this->create([
+				$userId = $this->create([
 					'firstname'=> $name,
 					'email'    => $email,
 					'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
@@ -109,6 +109,7 @@ class User extends Crud {
 				]);
 				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($email, $password, $token);
+				return $userId;
 			});
 		} catch(\Sy\Db\MySql\Exception $e) {
 			throw new User\SignUpException('Database error', 0, $e);
@@ -199,7 +200,12 @@ class User extends Crud {
 	 */
 	public function getCurrentUser() {
 		if (!isset($this->currentUser)) {
-			$this->currentUser = new \Sy\Bootstrap\Model\User(\Sy\Http::session('user_id', 0));
+			$userModelClass = '\\Project\\Model\\User';
+			if (class_exists($userModelClass)) {
+				$this->currentUser = new $userModelClass(\Sy\Http::session('user_id', 0));
+			} else {
+				$this->currentUser = new \Sy\Bootstrap\Model\User(\Sy\Http::session('user_id', 0));
+			}
 		}
 		return $this->currentUser;
 	}

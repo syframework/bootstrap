@@ -8,6 +8,11 @@ use Sy\Component\WebComponent;
 class Body extends \Sy\Component\WebComponent {
 
 	/**
+	 * @var string
+	 */
+	private $layout;
+
+	/**
 	 * @var array
 	 */
 	private $layoutVars;
@@ -30,8 +35,18 @@ class Body extends \Sy\Component\WebComponent {
 		$this->contentVars = [];
 		$this->addTranslator(LANG_DIR);
 
+		$layout = '';
 		$pageId = is_null($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string) $pageId;
 		$this->init($pageId);
+	}
+
+	/**
+	 * Set the layout name
+	 *
+	 * @param string $layout
+	 */
+	public function setLayout($layout) {
+		$this->layout = $layout;
 	}
 
 	/**
@@ -155,7 +170,8 @@ class Body extends \Sy\Component\WebComponent {
 		if (empty(HeadData::getDescription())) HeadData::setDescription($page['description']);
 
 		// Layout file
-		$l = file_exists(TPL_DIR . "/Application/Page/layout/$name.html") ? $name : '_default';
+		$layoutName = empty($this->layout) ? $name : $this->layout;
+		$l = file_exists(TPL_DIR . "/Application/Page/layout/$layoutName.html") ? $layoutName : '_default';
 		$layout = new WebComponent();
 		$layout->setTemplateFile(TPL_DIR . "/Application/Page/layout/$l.html");
 		$layout->setTranslators($this->getTranslators());

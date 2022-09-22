@@ -66,31 +66,35 @@ abstract class Api extends \Sy\Component\WebComponent {
 		throw new Api\NotFoundException('No action method found');
 	}
 
-	public function response($code, $data = array()) {
+	public function response($code, $data = null) {
 		http_response_code($code);
-		if (!empty($data)) {
+		if (!empty($data) and is_array($data)) {
 			header('Content-Type: application/json');
 			$this->setVar('RESPONSE', json_encode($data));
+			return;
+		}
+		if (!empty($data)) {
+			$this->setVar('RESPONSE', $data);
 		}
 	}
 
-	public function requestError($data = array()) {
+	public function requestError($data = null) {
 		$this->response(400, $data);
 	}
 
-	public function serverError($data = array()) {
+	public function serverError($data = null) {
 		$this->response(500, $data);
 	}
 
-	public function notFound($data = array()) {
+	public function notFound($data = null) {
 		$this->response(404, $data);
 	}
 
-	public function forbidden($data = array()) {
+	public function forbidden($data = null) {
 		$this->response(403, $data);
 	}
 
-	public function ok($data = array()) {
+	public function ok($data = null) {
 		$this->response(200, $data);
 	}
 

@@ -75,7 +75,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->addJsCode($js);
 
 		// Need to merge dialog javascript
-		$this->mergJs($this->dialog);
+		$this->mergeJs($this->dialog);
 	}
 
 }

@@ -41,7 +41,7 @@
 })(jQuery);
 
 $(function() {
-	< !--BEGIN UPDATE_BLOCK-- >
+	<!-- BEGIN UPDATE_BLOCK -->
 	var changed = false;
 	var csrf = "{CSRF}";
 
@@ -98,9 +98,9 @@ $(function() {
 						removePlugins: 'about',
 						templates: 'websyte',
 						templates_files: ['{CKEDITOR_ROOT}/templates.js'],
-						< !--BEGIN IFRAMELY_BLOCK-- >
+						<!-- BEGIN IFRAMELY_BLOCK -->
 						embed_provider: '{IFRAMELY}?url={' + 'url' + '}&callback={' + 'callback' + '}&api_key={IFRAMELY_KEY}',
-						< !--END IFRAMELY_BLOCK-- >
+						<!-- END IFRAMELY_BLOCK -->
 						sharedSpaces: {
 							top: 'sy-page-topbar',
 							bottom: 'sy-page-bottombar'
@@ -171,18 +171,18 @@ $(function() {
 	setInterval(function() {
 		if (changed) save();
 	}, 60000);
-	< !--END UPDATE_BLOCK-- >
+	<!-- END UPDATE_BLOCK -->
 
-	< !--BEGIN DELETE_BLOCK-- >
+	<!-- BEGIN DELETE_BLOCK -->
 	$('#sy-btn-page-delete').click(function(e) {
 		e.preventDefault();
 		if (confirm($('<div />').html("{CONFIRM_DELETE}").text())) {
 			$('#{DELETE_FORM_ID}').submit();
 		}
 	});
-	< !--END DELETE_BLOCK-- >
+	<!-- END DELETE_BLOCK -->
 
-	< !--BEGIN CODE_BLOCK-- >
+	<!-- BEGIN CODE_BLOCK -->
 	let codeEditorHeight;
 	let htmlLoaded = false;
 
@@ -222,5 +222,5 @@ $(function() {
 		this.js.value = code;
 		this.css.value = ace.edit('codearea_{CM_CSS_ID}').getValue();
 	});
-	< !--END CODE_BLOCK-- >
+	<!-- END CODE_BLOCK -->
 });

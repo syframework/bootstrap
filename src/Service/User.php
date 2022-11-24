@@ -31,9 +31,9 @@ class User extends Crud {
 	/**
 	 * Sign in
 	 *
-	 * @param string $email
-	 * @param string $password
-	 * @param bool $remember
+	 * @param  string $email
+	 * @param  string $password
+	 * @param  bool $remember
 	 * @throws User\SignInException
 	 * @throws User\ActivateAccountException
 	 */
@@ -41,7 +41,7 @@ class User extends Crud {
 		$user = $this->retrieve(['email' => $email]);
 
 		// No user
-		if (empty($user)) throw new User\SignInException;
+		if (empty($user)) throw new User\SignInException();
 
 		// User password
 		$pass = $user['password'];
@@ -56,12 +56,12 @@ class User extends Crud {
 				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
 				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
-				throw new User\ActivateAccountException;
+				throw new User\ActivateAccountException();
 			}
 		}
 
 		// Wrong password
-		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException;
+		if (empty($pass) or !$this->passwordVerify($password, $pass)) throw new User\SignInException();
 
 		// Session
 		session_destroy(); // Security: renew PHPSESSID on sign in
@@ -88,7 +88,7 @@ class User extends Crud {
 	/**
 	 * Sign up
 	 *
-	 * @param string $email
+	 * @param  string $email
 	 * @throws User\SignUpException
 	 */
 	public function signUp($email, $password = null) {
@@ -100,20 +100,20 @@ class User extends Crud {
 				$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
 				$token = sha1(uniqid());
 				$userId = $this->create([
-					'firstname'=> $name,
+					'firstname' => $name,
 					'email'    => $email,
 					'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
 					'password' => password_hash($password, PASSWORD_DEFAULT),
 					'token'    => $token,
-					'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']))
+					'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR'])),
 				]);
 				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($email, $password, $token);
 				return $userId;
 			});
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			throw new User\SignUpException('Database error', 0, $e);
-		} catch(\Sy\Mail\Exception $e) {
+		} catch (\Sy\Mail\Exception $e) {
 			throw new User\SignUpException('Mail error', 0, $e);
 		}
 	}
@@ -140,34 +140,34 @@ class User extends Crud {
 	/**
 	 * Activate a user account after sign up
 	 *
-	 * @param string $email
-	 * @param string $token
+	 * @param  string $email
+	 * @param  string $token
 	 * @throws User\ActivateAccountException
 	 */
 	public function activate($email, $token) {
 		$u = $this->retrieve(['email' => $email]);
-		if ($u['status'] === 'active') throw new User\ActivateAccountException;
-		if (!isset($u['token']) or $u['token'] !== $token) throw new User\ActivateAccountException;
+		if ($u['status'] === 'active') throw new User\ActivateAccountException();
+		if (!isset($u['token']) or $u['token'] !== $token) throw new User\ActivateAccountException();
 		$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
 	}
 
 	/**
 	 * Delete a user account after a report of unwanted sign up
 	 *
-	 * @param string $email
-	 * @param string $token
+	 * @param  string $email
+	 * @param  string $token
 	 * @throws User\ActivateAccountException
 	 */
 	public function report($email, $token) {
 		$u = $this->retrieve(['email' => $email]);
-		if (!isset($u['token']) or $u['token'] !== $token) throw new User\ActivateAccountException;
+		if (!isset($u['token']) or $u['token'] !== $token) throw new User\ActivateAccountException();
 		$this->delete(['email' => $email]);
 	}
 
 	/**
 	 * Request for a new password
 	 *
-	 * @param string $email
+	 * @param  string $email
 	 * @throws User\Exception
 	 * @throws User\ActivateAccountException
 	 */
@@ -184,13 +184,13 @@ class User extends Crud {
 				$pwd = Str::generatePassword();
 				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
-				throw new User\ActivateAccountException;
+				throw new User\ActivateAccountException();
 			}
 
 			$token = sha1(uniqid());
 			$this->update(['email' => $email], ['token' => $token]);
 			$service->mail->sendForgetPassword($email, $token);
-		} catch(\Sy\Mail\Exception $e) {
+		} catch (\Sy\Mail\Exception $e) {
 			throw new User\Exception('Mail error');
 		}
 	}
@@ -235,6 +235,25 @@ class User extends Crud {
 	}
 
 	/**
+	 * @param  string $password
+	 * @param  string $hash
+	 * @return bool
+	 */
+	public function passwordVerify($password, $hash) {
+		return password_verify($password, $hash);
+	}
+
+	public function delete(array $pk) {
+		$res = $this->retrieve($pk);
+		parent::delete($pk);
+
+		// Delete uploaded pictures
+		if (empty($res['email'])) return;
+		$md5 = md5(strtolower(trim($res['email'])));
+		Upload::delete(UPLOAD_DIR . "/avatar/$md5.png");
+	}
+
+	/**
 	 * Auto sign in when user remember is true
 	 */
 	protected function autoSignIn() {
@@ -266,7 +285,7 @@ class User extends Crud {
 	}
 
 	/**
-	 * @param string $text Input text to encrypt
+	 * @param  string $text Input text to encrypt
 	 * @return string Encrypted text
 	 */
 	protected function encrypt($text) {
@@ -274,41 +293,11 @@ class User extends Crud {
 	}
 
 	/**
-	 * @param string $text Input text to decrypt
+	 * @param  string $text Input text to decrypt
 	 * @return string Decrypted text
 	 */
 	protected function decrypt($text) {
 		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', defined('PROJECT_KEY') ? PROJECT_KEY : '');
 	}
 
-	/**
-	 * @param string $password
-	 * @param string $hash
-	 * @return bool
-	 */
-	public function passwordVerify($password, $hash) {
-		return password_verify($password, $hash);
-	}
-
-	public function delete(array $pk) {
-		$res = $this->retrieve($pk);
-		parent::delete($pk);
-
-		// Delete uploaded pictures
-		if (empty($res['email'])) return;
-		$md5 = md5(strtolower(trim($res['email'])));
-		Upload::delete(UPLOAD_DIR . "/avatar/$md5.png");
-	}
 }
-
-namespace Sy\Bootstrap\Service\User;
-
-class Exception extends \Exception {}
-
-class SignInException extends Exception {}
-
-class SignUpException extends Exception {}
-
-class ActivateAccountException extends Exception {}
-
-class AccountNotExistException extends Exception {}

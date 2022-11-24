@@ -41,11 +41,15 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$f->setAttribute('style', 'height:0;overflow:hidden');
 		$f->addTextInput(
 			['name' => 'sy_firstname', 'autocomplete' => 'true'],
-			['validator' => function($p) {return is_null($p);}]
+			['validator' => function($p) {
+				return is_null($p);
+			}]
 		);
 		$f->addTextInput(
 			['name' => 'sy_lastname', 'value' => 'Your lastname', 'required' => 'required', 'autocomplete' => 'true'],
-			['validator' => function($p) {return $p === 'Your lastname';}]
+			['validator' => function($p) {
+				return $p === 'Your lastname';
+			}]
 		);
 		return $this->addElement($f);
 	}
@@ -66,7 +70,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 					} else {
 						return true;
 					}
-				}
+				},
 			]
 		);
 	}
@@ -74,9 +78,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	/**
 	 * Add a text input with some bootstrap options
 	 *
-	 * @param array $attributes
-	 * @param array $options label, help, size (sm or lg), addon-before, addon-after
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options label, help, size (sm or lg), addon-before, addon-after
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\TextFillableInput
 	 */
 	public function addTextInput(array $attributes = [], array $options = [], $container = null) {
@@ -84,9 +88,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addPassword(array $attributes = [], array $options = [], $container = null) {
@@ -94,9 +98,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addEmail(array $attributes = [], array $options = [], $container = null) {
@@ -111,9 +115,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addTel(array $attributes = [], array $options = [], $container = null) {
@@ -126,7 +130,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$js->setVars([
 			'INTLTELINPUT_UTILS_JS' => INTLTELINPUT_UTILS_JS,
 			'WEB_ROOT' => WEB_ROOT,
-			'TOP_COUNTRIES' => defined('INTLTELINPUT_TOP_COUNTRIES') ? '"' . implode('","', INTLTELINPUT_TOP_COUNTRIES) . '"' : ''
+			'TOP_COUNTRIES' => defined('INTLTELINPUT_TOP_COUNTRIES') ? '"' . implode('","', INTLTELINPUT_TOP_COUNTRIES) . '"' : '',
 		]);
 		$this->addJsCode($js->__toString());
 
@@ -152,9 +156,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addUrl(array $attributes = [], array $options = [], $container = null) {
@@ -162,9 +166,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addDate(array $attributes = [], array $options = [], $container = null) {
@@ -172,9 +176,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addDateTime(array $attributes = [], array $options = [], $container = null) {
@@ -195,9 +199,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addDateTimeLocal(array $attributes = [], array $options = [], $container = null) {
@@ -210,9 +214,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addTime(array $attributes = [], array $options = [], $container = null) {
@@ -220,9 +224,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addNumber(array $attributes = [], array $options = [], $container = null) {
@@ -230,9 +234,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	public function addRange(array $attributes = [], array $options = [], $container = null) {
@@ -243,9 +247,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\Checkbox
 	 */
 	public function addCheckbox(array $attributes = [], array $options = [], $container = null) {
@@ -264,9 +268,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\Radio
 	 */
 	public function addRadio(array $attributes = [], array $options = [], $container = null) {
@@ -285,9 +289,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\File
 	 */
 	public function addFile(array $attributes = [], array $options = [], $container = null) {
@@ -320,9 +324,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\Textarea
 	 */
 	public function addTextarea(array $attributes = [], array $options = [], $container = null) {
@@ -405,7 +409,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Min length validator
 		if (isset($attributes['minlength'])) {
-			$min = (int) $attributes['minlength'];
+			$min = (int)$attributes['minlength'];
 			$textarea->addValidator(function($value, $element) use($min, $options) {
 				if (mb_strlen($value) > $min) return true;
 				$element->setError($this->_(isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min]));
@@ -415,7 +419,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
-			$max = (int) $attributes['maxlength'];
+			$max = (int)$attributes['maxlength'];
 			$textarea->addValidator(function($value, $element) use($max, $options) {
 				if (mb_strlen($value) <= $max) return true;
 				$element->setError($this->_(isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max]));
@@ -427,9 +431,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 	/**
-	 * @param array $attributes
-	 * @param array $options
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  array $attributes
+	 * @param  array $options
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\OptionContainer
 	 */
 	public function addSelect(array $attributes = [], array $options = [], $container = null) {
@@ -509,10 +513,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 	/**
 	 * Add button
 	 *
-	 * @param string $label
-	 * @param array $attributes
-	 * @param array $options label, icon, color, size
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  string $label
+	 * @param  array $attributes
+	 * @param  array $options label, icon, color, size
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return \Sy\Component\Html\Form\Element
 	 */
 	public function addButton($label, array $attributes = [], array $options = [], $container = null) {
@@ -539,10 +543,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 	/**
 	 * Add input
 	 *
-	 * @param string $class
-	 * @param array $attributes
-	 * @param array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
-	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 * @param  string $class
+	 * @param  array $attributes
+	 * @param  array $options label, help, addon-before, addon-after, btn-before, btn-after, error-msg-minlength, error-msg-maxlength, error-msg-pattern, floating-label
+	 * @param  \Sy\Component\Html\Form\FieldContainer $container
 	 * @return Form\TextFillableInput
 	 */
 	protected function addInput($class, array $attributes = [], array $options = [], $container = null) {
@@ -623,7 +627,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Min length validator
 		if (isset($attributes['minlength'])) {
-			$min = (int) $attributes['minlength'];
+			$min = (int)$attributes['minlength'];
 			$error = isset($options['error-msg-minlength']) ? $options['error-msg-minlength'] : ['Text min length of %d characters', $min];
 			$input->addValidator(function($value, $element) use($min, $error) {
 				if (mb_strlen($value) > $min) return true;
@@ -634,7 +638,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Max length validator
 		if (isset($attributes['maxlength'])) {
-			$max = (int) $attributes['maxlength'];
+			$max = (int)$attributes['maxlength'];
 			$error = isset($options['error-msg-maxlength']) ? $options['error-msg-maxlength'] : ['Text max length of %d characters', $max];
 			$input->addValidator(function($value, $element) use($max, $error) {
 				if (mb_strlen($value) <= $max) return true;
@@ -675,7 +679,3 @@ abstract class Form extends \Sy\Component\Html\Form {
 	}
 
 }
-
-namespace Sy\Bootstrap\Component\Form;
-
-class CsrfException extends \Sy\Component\Html\Form\Exception {}

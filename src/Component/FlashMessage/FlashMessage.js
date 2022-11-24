@@ -43,14 +43,14 @@ function flash(message, type, timeout) {
 		}, timeout);
 	});
 }
-<!-- BEGIN SESSION_BLOCK -->
+< !--BEGIN SESSION_BLOCK-- >
 var ready = (callback) => {
 	if (document.readyState != "loading") callback();
 	else document.addEventListener("DOMContentLoaded", callback);
 }
 
 ready(() => {
-	<!-- BEGIN TIMEOUT_BLOCK -->
+	< !--BEGIN TIMEOUT_BLOCK-- >
 	document.getElementById('flash-message').classList.toggle('in');
 	var timer = setTimeout(function() {
 		document.getElementById('flash-message').classList.remove('in');
@@ -63,13 +63,13 @@ ready(() => {
 			document.getElementById('flash-message').classList.remove('in');
 		}, {TIMEOUT});
 	});
-	<!-- ELSE TIMEOUT_BLOCK -->
+	< !-- ELSE TIMEOUT_BLOCK-- >
 	var modal = new bootstrap.Modal(document.getElementById('flash-message-modal'), {
 		keyboard: false,
 		backdrop: 'static'
 	});
 	modal.show();
-	<!-- END TIMEOUT_BLOCK -->
+	< !--END TIMEOUT_BLOCK-- >
 
 	var formData = new FormData();
 	formData.append('flash_message_action', 'clear');
@@ -78,4 +78,4 @@ ready(() => {
 		body: formData
 	});
 });
-<!-- END SESSION_BLOCK -->
+< !--END SESSION_BLOCK-- > 

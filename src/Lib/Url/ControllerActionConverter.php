@@ -27,7 +27,7 @@ class ControllerActionConverter implements IConverter {
 		$_REQUEST[ACTION_TRIGGER] = $a;
 		$_GET[ACTION_TRIGGER] = $a;
 		if (empty($p)) return true;
-		foreach($p as $v) {
+		foreach ($p as $v) {
 			$_REQUEST[ACTION_PARAM][] = $v;
 			$_GET[ACTION_PARAM][] = $v;
 		}

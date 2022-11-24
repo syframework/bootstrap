@@ -11,6 +11,8 @@ abstract class Application {
 	 */
 	private $controller;
 
+	abstract protected function initUrlConverter();
+
 	/**
 	 * Application constructor
 	 */
@@ -43,18 +45,9 @@ abstract class Application {
 	}
 
 	/**
-	 * Return Application render
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->controller->__toString();
-	}
-
-	/**
 	 * Retrieve controller class
 	 *
-	 * @param string $name
+	 * @param  string $name
 	 * @return string|null
 	 */
 	protected function controllerClass($name) {
@@ -66,6 +59,13 @@ abstract class Application {
 		return null;
 	}
 
-	abstract protected function initUrlConverter();
+	/**
+	 * Return Application render
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->controller->__toString();
+	}
 
 }

@@ -56,17 +56,17 @@ class Create extends \Sy\Bootstrap\Component\Form\Crud\Create {
 			}
 			$this->getService()->create($fields);
 			$this->setSuccess($this->_('Page created successfully'), \Sy\Bootstrap\Lib\Url::build('page', $fields['id']));
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			if (is_null($this->getOption('error'))) {
 				$this->setError($this->_('Please fill the form correctly'));
 			}
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\DuplicateEntryException $e) {
+		} catch (\Sy\Db\MySql\DuplicateEntryException $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Page id already exists'));
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Database error'));
 			$this->fill($_POST);

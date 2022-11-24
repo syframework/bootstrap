@@ -4,106 +4,19 @@ namespace Sy\Bootstrap\Lib;
 class Str {
 
 	private static $c = [];
+
 	private static $v = [];
+
 	private static $cc = [];
+
 	private static $vv = [];
-
-	private static function c() {
-		if (empty(self::$c)) {
-			$c = [
-				'b' => 8,
-				'c' => 8,
-				'd' => 8,
-				'f' => 8,
-				'g' => 3,
-				'h' => 3,
-				'j' => 2,
-				'k' => 3,
-				'l' => 8,
-				'm' => 8,
-				'n' => 8,
-				'p' => 3,
-				'q' => 1,
-				'r' => 8,
-				's' => 8,
-				't' => 8,
-				'v' => 8,
-				'w' => 1,
-				'x' => 1,
-				'z' => 1
-			];
-			foreach ($c as $l => $n) {
-				self::$c = array_merge(self::$c, array_fill(0, $n, $l));
-			}
-		}
-		return self::$c[array_rand(self::$c, 1)];
-	}
-
-	private static function v() {
-		if (empty(self::$v)) {
-			$v = ['a' => 30, 'e' => 30, 'i' => 15, 'o' => 15, 'u' => 9, 'y' => 1];
-			foreach ($v as $l => $n) {
-				self::$v = array_merge(self::$v, array_fill(0, $n, $l));
-			}
-		}
-		return self::$v[array_rand(self::$v, 1)];
-	}
-
-	private static function cc() {
-		if (empty(self::$cc)) {
-			$c = [
-				'b' => 7,
-				'c' => 7,
-				'd' => 7,
-				'f' => 7,
-				'ff' => 1,
-				'g' => 4,
-				'gn' => 1,
-				'h' => 3,
-				'j' => 2,
-				'k' => 4,
-				'l' => 6,
-				'll' => 2,
-				'm' => 6,
-				'mm' => 2,
-				'n' => 6,
-				'nn' => 2,
-				'p' => 4,
-				'q' => 1,
-				'r' => 6,
-				'rr' => 2,
-				's' => 6,
-				'ss' => 2,
-				't' => 7,
-				'th' => 1,
-				'v' => 7,
-				'w' => 1,
-				'x' => 1,
-				'z' => 1
-			];
-			foreach ($c as $l => $n) {
-				self::$cc = array_merge(self::$cc, array_fill(0, $n, $l));
-			}
-		}
-		return self::$cc[array_rand(self::$cc, 1)];
-	}
-
-	private static function vv() {
-		if (empty(self::$vv)) {
-			$v = ['a' => 25, 'e' => 25, 'ea' => 3, 'ee' => 3, 'au' => 2, 'eu' => 3, 'ei' => 1, 'i' => 14, 'o' => 14, 'oo' => 1, 'u' => 9, 'y' => 1];
-			foreach ($v as $l => $n) {
-				self::$vv = array_merge(self::$vv, array_fill(0, $n, $l));
-			}
-		}
-		return self::$vv[array_rand(self::$vv, 1)];
-	}
 
 	public static function generateName() {
 		$t = [
 			['v', 'cc', 'vv'],
 			['c', 'vv', 'cc', 'v'],
 			['c', 'vv', 'cc', 'vv'],
-			['v', 'cc', 'vv', 'c']
+			['v', 'cc', 'vv', 'c'],
 		];
 		$n = '';
 		foreach ($t[array_rand($t, 1)] as $method) {
@@ -163,7 +76,7 @@ class Str {
 	/**
 	 * Extract image URL from a given string
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return array
 	 */
 	public static function extractImgUrl($string) {
@@ -188,7 +101,9 @@ class Str {
 	}
 
 	public static function convert($string, $dofollow = true) {
-		return str_replace(["\r\n", "\r", "\n"], " <br />",
+		return str_replace(
+			["\r\n", "\r", "\n"],
+			" <br />",
 			self::convertAdfly(
 				self::convertLink(
 					self::convertImg(
@@ -197,7 +112,8 @@ class Str {
 								htmlentities($string, ENT_QUOTES, 'UTF-8')
 							)
 						)
-					), $dofollow
+					),
+					$dofollow
 				)
 			)
 		);
@@ -206,7 +122,7 @@ class Str {
 	/**
 	 * Remove all accent character from a string
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function removeAccent($string) {
@@ -220,7 +136,7 @@ class Str {
 	/**
 	 * Return a slug version of a string
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function slugify($string) {
@@ -235,7 +151,7 @@ class Str {
 	/**
 	 * Converts a CamlCase string to snake_case string
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function camlToSnake($string) {
@@ -245,11 +161,101 @@ class Str {
 	/**
 	 * Converts a snake_case or dash-case string to camlCase
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function snakeToCaml($string) {
 		return lcfirst(str_replace('_', '', ucwords(str_replace('-', '_', $string), '_')));
+	}
+
+	private static function c() {
+		if (empty(self::$c)) {
+			$c = [
+				'b' => 8,
+				'c' => 8,
+				'd' => 8,
+				'f' => 8,
+				'g' => 3,
+				'h' => 3,
+				'j' => 2,
+				'k' => 3,
+				'l' => 8,
+				'm' => 8,
+				'n' => 8,
+				'p' => 3,
+				'q' => 1,
+				'r' => 8,
+				's' => 8,
+				't' => 8,
+				'v' => 8,
+				'w' => 1,
+				'x' => 1,
+				'z' => 1,
+			];
+			foreach ($c as $l => $n) {
+				self::$c = array_merge(self::$c, array_fill(0, $n, $l));
+			}
+		}
+		return self::$c[array_rand(self::$c, 1)];
+	}
+
+	private static function v() {
+		if (empty(self::$v)) {
+			$v = ['a' => 30, 'e' => 30, 'i' => 15, 'o' => 15, 'u' => 9, 'y' => 1];
+			foreach ($v as $l => $n) {
+				self::$v = array_merge(self::$v, array_fill(0, $n, $l));
+			}
+		}
+		return self::$v[array_rand(self::$v, 1)];
+	}
+
+	private static function cc() {
+		if (empty(self::$cc)) {
+			$c = [
+				'b' => 7,
+				'c' => 7,
+				'd' => 7,
+				'f' => 7,
+				'ff' => 1,
+				'g' => 4,
+				'gn' => 1,
+				'h' => 3,
+				'j' => 2,
+				'k' => 4,
+				'l' => 6,
+				'll' => 2,
+				'm' => 6,
+				'mm' => 2,
+				'n' => 6,
+				'nn' => 2,
+				'p' => 4,
+				'q' => 1,
+				'r' => 6,
+				'rr' => 2,
+				's' => 6,
+				'ss' => 2,
+				't' => 7,
+				'th' => 1,
+				'v' => 7,
+				'w' => 1,
+				'x' => 1,
+				'z' => 1,
+			];
+			foreach ($c as $l => $n) {
+				self::$cc = array_merge(self::$cc, array_fill(0, $n, $l));
+			}
+		}
+		return self::$cc[array_rand(self::$cc, 1)];
+	}
+
+	private static function vv() {
+		if (empty(self::$vv)) {
+			$v = ['a' => 25, 'e' => 25, 'ea' => 3, 'ee' => 3, 'au' => 2, 'eu' => 3, 'ei' => 1, 'i' => 14, 'o' => 14, 'oo' => 1, 'u' => 9, 'y' => 1];
+			foreach ($v as $l => $n) {
+				self::$vv = array_merge(self::$vv, array_fill(0, $n, $l));
+			}
+		}
+		return self::$vv[array_rand(self::$vv, 1)];
 	}
 
 }

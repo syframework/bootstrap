@@ -6,7 +6,7 @@ class Number {
 	/**
 	 * Return a string to represent a distance in 'm' or 'km'
 	 *
-	 * @param int $distance distance to format in meter
+	 * @param  int $distance distance to format in meter
 	 * @return string
 	 */
 	public static function formatDistance($distance) {

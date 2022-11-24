@@ -18,12 +18,12 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 				'name'         => 'new_password',
 				'required'     => 'required',
 				'autocomplete' => 'new-password',
-				'minlength'    => 8
+				'minlength'    => 8,
 			],
 			[
 				'label'          => 'New password',
 				'floating-label' => true,
-				'validator'      => [$this, 'passwordValidator']
+				'validator'      => [$this, 'passwordValidator'],
 			]
 		);
 		$this->addPassword(
@@ -31,7 +31,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 				'name'         => 'new_password_bis',
 				'required'     => 'required',
 				'autocomplete' => 'new-password',
-				'minlength'    => 8
+				'minlength'    => 8,
 			],
 			[
 				'label'          => 'Confirm new password',
@@ -41,7 +41,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 					if (!empty($value) and $value === $password) return true;
 					$this->setError($this->_('Password error'));
 					return false;
-				}
+				},
 			]
 		);
 		$this->addHidden(['name' => 'email', 'value' => $this->email]);
@@ -58,7 +58,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError(is_null($this->getOption('error')) ? $this->_('Please fill the form correctly') : $this->getOption('error'));
-		} catch(\Sy\Bootstrap\Service\User\Exception $e) {
+		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Error'));
 		} catch (\Sy\Db\MySql\Exception $e) {

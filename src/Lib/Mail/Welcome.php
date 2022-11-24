@@ -32,11 +32,11 @@ class Welcome extends HtmlTranslate {
 		$activateUrl = PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('user', 'activate', [
 			'email'    => $this->getTo(),
 			'password' => $this->password,
-			'token'    => $this->token
+			'token'    => $this->token,
 		]);
 		$reportUrl = PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('user', 'report', [
 			'email' => $this->getTo(),
-			'token' => $this->token
+			'token' => $this->token,
 		]);
 		$txt = new \Sy\Component\WebComponent();
 		$txt->setTemplateFile(__DIR__ . '/Welcome.txt');
@@ -51,7 +51,7 @@ class Welcome extends HtmlTranslate {
 		$html->setTemplateFile(__DIR__ . '/Welcome.html');
 		$html->addTranslator(LANG_DIR . '/mail');
 		$html->setVars([
-			'PASSWORD' => $this->password
+			'PASSWORD' => $this->password,
 		]);
 		$html->setComponent('BUTTON', new Button('Activate my account and connect me', $activateUrl));
 

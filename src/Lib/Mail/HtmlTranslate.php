@@ -23,6 +23,8 @@ abstract class HtmlTranslate extends \Sy\Bootstrap\Lib\Mail {
 	 */
 	private $htmlComponent;
 
+	abstract protected function init();
+
 	public function __construct($to = '', $from = '', $subject = '', $body = '') {
 		parent::__construct($to, $from, $subject, $body);
 		$this->lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
@@ -96,7 +98,5 @@ abstract class HtmlTranslate extends \Sy\Bootstrap\Lib\Mail {
 	private function addHtmlBody() {
 		$this->addBody($this->getHtml());
 	}
-
-	abstract protected function init();
 
 }

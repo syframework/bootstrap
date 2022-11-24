@@ -8,11 +8,6 @@ class FlashMessage extends \Sy\Component\WebComponent {
 		$this->actionDispatch('flash_message_action');
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
-	}
-
 	public function clearAction() {
 		\Sy\Bootstrap\Lib\FlashMessage::clearMessage();
 		exit();
@@ -30,7 +25,7 @@ class FlashMessage extends \Sy\Component\WebComponent {
 			$this->setVars([
 				'MESSAGE' => $message,
 				'TITLE'   => $title,
-				'TYPE'    => $this->session('flash_message_type', 'success')
+				'TYPE'    => $this->session('flash_message_type', 'success'),
 			]);
 			if (!empty($title)) $this->setBlock('TITLE_BLOCK');
 			$timeout = $this->session('flash_message_timeout', 3500);
@@ -43,6 +38,11 @@ class FlashMessage extends \Sy\Component\WebComponent {
 			$this->setVar('TYPE', 'success');
 		}
 		$this->addJsCode($js, ['type' => 'text/javascript']);
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

@@ -10,7 +10,7 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 	 */
 	public function getIndexUrls() {
 		return [
-			PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('sitemap', 'page')
+			PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('sitemap', 'page'),
 		];
 	}
 
@@ -41,7 +41,7 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 		}, [
 			'SELECT'   => "t_page.*, CONCAT('[', GROUP_CONCAT(CONCAT('\"', b.lang, '\"')), ']') AS 'alternate'",
 			'JOIN'     => 'LEFT JOIN t_page b ON t_page.id = b.id',
-			'GROUP BY' => 't_page.id, t_page.lang'
+			'GROUP BY' => 't_page.id, t_page.lang',
 		]);
 
 		return $urls;

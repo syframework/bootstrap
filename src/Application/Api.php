@@ -69,7 +69,7 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	public function csrfAction() {
 		$service = \Project\Service\Container::getInstance();
 		$this->ok([
-			'csrf' => $service->user->getCsrfToken()
+			'csrf' => $service->user->getCsrfToken(),
 		]);
 	}
 

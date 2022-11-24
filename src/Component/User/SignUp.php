@@ -22,7 +22,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			],
 			[
 				'label'          => 'E-mail',
-				'floating-label' => true
+				'floating-label' => true,
 			]
 		);
 

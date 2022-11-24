@@ -6,7 +6,7 @@ use Sy\Cache\SimpleCache;
 use Sy\Event\EventDispatcher;
 
 /**
- * @method static Container getInstance()
+ * @method        static Container getInstance()
  * @property-read Debugger $debug Debug and log service
  * @property-read EventDispatcher $event Event dispatcher service
  * @property-read User $user User service
@@ -46,7 +46,7 @@ class Container extends \Sy\Container {
 	public function get($id) {
 		try {
 			return parent::get($id);
-		} catch(\Sy\Container\NotFoundException $e) {
+		} catch (\Sy\Container\NotFoundException $e) {
 			$class = 'Sy\\Bootstrap\\Service\\' . ucfirst($id);
 			if (class_exists($class)) {
 				$this->$id = function () use ($class) {

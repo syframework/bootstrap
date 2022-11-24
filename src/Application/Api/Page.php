@@ -8,7 +8,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 		if (!$service->user->getCurrentUser()->hasPermission('page-update')) {
 			return $this->forbidden([
 				'status' => 'ko',
-				'message' => 'Permission denied'
+				'message' => 'Permission denied',
 			]);
 		}
 	}
@@ -30,7 +30,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 		}
 		return $this->ok([
 			'status' => 'ok',
-			'content'=> file_get_contents($f)
+			'content' => file_get_contents($f),
 		]);
 	}
 
@@ -51,7 +51,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 				return $this->requestError([
 					'status'  => 'ko',
 					'message' => $this->_('You have taken too long to submit the form please try again'),
-					'csrf'    => $service->user->getCsrfToken()
+					'csrf'    => $service->user->getCsrfToken(),
 				]);
 			}
 			if (is_null($id) or is_null($lang) or is_null($content)) $this->requestError();
@@ -61,17 +61,17 @@ class Page extends \Sy\Bootstrap\Component\Api {
 				'page_id'      => $id,
 				'page_lang'    => $lang,
 				'page_crc32'   => crc32($content),
-				'page_content' => $content
+				'page_content' => $content,
 			], [
 				'user_id'    => $service->user->getCurrentUser()->id,
-				'updated_at' => date('Y-m-d H:i:s')
+				'updated_at' => date('Y-m-d H:i:s'),
 			]);
 
 			if (!file_exists(TPL_DIR . "/Application/Page/content/$lang")) {
 				if (!mkdir(TPL_DIR . "/Application/Page/content/$lang", 0777, true)) {
 					return $this->serverError([
 						'status'  => 'ko',
-						'message' => $this->_('File write error')
+						'message' => $this->_('File write error'),
 					]);
 				};
 			}
@@ -79,17 +79,17 @@ class Page extends \Sy\Bootstrap\Component\Api {
 			if (file_put_contents(TPL_DIR . "/Application/Page/content/$lang/$id.html", $content) === false) {
 				return $this->serverError([
 					'status'  => 'ko',
-					'message' => $this->_('File write error')
+					'message' => $this->_('File write error'),
 				]);
 			} else {
 				return $this->ok([
-					'status' => 'ok'
+					'status' => 'ok',
 				]);
 			}
 		} catch (\Sy\Db\MySql\Exception $e) {
 			return $this->serverError([
 				'status' => 'ko',
-				'message' => $this->_('Database error')
+				'message' => $this->_('Database error'),
 			]);
 		}
 	}

@@ -9,16 +9,16 @@ class Button extends ModalButton {
 		parent::__construct('shareModal', $label, $icon, $color, $width, $size, $title, ['data-url' => $url]);
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
-	}
-
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$dialog = $this->getDialog();
 		$dialog->setBody(new Buttons(''));
 		$this->addJsCode(__DIR__ . '/Button.js');
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

@@ -10,13 +10,6 @@ class Sitemap extends \Sy\Component\WebComponent {
 		$this->providers = [];
 	}
 
-	public function __toString() {
-		$method = $this->get(ACTION_TRIGGER, 'index') . 'Action';
-		$this->$method();
-		header('Content-Type: application/xml; charset=utf-8');
-		return parent::__toString();
-	}
-
 	/**
 	 * @param string $name Sitemap name
 	 * @param \Sy\Bootstrap\Application\Sitemap\IProvider $provider Sitemap urls provider
@@ -37,6 +30,13 @@ class Sitemap extends \Sy\Component\WebComponent {
 				$this->setBlock('SITEMAP_BLOCK');
 			}
 		}
+	}
+
+	public function __toString() {
+		$method = $this->get(ACTION_TRIGGER, 'index') . 'Action';
+		$this->$method();
+		header('Content-Type: application/xml; charset=utf-8');
+		return parent::__toString();
 	}
 
 	/**

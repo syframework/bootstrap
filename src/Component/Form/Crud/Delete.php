@@ -25,15 +25,15 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 			}
 			$this->getService()->delete($id);
 			$this->setSuccess($this->_('Deleted successfully'));
-		} catch(\Sy\Bootstrap\Component\Form\CsrfException $e) {
+		} catch (\Sy\Bootstrap\Component\Form\CsrfException $e) {
 			$this->logWarning($e);
 			$this->setDanger($e->getMessage());
 			$this->fill($_POST);
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setDanger($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setDanger($this->_('Database error'));
 			$this->fill($_POST);

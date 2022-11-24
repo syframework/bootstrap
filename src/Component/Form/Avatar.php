@@ -4,7 +4,9 @@ namespace Sy\Bootstrap\Component\Form;
 class Avatar extends \Sy\Component\WebComponent {
 
 	private $src;
+
 	private $size;
+
 	private $upload;
 
 	/**
@@ -17,11 +19,6 @@ class Avatar extends \Sy\Component\WebComponent {
 		$this->src     = $src;
 		$this->upload  = $upload;
 		$this->size    = $size;
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 	private function init() {
@@ -40,6 +37,11 @@ class Avatar extends \Sy\Component\WebComponent {
 			'CSRF_TOKEN' => $service->user->getCsrfToken(),
 			'UPLOAD_URL' => $this->upload,
 		]);
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

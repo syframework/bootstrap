@@ -49,8 +49,8 @@ class Crud {
 	/**
 	 * Add a row with specified data.
 	 *
-	 * @param array $fields Column-value pairs.
-	 * @return int The number of affected rows.
+	 * @param  array $fields Column-value pairs.
+	 * @return int int The last inserted id.
 	 */
 	public function create(array $fields) {
 		return $this->getDbCrud()->create($fields);
@@ -59,7 +59,7 @@ class Crud {
 	/**
 	 * Add multiple rows with specified data.
 	 *
-	 * @param array $fields array of array column-value pairs.
+	 * @param  array $fields array of array column-value pairs.
 	 * @return int The number of affected rows.
 	 */
 	public function createMany(array $data) {
@@ -69,7 +69,7 @@ class Crud {
 	/**
 	 * Retrieve a row by primary key.
 	 *
-	 * @param array $pk Column-value pairs.
+	 * @param  array $pk Column-value pairs.
 	 * @return array
 	 */
 	public function retrieve(array $pk) {
@@ -79,8 +79,8 @@ class Crud {
 	/**
 	 * Update a row by primary key.
 	 *
-	 * @param array $pk Column-value pairs.
-	 * @param array $bind Column-value pairs.
+	 * @param  array $pk Column-value pairs.
+	 * @param  array $bind Column-value pairs.
 	 * @return int The number of affected rows.
 	 */
 	public function update(array $pk, array $bind) {
@@ -90,7 +90,7 @@ class Crud {
 	/**
 	 * Delete a row by primary key.
 	 *
-	 * @param array $pk Column-value pairs.
+	 * @param  array $pk Column-value pairs.
 	 * @return int The number of affected rows.
 	 */
 	public function delete(array $pk) {
@@ -122,8 +122,8 @@ class Crud {
 	/**
 	 * Insert or update a row with specified data.
 	 *
-	 * @param array $fields Column-value pairs.
-	 * @param array $updates Column-value pairs.
+	 * @param  array $fields Column-value pairs.
+	 * @param  array $updates Column-value pairs.
 	 * @return int The number of affected rows.
 	 */
 	public function change(array $fields, array $updates = []) {
@@ -133,7 +133,7 @@ class Crud {
 	/**
 	 * Return row count.
 	 *
-	 * @param mixed $where array or string.
+	 * @param  mixed $where array or string.
 	 * @return int
 	 */
 	public function count($where = null) {

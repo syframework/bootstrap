@@ -10,11 +10,6 @@ class Buttons extends \Sy\Component\WebComponent {
 		$this->url = $url;
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
-	}
-
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Buttons.html');
@@ -25,6 +20,11 @@ class Buttons extends \Sy\Component\WebComponent {
 		}
 		$this->addJsCode(__DIR__ . '/Buttons.js');
 		$this->setVar('URL', $this->url);
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

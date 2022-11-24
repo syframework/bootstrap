@@ -58,7 +58,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			'value'       => $mail,
 			'placeholder' => 'Your e-mail',
 		], [
-			'label' => 'E-mail'
+			'label' => 'E-mail',
 		]);
 
 		// Anti spam field
@@ -70,7 +70,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			'required'    => 'required',
 			'placeholder' => 'Your message',
 		], [
-			'label' => 'Message'
+			'label' => 'Message',
 		]);
 
 		// Send button
@@ -91,11 +91,11 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			$mail->setReplyTo($this->post('email'));
 			$mail->send();
 			$this->setSuccess($this->_('Message sent'));
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch(\Sy\Bootstrap\Lib\Mail\Exception $e) {
+		} catch (\Sy\Bootstrap\Lib\Mail\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Message not sent'));
 			$this->fill($_POST);

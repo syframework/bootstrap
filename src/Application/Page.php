@@ -28,6 +28,16 @@ abstract class Page extends \Sy\Component\Html\Page {
 	private $contentVars;
 
 	/**
+	 * Method called before init
+	 */
+	abstract protected function preInit();
+
+	/**
+	 * Method called after init
+	 */
+	abstract protected function postInit();
+
+	/**
 	 * @param string|null $pageId
 	 */
 	public function __construct($pageId = null) {
@@ -35,17 +45,40 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Flash message created as soon as possible to handle clear request
 		$this->layoutVars = [
-			'_FLASH_MESSAGE' => new \Sy\Bootstrap\Component\FlashMessage()
+			'_FLASH_MESSAGE' => new \Sy\Bootstrap\Component\FlashMessage(),
 		];
 		$this->contentVars = [];
 		$this->layout = '';
-		$this->pageId = empty($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string) $pageId;
+		$this->pageId = empty($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string)$pageId;
 		$_REQUEST[ACTION_TRIGGER] = $this->pageId;
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
+	/**
+	 * User connection page
+	 */
+	public function userConnectionAction() {
+		$service = \Project\Service\Container::getInstance();
+		if ($service->user->getCurrentUser()->isConnected()) {
+			$this->redirect(WEB_ROOT . '/');
+		}
+		$this->setContentVars([
+			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
+		]);
+		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
+	}
+
+	/**
+	 * User reset password page
+	 */
+	public function userPasswordAction() {
+		$service = \Project\Service\Container::getInstance();
+		$user = $service->user->retrieve(['email' => $this->get('email')]);
+		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
+			$this->redirect(WEB_ROOT . '/');
+		}
+		$this->setContentVars([
+			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email')),
+		]);
 	}
 
 	/**
@@ -85,16 +118,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 	protected function setContentVars(array $vars) {
 		$this->contentVars = array_merge($this->contentVars, $vars);
 	}
-
-	/**
-	 * Method called before init
-	 */
-	abstract protected function preInit();
-
-	/**
-	 * Method called after init
-	 */
-	abstract protected function postInit();
 
 	private function init() {
 		$this->addTranslator(LANG_DIR);
@@ -253,9 +276,9 @@ abstract class Page extends \Sy\Component\Html\Page {
 				'FILE_BROWSE'     => Url::build('editor', 'browse', ['id' => $name, 'item' => 'page', 'type' => 'file']),
 				'FILE_UPLOAD'     => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file']),
 				'IMG_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image', 'json' => '']),
-				'FILE_UPLOAD_AJAX'=> Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
+				'FILE_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
 				'CKEDITOR_ROOT'   => CKEDITOR_ROOT,
-				'GET_URL'         => Url::build('api', 'page', ['id' => $name, 'lang' => $lang])
+				'GET_URL'         => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
 			]);
 			$js->setBlock('UPDATE_BLOCK');
 			$body->setBlock('UPDATE_INLINE_BTN_BLOCK');
@@ -276,7 +299,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 			$body->setBlock('DELETE_BTN_BLOCK');
 			$js->setVars([
 				'CONFIRM_DELETE' => $this->_('Are you sure to delete this page?'),
-				'DELETE_FORM_ID' => 'delete-' . $name
+				'DELETE_FORM_ID' => 'delete-' . $name,
 			]);
 			$js->setBlock('DELETE_BLOCK');
 		}
@@ -311,32 +334,9 @@ abstract class Page extends \Sy\Component\Html\Page {
 		return $body;
 	}
 
-	/**
-	 * User connection page
-	 */
-	public function userConnectionAction() {
-		$service = \Project\Service\Container::getInstance();
-		if ($service->user->getCurrentUser()->isConnected()) {
-			$this->redirect(WEB_ROOT . '/');
-		}
-		$this->setContentVars([
-			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel()
-		]);
-		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
-	}
-
-	/**
-	 * User reset password page
-	 */
-	public function userPasswordAction() {
-		$service = \Project\Service\Container::getInstance();
-		$user = $service->user->retrieve(['email' => $this->get('email')]);
-		if (empty($user) or $user['status'] !== 'active' or $this->get('token') !== $user['token']) {
-			$this->redirect(WEB_ROOT . '/');
-		}
-		$this->setContentVars([
-			'FORM' => new \Sy\Bootstrap\Component\User\ResetPassword($this->get('email'))
-		]);
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

@@ -59,8 +59,8 @@ class Date {
 	/**
 	 * Format the date/time value as a string.
 	 *
-	 * @param string $format Possible patterns are documented at https://unicode-org.github.io/icu/userguide/format_parse/datetime
-	 * @param string $timezone List of supported timezones: https://www.php.net/manual/en/timezones.php
+	 * @param  string $format Possible patterns are documented at https://unicode-org.github.io/icu/userguide/format_parse/datetime
+	 * @param  string $timezone List of supported timezones: https://www.php.net/manual/en/timezones.php
 	 * @return string
 	 */
 	public function f($format, $timezone = null) {

@@ -45,13 +45,13 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 			$this->validatePost();
 			$this->updateRow();
 			$this->setSuccess($this->_('Saved'));
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			if (is_null($this->getOption('error'))) {
 				$this->setError($this->_('Please fill the form correctly'));
 			}
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Database error'));
 			$this->fill($_POST);

@@ -37,11 +37,6 @@ class Picture extends \Sy\Component\Html\Form\Element {
 		$this->setTemplateFile(__DIR__ . '/Picture.tpl');
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
-	}
-
 	/**
 	 * @param string $value JSON
 	 * {
@@ -90,6 +85,11 @@ class Picture extends \Sy\Component\Html\Form\Element {
 		]);
 
 		$this->addJsCode(__DIR__ . '/Picture.js');
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

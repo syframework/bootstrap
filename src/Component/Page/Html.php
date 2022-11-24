@@ -4,6 +4,7 @@ namespace Sy\Bootstrap\Component\Page;
 class Html extends \Sy\Bootstrap\Component\Form {
 
 	private $id;
+
 	private $lang;
 
 	public function __construct($id, $lang) {
@@ -21,7 +22,7 @@ class Html extends \Sy\Bootstrap\Component\Form {
 		$codeArea->setAttributes([
 			'name' => 'html',
 			'id'   => 'codearea_html_' . $this->id,
-			'placeholder' => 'HTML Code here...'
+			'placeholder' => 'HTML Code here...',
 		]);
 		$codeArea->setMode('php');
 
@@ -60,11 +61,11 @@ class Html extends \Sy\Bootstrap\Component\Form {
 			}
 
 			$this->setSuccess($this->_('Source code updated successfully'));
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Database error'));
 			$this->fill($_POST);

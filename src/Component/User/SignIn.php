@@ -19,7 +19,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 			],
 			[
 				'label'          => 'E-mail',
-				'floating-label' => true
+				'floating-label' => true,
 			],
 			$fieldset
 		);
@@ -31,7 +31,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 			],
 			[
 				'label'          => 'Password',
-				'floating-label' => true
+				'floating-label' => true,
 			],
 			$fieldset
 		);

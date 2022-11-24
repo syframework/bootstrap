@@ -8,7 +8,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 		if (!$service->user->getCurrentUser()->hasPermission('page-update')) {
 			$this->forbidden([
 				'status' => 'ko',
-				'message' => 'Permission denied'
+				'message' => 'Permission denied',
 			]);
 		}
 	}
@@ -55,7 +55,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 			$res = [
 				'uploaded' => (empty($message) ? 1 : 0),
 				'filename' => $file,
-				'url' => $url
+				'url' => $url,
 			];
 
 			if (!empty($message)) $res['error']['message'] = $message;

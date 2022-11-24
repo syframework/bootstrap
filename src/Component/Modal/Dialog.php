@@ -43,11 +43,6 @@ class Dialog extends \Sy\Component\WebComponent {
 		$this->size   = null;
 	}
 
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
-	}
-
 	/**
 	 * @param string $title
 	 */
@@ -61,7 +56,9 @@ class Dialog extends \Sy\Component\WebComponent {
 	public function setBody(...$body) {
 		// Flatten array
 		$res = [];
-		array_walk_recursive($body, function($a) use (&$res) { $res[] = $a; });
+		array_walk_recursive($body, function($a) use (&$res) {
+			$res[] = $a;
+		});
 		$this->body = $res;
 	}
 
@@ -71,7 +68,9 @@ class Dialog extends \Sy\Component\WebComponent {
 	public function setFooter(...$footer) {
 		// Flatten array
 		$res = [];
-		array_walk_recursive($footer, function($a) use (&$res) { $res[] = $a; });
+		array_walk_recursive($footer, function($a) use (&$res) {
+			$res[] = $a;
+		});
 		$this->footer = $res;
 	}
 
@@ -123,6 +122,11 @@ class Dialog extends \Sy\Component\WebComponent {
 		if (!is_null($this->size)) {
 			$this->setVar('SIZE', 'modal-' . $this->size);
 		}
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

@@ -38,12 +38,14 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		$md5 = md5(strtolower(trim($email)));
 
 		// Csrf check
-		if ($service->user->getCsrfToken() !== $this->post('__csrf')) exit;
+		if ($service->user->getCsrfToken() !== $this->post('__csrf')) {
+			return $this->forbidden(['message' => 'CSRF token error']);
+		}
 
 		$fileName = AVATAR_DIR . '/' . "$md5.png";
 		\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
 		\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
-		exit;
+		return $this->ok(['message' => 'Upload complete']);
 	}
 
 	/**
@@ -51,11 +53,14 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	 */
 	public function feedAction() {
 		$class = $this->get('class');
-		if (is_null($class)) exit;
+		if (is_null($class)) {
+			return $this->requestError(['message' => 'Missing class parameter']);
+		}
 		$feed = new $class();
-		if (!$feed instanceof \Sy\Bootstrap\Component\Feed) exit;
-		echo $feed;
-		exit;
+		if (!$feed instanceof \Sy\Bootstrap\Component\Feed) {
+			return $this->requestError(['message' => "$class is not an instance of Feed"]);
+		}
+		return $this->ok($feed);
 	}
 
 	/**
@@ -64,7 +69,7 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	public function csrfAction() {
 		$service = \Project\Service\Container::getInstance();
 		$this->ok([
-			'csrf' => $service->user->getCsrfToken()
+			'csrf' => $service->user->getCsrfToken(),
 		]);
 	}
 

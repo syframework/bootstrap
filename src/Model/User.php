@@ -37,7 +37,7 @@ class User {
 	/**
 	 * Check if user a specific role
 	 *
-	 * @param string $role
+	 * @param  string $role
 	 * @return boolean
 	 */
 	public function hasRole($role) {
@@ -48,7 +48,7 @@ class User {
 	/**
 	 * Check if user has a specific permission
 	 *
-	 * @param string $permission
+	 * @param  string $permission
 	 * @return boolean
 	 */
 	public function hasPermission($permission) {
@@ -63,7 +63,7 @@ class User {
 	/**
 	 * Get a user setting
 	 *
-	 * @param string $key
+	 * @param  string $key
 	 * @return string
 	 */
 	public function getSetting($key) {
@@ -78,8 +78,8 @@ class User {
 	/**
 	 * Set a user setting
 	 *
-	 * @param string $key
-	 * @param string $value
+	 * @param  string $key
+	 * @param  string $value
 	 * @return void
 	 */
 	public function setSetting($key, $value) {

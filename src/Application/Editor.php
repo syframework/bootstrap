@@ -56,10 +56,10 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 
 		if (file_exists($dir)) {
 			$files = scandir($dir);
-			if( count($files) > 2 ) { /* The 2 accounts for . and .. */
+			if (count($files) > 2) { /* The 2 accounts for . and .. */
 				// All files
-				foreach( $files as $file ) {
-					if( file_exists($dir . '/' . $file) and $file != '.' and $file != '..' and !is_dir($dir . '/' . $file) ) {
+				foreach ($files as $file) {
+					if (file_exists($dir . '/' . $file) and $file != '.' and $file != '..' and !is_dir($dir . '/' . $file)) {
 						$url = UPLOAD_ROOT . "/$item/$type/$id/$file";
 						$c->setVars(array(
 							'FILE_NAME'  => $file,

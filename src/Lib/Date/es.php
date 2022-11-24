@@ -29,5 +29,5 @@ return [
 	'a minute ago'               => 'hace un minuto',
 	'%i minutes ago'             => 'hace %i minutos',
 	'just now'                   => 'justo ahora',
-	'yyyy-MM-dd'                 => 'dd/MM/yyyy'
+	'yyyy-MM-dd'                 => 'dd/MM/yyyy',
 ];

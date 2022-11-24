@@ -4,8 +4,8 @@ namespace Sy\Bootstrap\Component\Nav;
 class Element extends \Sy\Component\Html\Navigation {
 
 	/**
-	 * @param string $label
-	 * @param array $data
+	 * @param  string $label
+	 * @param  array $data
 	 * @return boolean true if the link is active
 	 */
 	public function addLink($label, array $data) {

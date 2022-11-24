@@ -1,5 +1,5 @@
 <?php
-namespace Sy\Bootstrap\Application\Page;
+namespace Sy\Bootstrap\Component\Api;
 
 class NotFoundException extends Exception {
 

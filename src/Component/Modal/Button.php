@@ -4,13 +4,21 @@ namespace Sy\Bootstrap\Component\Modal;
 class Button extends \Sy\Component\WebComponent {
 
 	private $id;
+
 	private $label;
+
 	private $icon;
+
 	private $color;
+
 	private $width;
+
 	private $size;
+
 	private $title;
+
 	private $attributes;
+
 	private $dialog;
 
 	/**
@@ -34,11 +42,6 @@ class Button extends \Sy\Component\WebComponent {
 		$this->title = $title;
 		$this->attributes = $attributes;
 		$this->dialog = new Dialog($id, '');
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 	/**
@@ -66,7 +69,7 @@ class Button extends \Sy\Component\WebComponent {
 			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
 			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
 			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
-			'ATTR'  => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes))
+			'ATTR'  => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes)),
 		]);
 
 		$js = new \Sy\Component();
@@ -74,8 +77,13 @@ class Button extends \Sy\Component\WebComponent {
 		$js->setComponent('DIALOG', $this->dialog);
 		$this->addJsCode($js);
 
-		// Need to be set for merging dialog javascript
-		$this->setComponent('DIALOG', $this->dialog);
+		// Need to merge dialog javascript
+		$this->mergeJs($this->dialog);
+	}
+
+	public function __toString() {
+		$this->init();
+		return parent::__toString();
 	}
 
 }

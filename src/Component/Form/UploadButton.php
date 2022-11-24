@@ -4,6 +4,7 @@ namespace Sy\Bootstrap\Component\Form;
 class UploadButton extends \Sy\Component\Html\Form\Element {
 
 	private $icon;
+
 	private $accept;
 
 	public function __construct($label, $icon = 'upload', $accept = '') {
@@ -13,7 +14,7 @@ class UploadButton extends \Sy\Component\Html\Form\Element {
 		$maxSize = \Sy\Bootstrap\Lib\Upload::getMaxFileSize();
 		$this->setVars([
 			'MAX_UPLOAD_SIZE' => $maxSize,
-			'MAX_SIZE'        => $maxSize/(1024*1024),
+			'MAX_SIZE'        => $maxSize / (1024 * 1024),
 			'LABEL'           => $label,
 		]);
 		$this->icon   = $icon;

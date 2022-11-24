@@ -10,11 +10,6 @@ class Menu extends Element {
 		$this->menu = $menu;
 	}
 
-	public function __toString() {
-		$this->init($this->menu);
-		return parent::__toString();
-	}
-
 	public function addDropdown($title, SubMenu $subMenu, $active = false) {
 		$a = new \Sy\Component\Html\Element('a');
 		$a->setAttributes([
@@ -67,6 +62,11 @@ class Menu extends Element {
 		$this->addTranslator(LANG_DIR);
 		$this->addClass('navbar-nav');
 		$this->add($menu);
+	}
+
+	public function __toString() {
+		$this->init($this->menu);
+		return parent::__toString();
 	}
 
 }

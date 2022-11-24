@@ -33,13 +33,13 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
-		} catch(\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
+		} catch (\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Account not activated'));
-		} catch(\Sy\Bootstrap\Service\User\Exception $e) {
+		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Error'));
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->setError($this->_('Database error'));
 		}

@@ -4,11 +4,11 @@
 	"type": "library",
 	"require": {
 		"php": ">=7",
-		"sy/html": "^1.0",
+		"sy/html": "^2.0",
 		"sy/mysql": "^3.0",
 		"sy/container": "^1",
 		"sy/cache": "^1",
-		"sy/mail": "^1",
+		"sy/mail": "^2",
 		"sy/event": "^1",
 		"hashids/hashids": "^4.1"
 	},

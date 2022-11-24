@@ -24,7 +24,7 @@ class ForgetPassword extends \Sy\Bootstrap\Lib\Mail\HtmlTranslate {
 		// Body
 		$url = PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('page', 'user-password', [
 			'email' => $this->getTo(),
-			'token' => $this->token
+			'token' => $this->token,
 		]);
 
 		$txt = new \Sy\Component\WebComponent();

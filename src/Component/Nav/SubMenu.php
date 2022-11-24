@@ -10,8 +10,8 @@ class SubMenu extends \Sy\Component\Html\Element {
 	}
 
 	/**
-	 * @param string $label
-	 * @param array $data
+	 * @param  string $label
+	 * @param  array $data
 	 * @return boolean true if the link is active
 	 */
 	public function addLink($label, array $data) {

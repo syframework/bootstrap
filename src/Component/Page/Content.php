@@ -8,13 +8,13 @@ class Content extends \Sy\Component\WebComponent {
 		$this->setTemplateFile(__DIR__ . '/Content.html');
 	}
 
+	private function init() {
+		$this->addTranslator(LANG_DIR);
+	}
+
 	public function __toString() {
 		$this->init();
 		return parent::__toString();
-	}
-
-	private function init() {
-		$this->addTranslator(LANG_DIR);
 	}
 
 }

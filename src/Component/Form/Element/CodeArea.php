@@ -14,11 +14,6 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$this->preInit();
 	}
 
-	public function __toString() {
-		$this->postInit();
-		return parent::__toString();
-	}
-
 	public function setTheme($theme) {
 		$this->theme = $theme;
 	}
@@ -57,6 +52,11 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 			'PLACEHOLDER'  => $this->getAttribute('placeholder'),
 		]);
 		$this->addJsCode($js);
+	}
+
+	public function __toString() {
+		$this->postInit();
+		return parent::__toString();
 	}
 
 }

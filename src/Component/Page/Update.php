@@ -4,6 +4,7 @@ namespace Sy\Bootstrap\Component\Page;
 class Update extends \Sy\Bootstrap\Component\Form\Crud {
 
 	private $id;
+
 	private $lang;
 
 	public function __construct($id, $lang) {

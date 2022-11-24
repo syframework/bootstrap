@@ -19,7 +19,7 @@ class Js extends \Sy\Bootstrap\Component\Form {
 		$codeArea->setAttributes([
 			'name' => 'js',
 			'id'   => 'codearea_js_' . $this->id,
-			'placeholder' => 'JS Code here...'
+			'placeholder' => 'JS Code here...',
 		]);
 		$codeArea->setMode('javascript');
 
@@ -38,11 +38,11 @@ class Js extends \Sy\Bootstrap\Component\Form {
 			}
 			file_put_contents(TPL_DIR . "/Application/Page/js/$this->id.js", $this->post('js'));
 			$this->setSuccess($this->_('JS updated successfully'));
-		} catch(\Sy\Component\Html\Form\Exception $e) {
+		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch(\Sy\Db\MySql\Exception $e) {
+		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Database error'));
 			$this->fill($_POST);

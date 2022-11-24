@@ -7,13 +7,9 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 	private $body;
 
-	public function __toString() {
-		$this->init();
-		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
-		$this->setDescription(HeadData::getDescription());
-		$this->addBody($this->body);
-		return parent::__toString();
-	}
+	abstract protected function preInit();
+
+	abstract protected function postInit();
 
 	private function init() {
 		$this->addTranslator(LANG_DIR);
@@ -42,8 +38,12 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->postInit();
 	}
 
-	abstract protected function preInit();
-
-	abstract protected function postInit();
+	public function __toString() {
+		$this->init();
+		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
+		$this->setDescription(HeadData::getDescription());
+		$this->addBody($this->body);
+		return parent::__toString();
+	}
 
 }

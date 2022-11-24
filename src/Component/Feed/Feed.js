@@ -10,7 +10,7 @@
 			lastId = button.data('start');
 		}
 		var params = button.data('params');
-		params['class']= button.data('class');
+		params['class'] = button.data('class');
 		params['last'] = lastId;
 		$.get(
 			button.data('location'),

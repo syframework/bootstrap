@@ -260,7 +260,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Javascript code
 		$js = new \Sy\Component();
-		$js->setTemplateFile(__DIR__ . '/Page/Body.js');
+		$js->setTemplateFile(__DIR__ . '/Page/Body.js.tpl');
 
 		// Update inline
 		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {

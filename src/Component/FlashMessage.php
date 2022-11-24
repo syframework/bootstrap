@@ -17,7 +17,7 @@ class FlashMessage extends \Sy\Component\WebComponent {
 		$this->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.html');
 
 		$js = new \Sy\Component\WebComponent();
-		$js->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.js');
+		$js->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.js.tpl');
 
 		$message = \Sy\Bootstrap\Lib\FlashMessage::getMessage();
 		if (!is_null($message)) {

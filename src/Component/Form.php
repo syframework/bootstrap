@@ -3,13 +3,19 @@ namespace Sy\Bootstrap\Component;
 
 abstract class Form extends \Sy\Component\Html\Form {
 
-	public function init() {
-		$this->addTranslator(LANG_DIR);
+	public function init() {}
 
-		$this->setOptions([
-			'error-class'   => 'alert alert-danger',
-			'success-class' => 'alert alert-success',
-		]);
+	public function initialize($preInit = null, $postInit = null) {
+		parent::initialize(function () use ($preInit) {
+			$this->addTranslator(LANG_DIR);
+
+			$this->setOptions([
+				'error-class'   => 'alert alert-danger',
+				'success-class' => 'alert alert-success',
+			]);
+
+			if (is_callable($preInit)) $preInit();
+		}, $postInit);
 	}
 
 	public function validatePost() {

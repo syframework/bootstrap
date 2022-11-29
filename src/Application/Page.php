@@ -251,6 +251,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 		// Create
 		if ($service->user->getCurrentUser()->hasPermission('page-create')) {
 			$form = new \Sy\Bootstrap\Component\Page\Create();
+			$form->initialize();
 			$form->getField('lang')->setAttribute('value', $lang);
 			$body->setComponent('NEW_PAGE_FORM', $form);
 			$body->addJsCode("$('#new-page-modal').has('div.alert').modal('show');");

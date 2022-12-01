@@ -211,6 +211,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 		}
 		if (!file_exists($f)) {
 			touch($f);
+			chmod($f, 0666);
 		}
 		$content = new WebComponent();
 		$content->setTemplateFile($f);

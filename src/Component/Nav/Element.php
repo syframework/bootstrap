@@ -1,7 +1,11 @@
 <?php
 namespace Sy\Bootstrap\Component\Nav;
 
-class Element extends \Sy\Component\Html\Navigation {
+use Sy\Component\Html\Navigation;
+use Sy\Component\Html\Link;
+use Sy\Bootstrap\Lib\Url;
+
+class Element extends Navigation {
 
 	/**
 	 * @param  string $label
@@ -16,7 +20,7 @@ class Element extends \Sy\Component\Html\Navigation {
 		if (isset($data['fa'])) $icon = '<span class="fas fa-' . $data['fa'] . '"></span> ';
 		if (isset($data['page'])) {
 			if (isset($data['param'])) {
-				$link = \Sy\Bootstrap\Lib\Url::build('page', $data['page'], $data['param']);
+				$link = Url::build('page', $data['page'], $data['param']);
 				$active = ($this->get(CONTROLLER_TRIGGER) === 'page' and $this->get(ACTION_TRIGGER) === $data['page']);
 				if ($active) {
 					foreach ($data['param'] as $k => $v) {
@@ -27,7 +31,7 @@ class Element extends \Sy\Component\Html\Navigation {
 					}
 				}
 			} else {
-				$link = \Sy\Bootstrap\Lib\Url::build('page', $data['page']);
+				$link = Url::build('page', $data['page']);
 				$active = ($this->get(CONTROLLER_TRIGGER) === 'page' and $this->get(ACTION_TRIGGER) === $data['page']);
 			}
 		} elseif (isset($data['url'])) {
@@ -43,8 +47,7 @@ class Element extends \Sy\Component\Html\Navigation {
 		if ($active) {
 			$attributes['class'] .= ' active';
 		}
-		$item = $this->addItem($icon . $this->_($label), $link, $attributes);
-		$item->addClass('nav-item');
+		$this->addItem(new Link($icon . $this->_($label), $link, $attributes), attributes: ['class' => 'nav-item']);
 		return $active;
 	}
 

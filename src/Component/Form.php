@@ -527,7 +527,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addButton($label, array $attributes = [], array $options = [], $container = null) {
 		$color = isset($options['color']) ? $options['color'] : 'secondary';
-		$attributes['class'] = (isset($attributes['class']) ? $attributes['class'] . ' ' : '') . "btn btn-$color" . (empty($options['size']) ? '' : " btn-${options['size']}");
+		$attributes['class'] = (isset($attributes['class']) ? $attributes['class'] . ' ' : '') . "btn btn-$color" . (empty($options['size']) ? '' : " btn-{$options['size']}");
 
 		// Icon
 		if (isset($options['icon'])) {

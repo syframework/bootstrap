@@ -97,21 +97,25 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 				$this->fields[$row['Field']] = $field;
 				continue;
 			} elseif ($row['Comment'] === 'select') {
-				$field = $this->addSelect(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
+				$field = $this->addSelect(['name' => 'form[' . $row['Field'] . ']', 'id' => $row['Field'] . '-' . uniqid()], ['label' => $this->fieldLabel($row['Field'])]);
 				$this->fields[$row['Field']] = $field;
 				continue;
+			} elseif ($row['Comment'] === 'tel') {
+				$field = $this->addTel(['name' => 'form[' . $row['Field'] . ']', 'id' => $row['Field'] . '-' . uniqid()], ['label' => $this->fieldLabel($row['Field'])]);
+			} elseif ($row['Comment'] === 'url') {
+				$field = $this->addUrl(['name' => 'form[' . $row['Field'] . ']', 'id' => $row['Field'] . '-' . uniqid()], ['label' => $this->fieldLabel($row['Field'])]);
 			} elseif ($row['Comment'] === 'textarea') {
-				$field = $this->addTextarea(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
+				$field = $this->addTextarea(['name' => 'form[' . $row['Field'] . ']', 'id' => $row['Field'] . '-' . uniqid()], ['label' => $this->fieldLabel($row['Field'])]);
 			} else {
 				$method = ($row['Type'] === 'text') ? 'addTextarea' : 'addTextInput';
-				$field = $this->$method(['name' => 'form[' . $row['Field'] . ']'], ['label' => $this->fieldLabel($row['Field'])]);
+				$field = $this->$method(['name' => 'form[' . $row['Field'] . ']', 'id' => $row['Field'] . '-' . uniqid()], ['label' => $this->fieldLabel($row['Field'])]);
 			}
 			if ($row['Key'] === 'PRI') {
 				$field->setAttribute('required', 'required');
 			}
 			if (!empty($item)) {
 				if ($row['Type'] === 'text' or $row['Comment'] === 'textarea') {
-					$field->setContent([$item[$row['Field']]]);
+					$field->setContent($item[$row['Field']]);
 				} else {
 					$field->setAttribute('value', $item[$row['Field']] ?? '');
 				}

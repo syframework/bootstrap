@@ -14,7 +14,7 @@ class User extends Crud {
 	/**
 	 * Current user
 	 *
-	 * @var Model\User
+	 * @var \Sy\Bootstrap\Model\User
 	 */
 	protected $currentUser;
 
@@ -89,6 +89,7 @@ class User extends Crud {
 	 * Sign up
 	 *
 	 * @param  string $email
+	 * @param  string|null $password Optionnal password
 	 * @throws User\SignUpException
 	 */
 	public function signUp($email, $password = null) {
@@ -243,6 +244,9 @@ class User extends Crud {
 		return password_verify($password, $hash);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function delete(array $pk) {
 		$res = $this->retrieve($pk);
 		parent::delete($pk);
@@ -289,7 +293,8 @@ class User extends Crud {
 	 * @return string Encrypted text
 	 */
 	protected function encrypt($text) {
-		return base64_encode(openssl_encrypt($text, 'AES-256-CBC', defined('PROJECT_KEY') ? PROJECT_KEY : ''));
+		$key = str_split(md5(defined('PROJECT_KEY') ? PROJECT_KEY : ''), 16);
+		return base64_encode(openssl_encrypt($text, 'AES-256-CBC', $key[0], OPENSSL_RAW_DATA, $key[1]));
 	}
 
 	/**
@@ -297,7 +302,8 @@ class User extends Crud {
 	 * @return string Decrypted text
 	 */
 	protected function decrypt($text) {
-		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', defined('PROJECT_KEY') ? PROJECT_KEY : '');
+		$key = str_split(md5(defined('PROJECT_KEY') ? PROJECT_KEY : ''), 16);
+		return openssl_decrypt(base64_decode($text), 'AES-256-CBC', $key[0], OPENSSL_RAW_DATA, $key[1]);
 	}
 
 }

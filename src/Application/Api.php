@@ -43,9 +43,13 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		}
 
 		$fileName = AVATAR_DIR . '/' . "$md5.png";
-		\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
-		\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
-		return $this->ok(['message' => 'Upload complete']);
+		try {
+			\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
+			\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
+			return $this->ok(['message' => 'Upload complete']);
+		} catch (\Sy\Bootstrap\Lib\Upload\Exception $e) {
+			return $this->serverError(['message' => $e->getMessage()]);
+		};
 	}
 
 	/**

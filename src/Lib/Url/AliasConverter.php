@@ -9,9 +9,12 @@ class AliasConverter implements IConverter {
 	private $lang;
 
 	/**
-	 * @param string $lang
+	 * @param string|null $lang
 	 */
-	public function __construct($lang) {
+	public function __construct($lang = null) {
+		if (is_null($lang)) {
+			$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		}
 		$this->lang = $lang;
 	}
 

@@ -13,15 +13,27 @@ class Url {
 	 * Fill $_REQUEST and $_GET with the first converter match.
 	 */
 	public static function analyse() {
-		foreach (self::$converters as $converter) {
-			$params = $converter->urlToParams($_SERVER['REQUEST_URI']);
-			if (empty($params)) continue;
-			foreach ($params as $k => $v) {
-				$_REQUEST[$k] = $v;
-				$_GET[$k] = $v;
-			}
-			return;
+		$params = self::resolve($_SERVER['REQUEST_URI']);
+		if (!$params) return;
+		foreach ($params as $k => $v) {
+			$_REQUEST[$k] = $v;
+			$_GET[$k] = $v;
 		}
+	}
+
+	/**
+	 * Try to match a converter pattern and return the parameters array
+	 * Return false if URL not resolved
+	 *
+	 * @param  string $url
+	 * @return array|false
+	 */
+	public static function resolve($url) {
+		foreach (self::$converters as $converter) {
+			$params = $converter->urlToParams($url);
+			if ($params) return $params;
+		}
+		return false;
 	}
 
 	/**

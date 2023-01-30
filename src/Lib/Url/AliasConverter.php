@@ -39,7 +39,8 @@ class AliasConverter implements IConverter {
 			$action = $params[ACTION_TRIGGER];
 			unset($params[ACTION_TRIGGER]);
 		}
-		$lang = $this->lang;
+		$lang = $params['lang'] ?? $this->lang;
+		unset($params['lang']);
 		$query = http_build_query($params);
 		$path = "$controller" . (isset($action) ? "/$action" : '');
 		if (empty($query)) {
@@ -73,7 +74,7 @@ class AliasConverter implements IConverter {
 		list($uri, $queryString) = array_pad(explode('?', $url, 2), 2, null);
 		$alias = trim(substr($uri, strlen(WEB_ROOT) + 1), '/');
 		if (empty($alias)) return false;
-		list($path) = AliasManager::retrievePath($alias);
+		list($path, $lang) = AliasManager::retrievePath($alias);
 		if (empty($path)) return false;
 		$r = explode('?', $path, 2);
 
@@ -89,6 +90,8 @@ class AliasConverter implements IConverter {
 				$params[$key] = $value;
 			}
 		}
+
+		$params['lang'] = $lang;
 
 		$queryParams = [];
 		if (!is_null($queryString)) parse_str($queryString, $queryParams);

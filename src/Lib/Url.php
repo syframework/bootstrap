@@ -13,7 +13,7 @@ class Url {
 	 * Fill $_REQUEST and $_GET with the first converter match.
 	 */
 	public static function analyse() {
-		$params = self::resolve($_SERVER['REQUEST_URI']);
+		$params = self::convertToParams($_SERVER['REQUEST_URI']);
 		if (!$params) return;
 		foreach ($params as $k => $v) {
 			$_REQUEST[$k] = $v;
@@ -23,15 +23,30 @@ class Url {
 
 	/**
 	 * Try to match a converter pattern and return the parameters array
-	 * Return false if URL not resolved
+	 * Return false if no pattern match found
 	 *
 	 * @param  string $url
 	 * @return array|false
 	 */
-	public static function resolve($url) {
+	public static function convertToParams($url) {
 		foreach (self::$converters as $converter) {
 			$params = $converter->urlToParams($url);
 			if ($params) return $params;
+		}
+		return false;
+	}
+
+	/**
+	 * Try to match a converter pattern and return the URL
+	 * Return false if no pattern match found
+	 *
+	 * @param  array $params
+	 * @return string|false
+	 */
+	public static function convertToUrl(array $params) {
+		foreach (self::$converters as $converter) {
+			$url = $converter->paramsToUrl($params);
+			if ($url) return $url;
 		}
 		return false;
 	}
@@ -60,10 +75,8 @@ class Url {
 		if (!is_null($action)) {
 			$params[ACTION_TRIGGER] = is_array($action) ? implode('/', $action) : $action;
 		}
-		foreach (self::$converters as $converter) {
-			$url = $converter->paramsToUrl($params + $parameters);
-			if ($url) return $url . (empty($anchor) ? '' : "#$anchor");
-		}
+		$url = self::convertToUrl($params + $parameters);
+		if ($url) return $url . (empty($anchor) ? '' : "#$anchor");
 		if (!is_null($action)) {
 			$action = is_array($action) ? $action : explode('/', $action);
 			$a = array_shift($action);

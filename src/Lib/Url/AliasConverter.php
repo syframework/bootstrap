@@ -71,7 +71,8 @@ class AliasConverter implements IConverter {
 	 * {@inheritDoc}
 	 */
 	public function urlToParams($url) {
-		list($uri, $queryString) = array_pad(explode('?', $url, 2), 2, null);
+		$uri = parse_url($url, PHP_URL_PATH);
+		$queryString = parse_url($url, PHP_URL_QUERY);
 		$alias = trim(substr($uri, strlen(WEB_ROOT) + 1), '/');
 		if (empty($alias)) return false;
 		list($path, $lang) = AliasManager::retrievePath($alias);

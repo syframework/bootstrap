@@ -47,7 +47,8 @@ class ControllerActionConverter implements IConverter {
 	public function urlToParams($url) {
 		$url = trim($url);
 		if (empty($url)) return false;
-		list($uri, $queryString) = array_pad(explode('?', $url, 2), 2, null);
+		$uri = parse_url($url, PHP_URL_PATH);
+		$queryString = parse_url($url, PHP_URL_QUERY);
 		$path = substr($uri, strlen(WEB_ROOT) + 1);
 		if (empty($path)) return false;
 		$p = explode('/', $path);

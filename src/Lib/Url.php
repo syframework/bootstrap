@@ -119,7 +119,7 @@ class Url {
 			return PROJECT_URL . AVATAR_ROOT . "/$md5.png";
 		} else {
 			// TO DO: libravatar federated servers
-			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://avatars.dicebear.com/api/avataaars/$md5.svg");
+			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/5.x/avataaars/svg?seed=$md5");
 		}
 	}
 

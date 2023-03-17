@@ -84,18 +84,24 @@ class Str {
 		return $matches[0];
 	}
 
+	/**
+	 * Replace all Youtube links found in a text by its embed iframe
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertYoutube($string) {
 		return preg_replace(
-			"/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
-			" <span class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" src=\"//www.youtube-nocookie.com/embed/$2\" allowfullscreen></iframe></span> ",
+			"/[a-zA-Z\/\/:\.]*youtu(?:be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)(?:[&?\/]t=)?(\d*)(?:[a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+			"<span class=\"ratio ratio-16x9\"><iframe src=\"https://www.youtube-nocookie.com/embed/$1?start=$2\" allowfullscreen></iframe></span>",
 			$string
 		);
 	}
 
 	public static function convertDailymotion($string) {
 		return preg_replace(
-			"/\s*[a-zA-Z\/\/:\.]*dai(lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
-			" <span class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" src=\"//www.dailymotion.com/embed/video/$2\" allowfullscreen></iframe></span> ",
+			"/\s*[a-zA-Z\/\/:\.]*dai(?:lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+			"<span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/$1\" allowfullscreen></iframe></span>",
 			$string
 		);
 	}

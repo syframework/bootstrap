@@ -98,9 +98,15 @@ class Str {
 		);
 	}
 
+	/**
+	 * Replace all Dailymotion links found in a text by its embed iframe
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertDailymotion($string) {
 		return preg_replace(
-			"/\s*[a-zA-Z\/\/:\.]*dai(?:lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+			"/[a-zA-Z\/\/:\.]*dai(?:lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
 			"<span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/$1\" allowfullscreen></iframe></span>",
 			$string
 		);

@@ -53,4 +53,27 @@ class StrTest extends TestCase {
 		);
 	}
 
+	public function testConvertDailymotion() {
+		// Long URL
+		$text = "Some text before... https://www.dailymotion.com/video/abc-def_123 some text after...";
+		$this->assertEquals(
+			"Some text before... <span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/abc-def_123\" allowfullscreen></iframe></span> some text after...",
+			Str::convertDailymotion($text)
+		);
+
+		// Short URL
+		$text = "Some text before... https://dai.ly/abc-def_123 some text after...";
+		$this->assertEquals(
+			"Some text before... <span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/abc-def_123\" allowfullscreen></iframe></span> some text after...",
+			Str::convertDailymotion($text)
+		);
+
+		// With other parameters in URL
+		$text = "Some text before... https://www.dailymotion.com/video/abc-def_123&param=other some text after...";
+		$this->assertEquals(
+			"Some text before... <span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/abc-def_123\" allowfullscreen></iframe></span> some text after...",
+			Str::convertDailymotion($text)
+		);
+	}
+
 }

@@ -98,4 +98,23 @@ class StrTest extends TestCase {
 		$this->assertEquals('lib_c', Str::camlToSnake('libC'));
 	}
 
+	public function testSnakeToCaml() {
+		$this->assertEquals('simpleTest', Str::snakeToCaml('simple_test'));
+		$this->assertEquals('easy', Str::snakeToCaml('easy'));
+		$this->assertEquals('simpleXml', Str::snakeToCaml('simple_xml'));
+		$this->assertEquals('startMiddleEnd', Str::snakeToCaml('start_middle_end'));
+		$this->assertEquals('aString', Str::snakeToCaml('a_string'));
+		$this->assertEquals('some4Numbers234', Str::snakeToCaml('some4_numbers234'));
+		$this->assertEquals('test123String', Str::snakeToCaml('test123_string'));
+		$this->assertEquals('helloWorld', Str::snakeToCaml('hello_world'));
+		$this->assertEquals('helloWorld', Str::snakeToCaml('hello___world'));
+		$this->assertEquals('helloWorld', Str::snakeToCaml('_hello_world_'));
+		$this->assertEquals('helloWorldFoo', Str::snakeToCaml('hello_world_foo'));
+		$this->assertEquals('helloWorld', Str::snakeToCaml('hello-world'));
+		$this->assertEquals('myHtmlFiLe', Str::snakeToCaml('my_html_fi_le'));
+		$this->assertEquals('aBaBaB', Str::snakeToCaml('a_ba_ba_b'));
+		$this->assertEquals('baBaBa', Str::snakeToCaml('ba_ba_ba'));
+		$this->assertEquals('libC', Str::snakeToCaml('lib_c'));
+	}
+
 }

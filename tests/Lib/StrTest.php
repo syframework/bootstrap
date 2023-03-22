@@ -117,4 +117,15 @@ class StrTest extends TestCase {
 		$this->assertEquals('libC', Str::snakeToCaml('lib_c'));
 	}
 
+	public function testSlugify() {
+		$this->assertEquals('hello-world', Str::slugify('Hello World'));
+		$this->assertEquals('hello-world', Str::slugify('  Hello   World  '));
+		$this->assertEquals('lapostrophe', Str::slugify("l'apostrophe"));
+	}
+
+	public function testRemoveAccent() {
+		$this->assertEquals('episode', Str::removeAccent('épisode'));
+		$this->assertEquals('a la gare', Str::removeAccent('à la gare'));
+	}
+
 }

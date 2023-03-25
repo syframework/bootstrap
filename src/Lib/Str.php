@@ -3,14 +3,31 @@ namespace Sy\Bootstrap\Lib;
 
 class Str {
 
+	/**
+	 * @var array
+	 */
 	private static $c = [];
 
+	/**
+	 * @var array
+	 */
 	private static $v = [];
 
+	/**
+	 * @var array
+	 */
 	private static $cc = [];
 
+	/**
+	 * @var array
+	 */
 	private static $vv = [];
 
+	/**
+	 * Return a random name
+	 *
+	 * @return string
+	 */
 	public static function generateName() {
 		$t = [
 			['v', 'cc', 'vv'],
@@ -25,14 +42,30 @@ class Str {
 		return ucfirst($n);
 	}
 
+	/**
+	 * Return a random nickname
+	 *
+	 * @return string
+	 */
 	public static function generateNickname() {
 		return self::generateName() . ' ' . self::generateName();
 	}
 
+	/**
+	 * Return a nickname from an email address
+	 *
+	 * @param  string $email
+	 * @return string
+	 */
 	public static function generateNicknameFromEmail($email) {
 		return ucwords(trim(preg_replace('/[^a-z]/', ' ', strtolower(explode('@', $email)[0]))));
 	}
 
+	/**
+	 * Return a random password
+	 *
+	 * @return string
+	 */
 	public static function generatePassword() {
 		return str_shuffle(implode(array_map(function ($a, $b) {
 			return substr(str_shuffle($a), 0, $b);
@@ -67,6 +100,16 @@ class Str {
 	 */
 	public static function truncateUrl($url) {
 		return (strlen($url) > 45) ? substr($url, 0, 30) . '[ ... ]' . substr($url, -15) : $url;
+	}
+
+	/**
+	 * Replace all line breaks to <br /> found in a text
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertLineBreaks($string) {
+		return str_replace(["\r\n", "\r", "\n"], '<br />', $string);
 	}
 
 	/**

@@ -9,6 +9,10 @@ use Sy\Bootstrap\Lib\Str;
  */
 class StrTest extends TestCase {
 
+	public function testConvertLineBreaks() {
+		$this->assertEquals('foo<br />bar<br />baz<br />', Str::convertLineBreaks("foo\nbar\rbaz\r\n"));
+	}
+
 	public function testEscapeHtmlTags() {
 		$this->assertEquals('Hello <strong&gt;world</strong&gt;', Str::escapeHtmlTags('Hello <strong>world</strong>'));
 	}

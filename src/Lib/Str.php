@@ -73,26 +73,6 @@ class Str {
 	}
 
 	/**
-	 * Replace the '>' character by its html entity '&gt;' found in a string
-	 *
-	 * @param  string $string
-	 * @return string
-	 */
-	public static function escapeHtmlTags($string) {
-		return str_replace('>', '&gt;', $string);
-	}
-
-	/**
-	 * Replace the '}' character bt its html entity '&rcurb;' found in a string
-	 *
-	 * @param  string $string
-	 * @return string
-	 */
-	public static function escapeTemplateSlots($string) {
-		return str_replace('}', '&rcurb;', $string);
-	}
-
-	/**
 	 * Truncate an URL if length greater than 45 chars
 	 *
 	 * @param  string $url
@@ -100,16 +80,6 @@ class Str {
 	 */
 	public static function truncateUrl($url) {
 		return (strlen($url) > 45) ? substr($url, 0, 30) . '[ ... ]' . substr($url, -15) : $url;
-	}
-
-	/**
-	 * Replace all line breaks to <br /> found in a text
-	 *
-	 * @param  string $string
-	 * @return string
-	 */
-	public static function convertLineBreaks($string) {
-		return str_replace(["\r\n", "\r", "\n"], '<br />', $string);
 	}
 
 	/**
@@ -123,8 +93,38 @@ class Str {
 		if (empty($name)) {
 			return 'Someone';
 		} else {
-			return self::escapeHtmlTags($name);
+			return self::convertHtmlTag($name);
 		}
+	}
+
+	/**
+	 * Replace the '>' character by its html entity '&gt;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertHtmlTag($string) {
+		return str_replace('>', '&gt;', $string);
+	}
+
+	/**
+	 * Replace the '}' character bt its html entity '&rcurb;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertTemplateSlot($string) {
+		return str_replace('}', '&rcurb;', $string);
+	}
+
+	/**
+	 * Replace all line breaks to <br /> found in a text
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertLineBreak($string) {
+		return str_replace(["\r\n", "\r", "\n"], '<br />', $string);
 	}
 
 	/**
@@ -158,17 +158,6 @@ class Str {
 	 */
 	public static function convertImg($string) {
 		return preg_replace('/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><a href="http$1://$2.$3$4" target="_blank"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /></a><figcaption class="figure-caption text-center">$7</figcaption></figure>', $string);
-	}
-
-	/**
-	 * Extract image URL from a given string
-	 *
-	 * @param  string $string
-	 * @return array
-	 */
-	public static function extractImgUrl($string) {
-		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
-		return $matches[0];
 	}
 
 	/**
@@ -207,20 +196,25 @@ class Str {
 	 * @return string
 	 */
 	public static function convert($string, $dofollow = true) {
-		return str_replace(
-			["\r\n", "\r", "\n"],
-			" <br />",
-			self::convertLink(
-				self::convertImg(
-					self::convertDailymotion(
-						self::convertYoutube(
-							htmlentities($string, ENT_QUOTES, 'UTF-8')
-						)
-					)
-				),
-				$dofollow
-			)
-		);
+		$text = self::convertHtmlTag($string);
+		$text = self::convertTemplateSlot($text);
+		$text = self::convertYoutube($text);
+		$text = self::convertDailymotion($text);
+		$text = self::convertImg($text);
+		$text = self::convertLink($text, $dofollow);
+		$text = self::convertLineBreak($text);
+		return $text;
+	}
+
+	/**
+	 * Extract image URL from a given string
+	 *
+	 * @param  string $string
+	 * @return array
+	 */
+	public static function extractImgUrl($string) {
+		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
+		return $matches[0];
 	}
 
 	/**
@@ -272,6 +266,9 @@ class Str {
 		return lcfirst(str_replace('_', '', ucwords(str_replace('-', '_', $string), '_')));
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function c() {
 		if (empty(self::$c)) {
 			$c = [
@@ -303,6 +300,9 @@ class Str {
 		return self::$c[array_rand(self::$c, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function v() {
 		if (empty(self::$v)) {
 			$v = ['a' => 30, 'e' => 30, 'i' => 15, 'o' => 15, 'u' => 9, 'y' => 1];
@@ -313,6 +313,9 @@ class Str {
 		return self::$v[array_rand(self::$v, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function cc() {
 		if (empty(self::$cc)) {
 			$c = [
@@ -352,6 +355,9 @@ class Str {
 		return self::$cc[array_rand(self::$cc, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function vv() {
 		if (empty(self::$vv)) {
 			$v = ['a' => 25, 'e' => 25, 'ea' => 3, 'ee' => 3, 'au' => 2, 'eu' => 3, 'ei' => 1, 'i' => 14, 'o' => 14, 'oo' => 1, 'u' => 9, 'y' => 1];

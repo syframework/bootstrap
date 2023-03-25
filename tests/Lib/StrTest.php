@@ -9,16 +9,16 @@ use Sy\Bootstrap\Lib\Str;
  */
 class StrTest extends TestCase {
 
-	public function testConvertLineBreaks() {
-		$this->assertEquals('foo<br />bar<br />baz<br />', Str::convertLineBreaks("foo\nbar\rbaz\r\n"));
+	public function testConvertLineBreak() {
+		$this->assertEquals('foo<br />bar<br />baz<br />', Str::convertLineBreak("foo\nbar\rbaz\r\n"));
 	}
 
-	public function testEscapeHtmlTags() {
-		$this->assertEquals('Hello <strong&gt;world</strong&gt;', Str::escapeHtmlTags('Hello <strong>world</strong>'));
+	public function testConvertHtmlTag() {
+		$this->assertEquals('Hello <strong&gt;world</strong&gt;', Str::convertHtmlTag('Hello <strong>world</strong>'));
 	}
 
-	public function testEscapeTemplateSlots() {
-		$this->assertEquals('hello {SLOT&rcurb;', Str::escapeTemplateSlots('hello {SLOT}'));
+	public function testConvertTemplateSlot() {
+		$this->assertEquals('hello {SLOT&rcurb;', Str::convertTemplateSlot('hello {SLOT}'));
 	}
 
 	public function testConvertName() {
@@ -139,8 +139,8 @@ class StrTest extends TestCase {
 
 	public function testConvert() {
 		$this->assertEquals(
-			'image: <figure class="figure"><a href="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> target="_blank"><img class="figure-img img-fluid rounded" src="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a>',
-			Str::convert('image: https://example.com/image.png link: https://foo.com/bar')
+			'image: <figure class="figure"><a href="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> target="_blank"><img class="figure-img img-fluid rounded" src="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; <html&gt;',
+			Str::convert("image: https://example.com/image.png link: https://foo.com/bar \n {SLOT} <html>")
 		);
 	}
 

@@ -39,38 +39,82 @@ class Str {
 		}, ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0123456789', '!@#$%&*_:+-()[]'], [6, 4, 3, 2])));
 	}
 
+	/**
+	 * Replace the '>' character by its html entity '&gt;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function escapeHtmlTags($string) {
+		return str_replace('>', '&gt;', $string);
+	}
+
+	/**
+	 * Replace the '}' character bt its html entity '&rcurb;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function escapeTemplateSlots($string) {
+		return str_replace('}', '&rcurb;', $string);
+	}
+
+	/**
+	 * Truncate an URL if length greater than 45 chars
+	 *
+	 * @param  string $url
+	 * @return string
+	 */
 	public static function truncateUrl($url) {
 		return (strlen($url) > 45) ? substr($url, 0, 30) . '[ ... ]' . substr($url, -15) : $url;
 	}
 
+	/**
+	 * Transform a user name, return 'Someone' if name is empty
+	 *
+	 * @param  string $name
+	 * @return string
+	 */
 	public static function convertName($name) {
 		$name = trim($name);
 		if (empty($name)) {
 			return 'Someone';
 		} else {
-			return htmlentities($name, ENT_QUOTES, 'UTF-8');
+			return self::escapeHtmlTags($name);
 		}
 	}
 
-	public static function convertAdfly($string) {
-		if (!defined('ADFLY_KEY') or !defined('ADFLY_UID') or !defined('ADFLY_DOMAIN')) return $string;
-		return preg_replace_callback('@href="((https?:)?//[^\s/$.?#].[^\s]*)"@i', function($matches) {
-			return 'href="' . file_get_contents('http://api.adf.ly/api.php?key=' . ADFLY_KEY . '&uid=' . ADFLY_UID . '&advert_type=int&domain=' . ADFLY_DOMAIN . '&url=' . urlencode(trim($matches[1], '/'))) . '"';
-		}, $string);
-	}
-
+	/**
+	 * Replace all URL found in a text by html link
+	 *
+	 * @param  string $string
+	 * @param  boolean $dofollow
+	 * @return string
+	 */
 	public static function convertLink($string, $dofollow = false) {
-		return preg_replace_callback('@((https?|ftp)://[^\s/$.?#].[^\s]*)@i', function($matches) use($dofollow) {
+		return preg_replace_callback('@((https?|ftp)://[^\s/$.?#].[^\s<]*)@i', function($matches) use($dofollow) {
 			return '<a href="' . $matches[1] . '" target="_blank"' . ($dofollow ? '' : ' rel="nofollow"') . '>' . self::truncateUrl($matches[1]) . '</a>';
 		}, $string);
 	}
 
+	/**
+	 * Replace all image URL found in a text by img tag
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertSimpleImg($string) {
-		return preg_replace('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><img class="figure-img img-fluid rounded" src="//$1.$2$3" alt="$6" /><figcaption class="figure-caption text-center">$6</figcaption></figure>', $string);
+		return preg_replace('/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /><figcaption class="figure-caption text-center">$7</figcaption></figure>', $string);
 	}
 
+	/**
+	 * Replace all image URL found in a text by img tag with a link
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertImg($string) {
-		return preg_replace('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><a href="//$1.$2$3" target="_blank"><img class="figure-img img-fluid rounded" src="//$1.$2$3" alt="$6" /></a><figcaption class="figure-caption text-center">$6</figcaption></figure>', $string);
+		return preg_replace('/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><a href="http$1://$2.$3$4" target="_blank"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /></a><figcaption class="figure-caption text-center">$7</figcaption></figure>', $string);
 	}
 
 	/**
@@ -112,21 +156,26 @@ class Str {
 		);
 	}
 
+	/**
+	 * Transform a text to be ready for html render
+	 *
+	 * @param  string $string
+	 * @param  boolean $dofollow
+	 * @return string
+	 */
 	public static function convert($string, $dofollow = true) {
 		return str_replace(
 			["\r\n", "\r", "\n"],
 			" <br />",
-			self::convertAdfly(
-				self::convertLink(
-					self::convertImg(
-						self::convertDailymotion(
-							self::convertYoutube(
-								htmlentities($string, ENT_QUOTES, 'UTF-8')
-							)
+			self::convertLink(
+				self::convertImg(
+					self::convertDailymotion(
+						self::convertYoutube(
+							htmlentities($string, ENT_QUOTES, 'UTF-8')
 						)
-					),
-					$dofollow
-				)
+					)
+				),
+				$dofollow
 			)
 		);
 	}

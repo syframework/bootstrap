@@ -14,7 +14,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testConvertHtmlTag() {
-		$this->assertEquals('Hello <strong&gt;world</strong&gt;', Str::convertHtmlTag('Hello <strong>world</strong>'));
+		$this->assertEquals('Hello &lt;strong&gt;world&lt;/strong&gt;', Str::convertHtmlTag('Hello <strong>world</strong>'));
 	}
 
 	public function testConvertTemplateSlot() {
@@ -24,7 +24,7 @@ class StrTest extends TestCase {
 	public function testConvertName() {
 		$this->assertEquals('Someone', Str::convertName(''));
 		$this->assertEquals('John Doe', Str::convertName('John Doe'));
-		$this->assertEquals('John <b&gt;Doe</b&gt;', Str::convertName('John <b>Doe</b>'));
+		$this->assertEquals('John &lt;b&gt;Doe&lt;/b&gt;', Str::convertName('John <b>Doe</b>'));
 	}
 
 	public function testTruncateUrl() {
@@ -143,7 +143,7 @@ class StrTest extends TestCase {
 
 	public function testConvert() {
 		$this->assertEquals(
-			'image: <figure class="figure"><a href="https://example.com/image.png" target="_blank"><img class="figure-img img-fluid rounded" src="https://example.com/image.png" alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; <html&gt;',
+			'image: <figure class="figure"><a href="https://example.com/image.png" target="_blank"><img class="figure-img img-fluid rounded" src="https://example.com/image.png" alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; &lt;html&gt;',
 			Str::convert("image: https://example.com/image.png link: https://foo.com/bar \n {SLOT} <html>")
 		);
 	}

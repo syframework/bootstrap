@@ -104,7 +104,7 @@ class Str {
 	 * @return string
 	 */
 	public static function convertHtmlTag($string) {
-		return str_replace('>', '&gt;', $string);
+		return htmlspecialchars($string, ENT_NOQUOTES, 'UTF-8');
 	}
 
 	/**

@@ -68,6 +68,7 @@ class ItemIdConverter implements IConverter {
 	 * {@inheritDoc}
 	 */
 	public function urlToParams($url) {
+		if (is_null($url)) return false;
 		$url = trim($url);
 		if (empty($url)) return false;
 		$uri = parse_url($url, PHP_URL_PATH);

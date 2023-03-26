@@ -135,7 +135,7 @@ class Str {
 	 * @return string
 	 */
 	public static function convertLink($string, $dofollow = false) {
-		return preg_replace_callback('@((https?|ftp)://[^\s/$.?#].[^\s<]*)@i', function($matches) use($dofollow) {
+		return preg_replace_callback('@(?<![\'"])((https?|ftp)://[^\s/$.?#].[^\s<]*)@i', function($matches) use($dofollow) {
 			return '<a href="' . $matches[1] . '" target="_blank"' . ($dofollow ? '' : ' rel="nofollow"') . '>' . self::truncateUrl($matches[1]) . '</a>';
 		}, $string);
 	}

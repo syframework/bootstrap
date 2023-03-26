@@ -47,6 +47,10 @@ class StrTest extends TestCase {
 			'hello world <a href="https://example.com/hello-world" target="_blank">https://example.com/hello-world</a> foo bar baz',
 			Str::convertLink('hello world https://example.com/hello-world foo bar baz', true)
 		);
+		$this->assertEquals(
+			'"https://example.com/hello-world"',
+			Str::convertLink('"https://example.com/hello-world"')
+		);
 	}
 
 	public function testConvertSimpleImg() {
@@ -139,7 +143,7 @@ class StrTest extends TestCase {
 
 	public function testConvert() {
 		$this->assertEquals(
-			'image: <figure class="figure"><a href="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> target="_blank"><img class="figure-img img-fluid rounded" src="<a href="https://example.com/image.png"" target="_blank">https://example.com/image.png"</a> alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; <html&gt;',
+			'image: <figure class="figure"><a href="https://example.com/image.png" target="_blank"><img class="figure-img img-fluid rounded" src="https://example.com/image.png" alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; <html&gt;',
 			Str::convert("image: https://example.com/image.png link: https://foo.com/bar \n {SLOT} <html>")
 		);
 	}

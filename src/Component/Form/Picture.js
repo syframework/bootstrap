@@ -120,11 +120,11 @@ var SyFormPicture = {
 		for (var id in pictures) {
 			var caption = pictures[id].caption === undefined ? '' : pictures[id].caption;
 			html += `
-			< div class = "sy-picture-container" style = "position:relative;display:inline-block" >
-				< img class = "sy-picture-img img-fluid rounded" src = "data:image/png;base64,${pictures[id].image}" style = "margin:10px;max-width:250px;max-height:250px" /  >
-				< button style = "position:absolute;top:10px;right:0" class = "btn btn-secondary btn-sm sy-picture-rm" data - id = "${id}" > < span class = "fas fa-times" > < / span > < / button >
-				< input type = "text" class = "form-control sy-picture-caption" data - id = "${id}" placeholder = "${placeholder}" value = "${caption}" /  >
-			<  / div > `;
+			<div class="sy-picture-container" style="position:relative;display:inline-block">
+				<img class="sy-picture-img img-fluid rounded" src="data:image/png;base64,${pictures[id].image}" style="margin:10px;max-width:250px;max-height:250px" />
+				<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}"><span class="fas fa-times"></span></button>
+				<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
+			</div>`;
 		}
 		$(hidden).nextAll('.sy-picture-div').first().html(html);
 	}

@@ -13,6 +13,11 @@ abstract class Api extends \Sy\Component\WebComponent {
 
 	protected $param;
 
+	/**
+	 * Throw an exception if do not pass security check
+	 *
+	 * @throws \Throwable
+	 */
 	abstract public function security();
 
 	public function __construct() {

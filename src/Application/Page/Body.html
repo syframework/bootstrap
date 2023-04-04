@@ -100,8 +100,8 @@
 <div class="modal fade" id="sy-code-modal">
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content">
-			<div class="modal-header pb-0">
-				<ul class="nav nav-tabs" style="margin-bottom: -1px; margin-left: 40px;" role="tablist">
+			<div class="modal-header py-2">
+				<ul class="nav nav-pills" role="tablist">
 					<li class="nav-item" role="presentation">
 						<button class="nav-link active" id="sy-html-tab" data-bs-toggle="tab" data-bs-target="#sy-html-tab-content" type="button" role="tab" aria-controls="html" aria-selected="true">
 							HTML
@@ -118,12 +118,14 @@
 						</button>
 					</li>
 				</ul>
-				<button type="button" class="btn-close mb-2" data-bs-dismiss="modal"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
-			<div class="tab-content">
-				<div class="tab-pane fade show active" id="sy-html-tab-content" role="tabpanel" aria-labelledby="html-tab">{HTML_FORM}</div>
-				<div class="tab-pane fade" id="sy-css-tab-content" role="tabpanel" aria-labelledby="css-tab">{CSS_FORM}</div>
-				<div class="tab-pane fade" id="sy-js-tab-content" role="tabpanel" aria-labelledby="js-tab">{JS_FORM}</div>
+			<div class="modal-body overflow-hidden p-0">
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="sy-html-tab-content" role="tabpanel" aria-labelledby="html-tab">{HTML_FORM}</div>
+					<div class="tab-pane fade" id="sy-css-tab-content" role="tabpanel" aria-labelledby="css-tab">{CSS_FORM}</div>
+					<div class="tab-pane fade" id="sy-js-tab-content" role="tabpanel" aria-labelledby="js-tab">{JS_FORM}</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button form="{FORM_HTML_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>

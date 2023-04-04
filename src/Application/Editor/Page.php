@@ -6,10 +6,7 @@ class Page extends \Sy\Bootstrap\Component\Api {
 	public function security() {
 		$service = \Project\Service\Container::getInstance();
 		if (!$service->user->getCurrentUser()->hasPermission('page-update')) {
-			$this->forbidden([
-				'status' => 'ko',
-				'message' => 'Permission denied',
-			]);
+			throw new \Sy\Bootstrap\Component\Api\ForbiddenException('Permission denied');
 		}
 	}
 

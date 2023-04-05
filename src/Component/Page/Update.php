@@ -5,12 +5,9 @@ class Update extends \Sy\Bootstrap\Component\Form\Crud {
 
 	private $id;
 
-	private $lang;
-
-	public function __construct($id, $lang) {
+	public function __construct($id) {
 		$this->id = $id;
-		$this->lang = $lang;
-		parent::__construct('page', ['id' => $id, 'lang' => $lang]);
+		parent::__construct('page', ['id' => $id]);
 	}
 
 	public function init() {

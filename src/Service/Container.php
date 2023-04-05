@@ -4,10 +4,12 @@ namespace Sy\Bootstrap\Service;
 use Sy\Debug\Debugger;
 use Sy\Cache\SimpleCache;
 use Sy\Event\EventDispatcher;
+use Sy\Translate\LangDetector;
 
 /**
  * @method        static Container getInstance()
  * @property-read Debugger $debug Debug and log service
+ * @property-read LangDetector $lang Language detection service
  * @property-read EventDispatcher $event Event dispatcher service
  * @property-read User $user User service
  * @property-read Mail $mail Mail service
@@ -22,6 +24,9 @@ class Container extends \Sy\Container {
 
 		$this->debug = function () {
 			return Debugger::getInstance();
+		};
+		$this->lang = function () {
+			return LangDetector::getInstance(LANG);
 		};
 		$this->event = function () {
 			return new EventDispatcher();

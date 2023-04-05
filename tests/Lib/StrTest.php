@@ -200,4 +200,8 @@ class StrTest extends TestCase {
 		$this->assertEquals('a la gare', Str::removeAccent('à la gare'));
 	}
 
+	public function testEscape() {
+		$this->assertEquals('hello {SLOT&rcurb; John &lt;b&gt;Doe&lt;/b&gt;', Str::escape('hello {SLOT} John <b>Doe</b>'));
+	}
+
 }

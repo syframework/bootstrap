@@ -215,6 +215,18 @@ class Str {
 	}
 
 	/**
+	 * Escape html tags and template slots
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function escape($string) {
+		$text = self::convertHtmlTag($string);
+		$text = self::convertTemplateSlot($text);
+		return $text;
+	}
+
+	/**
 	 * Extract image URL from a given string
 	 *
 	 * @param  string $string

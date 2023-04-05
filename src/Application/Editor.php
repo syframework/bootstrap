@@ -19,6 +19,8 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 	}
 
 	public function dispatch() {
+		parent::dispatch();
+
 		// If no action method found, check if a plugin api class exists
 		$c = $this->get('item');
 		if (is_null($c)) return $this->requestError(['message' => 'Missing item parameter']);
@@ -28,8 +30,6 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 			$this->setVar('RESPONSE', new $class());
 			return;
 		}
-
-		parent::dispatch();
 	}
 
 	/**

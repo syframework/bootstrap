@@ -128,17 +128,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		$this->preInit();
 
-		// Meta
-		foreach (HeadData::getMeta() as $meta) {
-			$this->setMeta($meta['name'], $meta['content'], $meta['http-equiv']);
-		}
-
-		// Canonical
-		$canonical = HeadData::getCanonical();
-		if (!empty($canonical)) {
-			$this->addLink(['rel' => 'canonical', 'href' => $canonical]);
-		}
-
 		// Lang
 		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
 		HeadData::setHtmlAttribute('lang', $lang);
@@ -154,6 +143,17 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->addBody($this->body());
 		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
 		$this->setDescription(HeadData::getDescription());
+
+		// Meta
+		foreach (HeadData::getMeta() as $meta) {
+			$this->setMeta($meta['name'], $meta['content'], $meta['http-equiv']);
+		}
+
+		// Canonical
+		$canonical = HeadData::getCanonical();
+		if (!empty($canonical)) {
+			$this->addLink(['rel' => 'canonical', 'href' => $canonical]);
+		}
 
 		// Activate the web debug tool bar
 		if (getenv('ENVIRONMENT') === 'dev') {

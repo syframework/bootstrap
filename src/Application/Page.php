@@ -271,19 +271,19 @@ abstract class Page extends \Sy\Component\Html\Page {
 		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {
 			$body->addJsLink(CKEDITOR_JS);
 			$js->setVars([
-				'ID'              => $page['id'],
-				'LANG'            => $lang,
-				'CSRF'            => $service->user->getCsrfToken(),
-				'URL'             => Url::build('api', 'page'),
-				'WEB_ROOT'        => WEB_ROOT,
-				'IMG_BROWSE'      => Url::build('editor', 'browse', ['id' => $name, 'item' => 'page', 'type' => 'image']),
-				'IMG_UPLOAD'      => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image']),
-				'FILE_BROWSE'     => Url::build('editor', 'browse', ['id' => $name, 'item' => 'page', 'type' => 'file']),
-				'FILE_UPLOAD'     => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file']),
-				'IMG_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image', 'json' => '']),
-				'FILE_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
-				'CKEDITOR_ROOT'   => CKEDITOR_ROOT,
-				'GET_URL'         => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
+				'ID'               => $page['id'],
+				'LANG'             => $lang,
+				'CSRF'             => $service->user->getCsrfToken(),
+				'URL'              => Url::build('api', 'page'),
+				'WEB_ROOT'         => WEB_ROOT,
+				'IMG_BROWSE'       => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'image']),
+				'IMG_UPLOAD'       => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image']),
+				'FILE_BROWSE'      => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'file']),
+				'FILE_UPLOAD'      => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file']),
+				'IMG_UPLOAD_AJAX'  => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image', 'json' => '']),
+				'FILE_UPLOAD_AJAX' => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file', 'json' => '']),
+				'CKEDITOR_ROOT'    => CKEDITOR_ROOT,
+				'GET_URL'          => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
 			]);
 			$js->setBlock('UPDATE_BLOCK');
 			$body->setBlock('UPDATE_INLINE_BTN_BLOCK');

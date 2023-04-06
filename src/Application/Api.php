@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
-use Sy\Bootstrap\Lib\Str;
-
 class Api extends \Sy\Bootstrap\Component\Api {
 
 	public function security() {
@@ -20,12 +18,11 @@ class Api extends \Sy\Bootstrap\Component\Api {
 
 	public function dispatch() {
 		// Check if a plugin api class exists
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($this->action));
+		$class = 'Sy\\Bootstrap\\Application\\Api\\' . $this->action;
 		if (class_exists($class)) {
 			$this->setVar('RESPONSE', new $class());
 			return;
 		}
-
 		parent::dispatch();
 	}
 

@@ -8,7 +8,7 @@ trait CkFile {
 	/**
 	 * CKEditor Browse
 	 */
-	public function browseAction() {
+	public function browse() {
 		$func = $this->get('CKEditorFuncNum');
 		$id   = $this->get('id');
 		$item = str_replace('_', '-', Str::camlToSnake($this->action));
@@ -58,7 +58,7 @@ trait CkFile {
 	/**
 	 * CKEditor Upload
 	 */
-	public function uploadAction() {
+	public function upload() {
 		$func = $this->get('CKEditorFuncNum');
 		$id   = $this->get('id');
 		$item = str_replace('_', '-', Str::camlToSnake($this->action));

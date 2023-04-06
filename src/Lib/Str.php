@@ -114,7 +114,7 @@ class Str {
 	 * @return string
 	 */
 	public static function convertTemplateSlot($string) {
-		return str_replace('}', '&rcurb;', $string);
+		return str_replace('}', '&rcub;', $string);
 	}
 
 	/**

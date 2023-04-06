@@ -18,7 +18,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testConvertTemplateSlot() {
-		$this->assertEquals('hello {SLOT&rcurb;', Str::convertTemplateSlot('hello {SLOT}'));
+		$this->assertEquals('hello {SLOT&rcub;', Str::convertTemplateSlot('hello {SLOT}'));
 	}
 
 	public function testConvertName() {
@@ -143,7 +143,7 @@ class StrTest extends TestCase {
 
 	public function testConvert() {
 		$this->assertEquals(
-			'image: <figure class="figure"><a href="https://example.com/image.png" target="_blank"><img class="figure-img img-fluid rounded" src="https://example.com/image.png" alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcurb; &lt;html&gt;',
+			'image: <figure class="figure"><a href="https://example.com/image.png" target="_blank"><img class="figure-img img-fluid rounded" src="https://example.com/image.png" alt="" /></a><figcaption class="figure-caption text-center"></figcaption></figure> link: <a href="https://foo.com/bar" target="_blank">https://foo.com/bar</a> <br /> {SLOT&rcub; &lt;html&gt;',
 			Str::convert("image: https://example.com/image.png link: https://foo.com/bar \n {SLOT} <html>")
 		);
 	}
@@ -201,7 +201,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testEscape() {
-		$this->assertEquals('hello {SLOT&rcurb; John &lt;b&gt;Doe&lt;/b&gt;', Str::escape('hello {SLOT} John <b>Doe</b>'));
+		$this->assertEquals('hello {SLOT&rcub; John &lt;b&gt;Doe&lt;/b&gt;', Str::escape('hello {SLOT} John <b>Doe</b>'));
 	}
 
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Application\Sitemap;
 
+use Sy\Bootstrap\Lib\Url;
+
 class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 
 	/**
@@ -9,9 +11,7 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 	 * @return array An array of URL string
 	 */
 	public function getIndexUrls() {
-		return [
-			PROJECT_URL . \Sy\Bootstrap\Lib\Url::build('sitemap', 'page'),
-		];
+		return [PROJECT_URL . Url::build('sitemap', 'page')];
 	}
 
 	/**
@@ -25,24 +25,24 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 		// Pages with alias
 		$service = \Project\Service\Container::getInstance();
 		$service->page->foreachRow(function($row) use(&$urls) {
-			$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $row['lang']);
-			if (is_null($loc)) return;
+			if (count(LANGS) > 1) {
+				foreach (LANGS as $lang => $label) {
+					$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
+					if (is_null($loc)) {
+						continue;
+					}
 
-			$url['loc'] = PROJECT_URL . '/' . $loc;
-
-			$alt = json_decode($row['alternate'], true);
-			if (count($alt) > 1) {
-				foreach ($alt as $lang) {
-					$url['alternate'][$lang] = PROJECT_URL . '/' . \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
+					$url['loc'] = PROJECT_URL . '/' . $loc;
+					foreach (LANGS as $lang => $label) {
+						$url['alternate'][$lang] = PROJECT_URL . '/' . \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
+					}
+					$urls[] = $url;
 				}
+			} else {
+				$url['loc'] = PROJECT_URL . Url::build('page', $row['id']);
+				$urls[] = $url;
 			}
-
-			$urls[] = $url;
-		}, [
-			'SELECT'   => "t_page.*, CONCAT('[', GROUP_CONCAT(CONCAT('\"', b.lang, '\"')), ']') AS 'alternate'",
-			'JOIN'     => 'LEFT JOIN t_page b ON t_page.id = b.id',
-			'GROUP BY' => 't_page.id, t_page.lang',
-		]);
+		});
 
 		return $urls;
 	}

@@ -25,22 +25,19 @@ class Page implements \Sy\Bootstrap\Application\Sitemap\IProvider {
 		// Pages with alias
 		$service = \Project\Service\Container::getInstance();
 		$service->page->foreachRow(function($row) use(&$urls) {
-			if (count(LANGS) > 1) {
-				foreach (LANGS as $lang => $label) {
-					$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
-					if (is_null($loc)) {
-						continue;
-					}
+			$alias = [];
+			foreach (LANGS as $lang => $label) {
+				$loc = \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
+				if (is_null($loc)) continue;
+				$alias[$lang] = PROJECT_URL . '/' . $loc;
+			}
 
-					$url['loc'] = PROJECT_URL . '/' . $loc;
-					foreach (LANGS as $lang => $label) {
-						$url['alternate'][$lang] = PROJECT_URL . '/' . \Sy\Bootstrap\Lib\Url\AliasManager::retrieveAlias('page/' . $row['id'], $lang);
-					}
-					$urls[] = $url;
+			if (count($alias) > 1) {
+				foreach ($alias as $lang => $loc) {
+					$urls[] = ['loc' => $loc, 'alternate' => $alias];
 				}
-			} else {
-				$url['loc'] = PROJECT_URL . Url::build('page', $row['id']);
-				$urls[] = $url;
+			} elseif (count($alias) === 1) {
+				$urls[] = ['loc' => array_pop($alias)];
 			}
 		});
 

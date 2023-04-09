@@ -93,14 +93,14 @@ trait CkFile {
 			$res = [
 				'uploaded' => (empty($message) ? 1 : 0),
 				'filename' => $file,
-				'url' => $url,
+				'url'      => $url,
 			];
 
 			if (!empty($message)) $res['error']['message'] = $message;
-			$this->ok($res);
+			return $this->ok($res);
 		} else {
 			// Works for ckeditor <= 4.8
-			$this->ok("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($func, '$url', '$message');</script>");
+			return $this->ok("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction($func, '$url', '$message');</script>");
 		}
 	}
 

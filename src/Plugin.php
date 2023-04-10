@@ -61,6 +61,7 @@ class Plugin {
 		}
 
 		// Rebuild all
+		$application = new Application();
 		$application->run(new ArrayInput(['command' => 'install-project']));
 	}
 

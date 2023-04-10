@@ -3,14 +3,59 @@ namespace Sy\Bootstrap\Lib;
 
 class Url {
 
+	/**
+	 * @var Url\IConverter[]
+	 */
 	private static $converters = array();
 
+	/**
+	 * Analyse the request URI with converters.
+	 * Fill $_REQUEST and $_GET with the first converter match.
+	 */
 	public static function analyse() {
-		foreach (self::$converters as $converter) {
-			if ($converter->urlToParams($_SERVER['REQUEST_URI'])) return;
+		$params = self::convertToParams($_SERVER['REQUEST_URI']);
+		if (!$params) return;
+		foreach ($params as $k => $v) {
+			$_REQUEST[$k] = $v;
+			$_GET[$k] = $v;
 		}
 	}
 
+	/**
+	 * Try to match a converter pattern and return the parameters array
+	 * Return false if no pattern match found
+	 *
+	 * @param  string $url
+	 * @return array|false
+	 */
+	public static function convertToParams($url) {
+		foreach (self::$converters as $converter) {
+			$params = $converter->urlToParams($url);
+			if ($params) return $params;
+		}
+		return false;
+	}
+
+	/**
+	 * Try to match a converter pattern and return the URL
+	 * Return false if no pattern match found
+	 *
+	 * @param  array $params
+	 * @return string|false
+	 */
+	public static function convertToUrl(array $params) {
+		foreach (self::$converters as $converter) {
+			$url = $converter->paramsToUrl($params);
+			if ($url) return $url;
+		}
+		return false;
+	}
+
+	/**
+	 * Add a converter in the converter array
+	 *
+	 * @param Url\IConverter $converter
+	 */
 	public static function addConverter(Url\IConverter $converter) {
 		self::$converters[] = $converter;
 	}
@@ -25,29 +70,37 @@ class Url {
 	 * @return string
 	 */
 	public static function build($controller, $action = null, array $parameters = array(), $anchor = null) {
-		$params = $parameters;
+		$params = [];
 		$params[CONTROLLER_TRIGGER] = $controller;
 		if (!is_null($action)) {
 			$params[ACTION_TRIGGER] = is_array($action) ? implode('/', $action) : $action;
 		}
-		foreach (self::$converters as $converter) {
-			$url = $converter->paramsToUrl($params);
-			if (!is_null($url)) return $url . (empty($anchor) ? '' : "#$anchor");
-		}
+		$url = self::convertToUrl($params + $parameters);
+		if ($url) return $url . (empty($anchor) ? '' : "#$anchor");
 		if (!is_null($action)) {
 			$action = is_array($action) ? $action : explode('/', $action);
 			$a = array_shift($action);
 			$params[ACTION_TRIGGER] = $a;
 			$params[ACTION_PARAM] = $action;
 		}
-		return $_SERVER['PHP_SELF'] . (empty($params) ? '' : '?' . http_build_query($params)) . (empty($anchor) ? '' : "#$anchor");
+		return $_SERVER['PHP_SELF'] . '?' . http_build_query($params + $parameters) . (empty($anchor) ? '' : "#$anchor");
 	}
 
+	/**
+	 * Create a referer in session
+	 *
+	 * @param string $referer
+	 */
 	public static function setReferer($referer) {
 		if (!session_id()) session_start();
 		$_SESSION['http_referer'] = $referer;
 	}
 
+	/**
+	 * Retrive the referer from session
+	 *
+	 * @return string
+	 */
 	public static function getReferer() {
 		if (!session_id()) session_start();
 		$referer = isset($_SESSION['http_referer']) ? $_SESSION['http_referer'] : null;
@@ -66,13 +119,8 @@ class Url {
 			return PROJECT_URL . AVATAR_ROOT . "/$md5.png";
 		} else {
 			// TO DO: libravatar federated servers
-			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://avatars.dicebear.com/api/avataaars/$md5.svg");
+			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/5.x/avataaars/svg?seed=$md5");
 		}
-	}
-
-	public static function adfly($url, $type = 'int') {
-		if (!defined('ADFLY_KEY') or !defined('ADFLY_UID') or !defined('ADFLY_DOMAIN')) return $url;
-		return file_get_contents('http://api.adf.ly/api.php?key=' . ADFLY_KEY . '&uid=' . ADFLY_UID . '&advert_type=' . $type . '&domain=' . ADFLY_DOMAIN . '&url=' . urlencode(trim($url, '/')));
 	}
 
 }

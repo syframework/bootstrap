@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
-use Sy\Bootstrap\Lib\Str;
-
 class Api extends \Sy\Bootstrap\Component\Api {
 
 	public function security() {
@@ -20,12 +18,11 @@ class Api extends \Sy\Bootstrap\Component\Api {
 
 	public function dispatch() {
 		// Check if a plugin api class exists
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . ucfirst(Str::snakeToCaml($this->action));
+		$class = 'Sy\\Bootstrap\\Application\\Api\\' . $this->action;
 		if (class_exists($class)) {
 			$this->setVar('RESPONSE', new $class());
 			return;
 		}
-
 		parent::dispatch();
 	}
 
@@ -43,9 +40,13 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		}
 
 		$fileName = AVATAR_DIR . '/' . "$md5.png";
-		\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
-		\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
-		return $this->ok(['message' => 'Upload complete']);
+		try {
+			\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
+			\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
+			return $this->ok(['message' => 'Upload complete']);
+		} catch (\Sy\Bootstrap\Lib\Upload\Exception $e) {
+			return $this->serverError(['message' => $e->getMessage()]);
+		};
 	}
 
 	/**

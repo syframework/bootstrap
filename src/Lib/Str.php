@@ -3,14 +3,31 @@ namespace Sy\Bootstrap\Lib;
 
 class Str {
 
+	/**
+	 * @var array
+	 */
 	private static $c = [];
 
+	/**
+	 * @var array
+	 */
 	private static $v = [];
 
+	/**
+	 * @var array
+	 */
 	private static $cc = [];
 
+	/**
+	 * @var array
+	 */
 	private static $vv = [];
 
+	/**
+	 * Return a random name
+	 *
+	 * @return string
+	 */
 	public static function generateName() {
 		$t = [
 			['v', 'cc', 'vv'],
@@ -25,52 +42,188 @@ class Str {
 		return ucfirst($n);
 	}
 
+	/**
+	 * Return a random nickname
+	 *
+	 * @return string
+	 */
 	public static function generateNickname() {
 		return self::generateName() . ' ' . self::generateName();
 	}
 
+	/**
+	 * Return a nickname from an email address
+	 *
+	 * @param  string $email
+	 * @return string
+	 */
 	public static function generateNicknameFromEmail($email) {
 		return ucwords(trim(preg_replace('/[^a-z]/', ' ', strtolower(explode('@', $email)[0]))));
 	}
 
+	/**
+	 * Return a random password
+	 *
+	 * @return string
+	 */
 	public static function generatePassword() {
 		return str_shuffle(implode(array_map(function ($a, $b) {
 			return substr(str_shuffle($a), 0, $b);
 		}, ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0123456789', '!@#$%&*_:+-()[]'], [6, 4, 3, 2])));
 	}
 
+	/**
+	 * Truncate an URL if length greater than 45 chars
+	 *
+	 * @param  string $url
+	 * @return string
+	 */
 	public static function truncateUrl($url) {
 		return (strlen($url) > 45) ? substr($url, 0, 30) . '[ ... ]' . substr($url, -15) : $url;
 	}
 
+	/**
+	 * Transform a user name, return 'Someone' if name is empty
+	 *
+	 * @param  string $name
+	 * @return string
+	 */
 	public static function convertName($name) {
 		$name = trim($name);
 		if (empty($name)) {
 			return 'Someone';
 		} else {
-			return htmlentities($name, ENT_QUOTES, 'UTF-8');
+			return self::convertHtmlTag($name);
 		}
 	}
 
-	public static function convertAdfly($string) {
-		if (!defined('ADFLY_KEY') or !defined('ADFLY_UID') or !defined('ADFLY_DOMAIN')) return $string;
-		return preg_replace_callback('@href="((https?:)?//[^\s/$.?#].[^\s]*)"@i', function($matches) {
-			return 'href="' . file_get_contents('http://api.adf.ly/api.php?key=' . ADFLY_KEY . '&uid=' . ADFLY_UID . '&advert_type=int&domain=' . ADFLY_DOMAIN . '&url=' . urlencode(trim($matches[1], '/'))) . '"';
-		}, $string);
+	/**
+	 * Replace the '>' character by its html entity '&gt;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertHtmlTag($string) {
+		return htmlspecialchars($string, ENT_NOQUOTES, 'UTF-8');
 	}
 
+	/**
+	 * Replace the '}' character bt its html entity '&rcurb;' found in a string
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertTemplateSlot($string) {
+		return str_replace('}', '&rcub;', $string);
+	}
+
+	/**
+	 * Replace all line breaks to <br /> found in a text
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertLineBreak($string) {
+		return str_replace(["\r\n", "\r", "\n"], '<br />', $string);
+	}
+
+	/**
+	 * Replace all URL found in a text by html link
+	 *
+	 * @param  string $string
+	 * @param  boolean $dofollow
+	 * @return string
+	 */
 	public static function convertLink($string, $dofollow = false) {
-		return preg_replace_callback('@((https?|ftp)://[^\s/$.?#].[^\s]*)@i', function($matches) use($dofollow) {
+		return preg_replace_callback('@(?<![\'"])((https?|ftp)://[^\s/$.?#].[^\s<]*)@i', function($matches) use($dofollow) {
 			return '<a href="' . $matches[1] . '" target="_blank"' . ($dofollow ? '' : ' rel="nofollow"') . '>' . self::truncateUrl($matches[1]) . '</a>';
 		}, $string);
 	}
 
+	/**
+	 * Replace all image URL found in a text by img tag
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertSimpleImg($string) {
-		return preg_replace('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><img class="figure-img img-fluid rounded" src="//$1.$2$3" alt="$6" /><figcaption class="figure-caption text-center">$6</figcaption></figure>', $string);
+		return preg_replace(
+			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
+			'<figure class="figure"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /><figcaption class="figure-caption text-center">$7</figcaption></figure>',
+			$string
+		);
 	}
 
+	/**
+	 * Replace all image URL found in a text by img tag with a link
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
 	public static function convertImg($string) {
-		return preg_replace('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i', '<figure class="figure"><a href="//$1.$2$3" target="_blank"><img class="figure-img img-fluid rounded" src="//$1.$2$3" alt="$6" /></a><figcaption class="figure-caption text-center">$6</figcaption></figure>', $string);
+		return preg_replace(
+			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
+			'<figure class="figure"><a href="http$1://$2.$3$4" target="_blank"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /></a><figcaption class="figure-caption text-center">$7</figcaption></figure>',
+			$string
+		);
+	}
+
+	/**
+	 * Replace all Youtube links found in a text by its embed iframe
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertYoutube($string) {
+		return preg_replace(
+			"/[a-zA-Z\/\/:\.]*youtu(?:be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)(?:[&?\/]t=)?(\d*)(?:[a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+			"<span class=\"ratio ratio-16x9\"><iframe src=\"https://www.youtube-nocookie.com/embed/$1?start=$2\" allowfullscreen></iframe></span>",
+			$string
+		);
+	}
+
+	/**
+	 * Replace all Dailymotion links found in a text by its embed iframe
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function convertDailymotion($string) {
+		return preg_replace(
+			"/[a-zA-Z\/\/:\.]*dai(?:lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
+			"<span class=\"ratio ratio-16x9\"><iframe src=\"https://www.dailymotion.com/embed/video/$1\" allowfullscreen></iframe></span>",
+			$string
+		);
+	}
+
+	/**
+	 * Transform a text to be ready for html render
+	 *
+	 * @param  string $string
+	 * @param  boolean $dofollow
+	 * @return string
+	 */
+	public static function convert($string, $dofollow = true) {
+		$text = self::convertHtmlTag($string);
+		$text = self::convertTemplateSlot($text);
+		$text = self::convertYoutube($text);
+		$text = self::convertDailymotion($text);
+		$text = self::convertImg($text);
+		$text = self::convertLink($text, $dofollow);
+		$text = self::convertLineBreak($text);
+		return $text;
+	}
+
+	/**
+	 * Escape html tags and template slots
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public static function escape($string) {
+		$text = self::convertHtmlTag($string);
+		$text = self::convertTemplateSlot($text);
+		return $text;
 	}
 
 	/**
@@ -82,41 +235,6 @@ class Str {
 	public static function extractImgUrl($string) {
 		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
 		return $matches[0];
-	}
-
-	public static function convertYoutube($string) {
-		return preg_replace(
-			"/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
-			" <span class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" src=\"//www.youtube-nocookie.com/embed/$2\" allowfullscreen></iframe></span> ",
-			$string
-		);
-	}
-
-	public static function convertDailymotion($string) {
-		return preg_replace(
-			"/\s*[a-zA-Z\/\/:\.]*dai(lymotion.com\/video\/|.ly\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i",
-			" <span class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" src=\"//www.dailymotion.com/embed/video/$2\" allowfullscreen></iframe></span> ",
-			$string
-		);
-	}
-
-	public static function convert($string, $dofollow = true) {
-		return str_replace(
-			["\r\n", "\r", "\n"],
-			" <br />",
-			self::convertAdfly(
-				self::convertLink(
-					self::convertImg(
-						self::convertDailymotion(
-							self::convertYoutube(
-								htmlentities($string, ENT_QUOTES, 'UTF-8')
-							)
-						)
-					),
-					$dofollow
-				)
-			)
-		);
 	}
 
 	/**
@@ -168,6 +286,9 @@ class Str {
 		return lcfirst(str_replace('_', '', ucwords(str_replace('-', '_', $string), '_')));
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function c() {
 		if (empty(self::$c)) {
 			$c = [
@@ -199,6 +320,9 @@ class Str {
 		return self::$c[array_rand(self::$c, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function v() {
 		if (empty(self::$v)) {
 			$v = ['a' => 30, 'e' => 30, 'i' => 15, 'o' => 15, 'u' => 9, 'y' => 1];
@@ -209,6 +333,9 @@ class Str {
 		return self::$v[array_rand(self::$v, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function cc() {
 		if (empty(self::$cc)) {
 			$c = [
@@ -248,6 +375,9 @@ class Str {
 		return self::$cc[array_rand(self::$cc, 1)];
 	}
 
+	/**
+	 * @return string
+	 */
 	private static function vv() {
 		if (empty(self::$vv)) {
 			$v = ['a' => 25, 'e' => 25, 'ea' => 3, 'ee' => 3, 'au' => 2, 'eu' => 3, 'ei' => 1, 'i' => 14, 'o' => 14, 'oo' => 1, 'u' => 9, 'y' => 1];

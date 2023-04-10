@@ -51,6 +51,10 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->layout = '';
 		$this->pageId = empty($pageId) ? $this->get(ACTION_TRIGGER, 'home') : (string)$pageId;
 		$_REQUEST[ACTION_TRIGGER] = $this->pageId;
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	/**
@@ -124,17 +128,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		$this->preInit();
 
-		// Meta
-		foreach (HeadData::getMeta() as $meta) {
-			$this->setMeta($meta['name'], $meta['content'], $meta['http-equiv']);
-		}
-
-		// Canonical
-		$canonical = HeadData::getCanonical();
-		if (!empty($canonical)) {
-			$this->addLink(['rel' => 'canonical', 'href' => $canonical]);
-		}
-
 		// Lang
 		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
 		HeadData::setHtmlAttribute('lang', $lang);
@@ -150,6 +143,17 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->addBody($this->body());
 		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
 		$this->setDescription(HeadData::getDescription());
+
+		// Meta
+		foreach (HeadData::getMeta() as $meta) {
+			$this->setMeta($meta['name'], $meta['content'], $meta['http-equiv']);
+		}
+
+		// Canonical
+		$canonical = HeadData::getCanonical();
+		if (!empty($canonical)) {
+			$this->addLink(['rel' => 'canonical', 'href' => $canonical]);
+		}
 
 		// Activate the web debug tool bar
 		if (getenv('ENVIRONMENT') === 'dev') {
@@ -191,7 +195,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Retrieve page
 		$service = \Project\Service\Container::getInstance();
-		$page = $service->page->retrieve(['id' => $name, 'lang' => $lang]);
+		$page = $service->page->retrieve(['id' => $name]);
 
 		// No page found
 		if (empty($page)) $name = '404';
@@ -246,14 +250,13 @@ abstract class Page extends \Sy\Component\Html\Page {
 		}
 
 		// Meta title & description
-		if (empty(HeadData::getTitle())) HeadData::setTitle($page['title']);
-		if (empty(HeadData::getDescription())) HeadData::setDescription($page['description']);
+		if (empty(HeadData::getTitle())) HeadData::setTitle($this->_($page['title']));
+		if (empty(HeadData::getDescription())) HeadData::setDescription($this->_($page['description']));
 
 		// Create
 		if ($service->user->getCurrentUser()->hasPermission('page-create')) {
 			$form = new \Sy\Bootstrap\Component\Page\Create();
 			$form->initialize();
-			$form->getField('lang')->setAttribute('value', $lang);
 			$body->setComponent('NEW_PAGE_FORM', $form);
 			$body->addJsCode("$('#new-page-modal').has('div.alert').modal('show');");
 			$body->setBlock('CREATE_BTN_BLOCK');
@@ -268,19 +271,19 @@ abstract class Page extends \Sy\Component\Html\Page {
 		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {
 			$body->addJsLink(CKEDITOR_JS);
 			$js->setVars([
-				'ID'              => $page['id'],
-				'LANG'            => $page['lang'],
-				'CSRF'            => $service->user->getCsrfToken(),
-				'URL'             => Url::build('api', 'page'),
-				'WEB_ROOT'        => WEB_ROOT,
-				'IMG_BROWSE'      => Url::build('editor', 'browse', ['id' => $name, 'item' => 'page', 'type' => 'image']),
-				'IMG_UPLOAD'      => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image']),
-				'FILE_BROWSE'     => Url::build('editor', 'browse', ['id' => $name, 'item' => 'page', 'type' => 'file']),
-				'FILE_UPLOAD'     => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file']),
-				'IMG_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'image', 'json' => '']),
-				'FILE_UPLOAD_AJAX' => Url::build('editor', 'upload', ['id' => $name, 'item' => 'page', 'type' => 'file', 'json' => '']),
-				'CKEDITOR_ROOT'   => CKEDITOR_ROOT,
-				'GET_URL'         => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
+				'ID'               => $page['id'],
+				'LANG'             => $lang,
+				'CSRF'             => $service->user->getCsrfToken(),
+				'URL'              => Url::build('api', 'page'),
+				'WEB_ROOT'         => WEB_ROOT,
+				'IMG_BROWSE'       => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'image']),
+				'IMG_UPLOAD'       => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image']),
+				'FILE_BROWSE'      => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'file']),
+				'FILE_UPLOAD'      => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file']),
+				'IMG_UPLOAD_AJAX'  => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image', 'json' => '']),
+				'FILE_UPLOAD_AJAX' => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file', 'json' => '']),
+				'CKEDITOR_ROOT'    => CKEDITOR_ROOT,
+				'GET_URL'          => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
 			]);
 			$js->setBlock('UPDATE_BLOCK');
 			$body->setBlock('UPDATE_INLINE_BTN_BLOCK');
@@ -288,14 +291,14 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Update
 		if ($service->user->getCurrentUser()->hasPermission('page-update')) {
-			$body->setComponent('UPDATE_PAGE_FORM', new \Sy\Bootstrap\Component\Page\Update($name, $lang));
+			$body->setComponent('UPDATE_PAGE_FORM', new \Sy\Bootstrap\Component\Page\Update($name));
 			$body->setBlock('UPDATE_BTN_BLOCK');
 			$body->setBlock('UPDATE_MODAL_BLOCK');
 		}
 
 		// Delete
 		if ($service->user->getCurrentUser()->hasPermission('page-delete')) {
-			$deleteForm = new \Sy\Bootstrap\Component\Form\Crud\Delete('page', ['id' => $name, 'lang' => $lang]);
+			$deleteForm = new \Sy\Bootstrap\Component\Form\Crud\Delete('page', ['id' => $name]);
 			$deleteForm->setAttribute('id', 'delete-' . $name);
 			$body->setComponent('DELETE_PAGE_FORM', $deleteForm);
 			$body->setBlock('DELETE_BTN_BLOCK');
@@ -334,11 +337,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$body->addJsCode($js);
 
 		return $body;
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

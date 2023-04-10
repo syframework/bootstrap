@@ -13,13 +13,18 @@ abstract class Api extends \Sy\Component\WebComponent {
 
 	protected $param;
 
+	/**
+	 * Throw an exception if do not pass security check
+	 *
+	 * @throws \Throwable
+	 */
 	abstract public function security();
 
 	public function __construct() {
 		try {
 			parent::__construct();
 			$this->setTemplateContent('{RESPONSE}');
-			$this->action = $this->request(ACTION_TRIGGER);
+			$this->action = ucfirst(Str::snakeToCaml($this->request(ACTION_TRIGGER, '')));
 			$param = $this->request(ACTION_PARAM, ['']);
 			$this->method = array_shift($param);
 			$this->param = $param;
@@ -34,14 +39,16 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$this->notFound(['message' => $e->getMessage()]);
 		} catch (Api\ForbiddenException $e) {
 			$this->forbidden(['message' => $e->getMessage()]);
+		} catch (Api\RequestErrorException $e) {
+			$this->requestError(['message' => $e->getMessage()]);
 		} catch (\Throwable $e) {
 			$this->serverError(['message' => $e->getMessage()]);
 		}
 	}
 
 	public function dispatch() {
-		// 1. User xxx() where xxx is the method attribute
-		if (!empty($this->method)) {
+		// 1. We are in the short named class [$this->action]. Call method [$this->method]().
+		if (((new \ReflectionClass($this))->getShortName() === $this->action) and !empty($this->method)) {
 			$method = Str::snakeToCaml($this->method);
 			if (!method_exists($this, $method)) {
 				throw new Api\NotFoundException('Method ' . $method . ' not found in class ' . get_class($this));
@@ -49,7 +56,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 			return $this->$method();
 		}
 
-		// 2. Use xxxAction() where xxx is the action attribute
+		// 2. Call method [$this->action]Action()
 		if (!empty($this->action)) {
 			$method = Str::snakeToCaml($this->action) . 'Action';
 			if (method_exists($this, $method)) {
@@ -57,7 +64,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 			}
 		}
 
-		// 3. Use xxxAction() where xxx is HTTP method: get, post etc...
+		// 3. Call [$this->verb]Action() where verb is HTTP method: get, post etc...
 		if (empty($this->verb)) throw new Api\Exception('No HTTP method defined');
 		$method = $this->verb . 'Action';
 		if (method_exists($this, $method)) {
@@ -66,6 +73,12 @@ abstract class Api extends \Sy\Component\WebComponent {
 		throw new Api\NotFoundException('No action method found');
 	}
 
+	/**
+	 * Set the API response
+	 *
+	 * @param int $code
+	 * @param array|\Stringable
+	 */
 	public function response($code, $data = null) {
 		http_response_code($code);
 		if (!empty($data) and is_array($data)) {
@@ -78,22 +91,37 @@ abstract class Api extends \Sy\Component\WebComponent {
 		}
 	}
 
+	/**
+	 * @param array|\Stringable
+	 */
 	public function requestError($data = null) {
 		$this->response(400, $data);
 	}
 
+	/**
+	 * @param array|\Stringable
+	 */
 	public function serverError($data = null) {
 		$this->response(500, $data);
 	}
 
+	/**
+	 * @param array|\Stringable
+	 */
 	public function notFound($data = null) {
 		$this->response(404, $data);
 	}
 
+	/**
+	 * @param array|\Stringable
+	 */
 	public function forbidden($data = null) {
 		$this->response(403, $data);
 	}
 
+	/**
+	 * @param array|\Stringable
+	 */
 	public function ok($data = null) {
 		$this->response(200, $data);
 	}

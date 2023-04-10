@@ -11,7 +11,7 @@
 <?php if (isset($ERROR) and $ERROR_POSITION === 'before'): ?>
 <span class="<?php echo $ERROR_CLASS ?>"><?php echo $ERROR ?></span>
 <?php endif ?>
-<textarea<?php if (isset($BLOCK_ATTRIBUTES)): foreach ($BLOCK_ATTRIBUTES as $a): ?> <?php echo $a['NAME'] ?>="<?php echo $a['VALUE'] ?>"<?php endforeach; endif ?>><?php if (isset($BLOCK_CONTENT)): foreach ($BLOCK_CONTENT as $c): echo $c['ELEMENT']; endforeach; endif; ?></textarea>
+<textarea<?php if (isset($BLOCK_ATTRIBUTES)): foreach ($BLOCK_ATTRIBUTES as $a): ?> <?php echo $a['NAME'] ?>="<?php echo $a['VALUE'] ?>"<?php endforeach; endif ?><?php echo isset($CONTENT) ? '>' . $CONTENT : '' ?></textarea>
 <pre id="<?php echo $CODE_AREA_ID ?>"></pre>
 <?php if (isset($LABEL)): ?>
 <?php if ($LABEL_POSITION === 'after'): ?>

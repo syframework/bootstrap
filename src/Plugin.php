@@ -59,6 +59,9 @@ class Plugin {
 			self::copyDir("$vendor/$plugin/assets", "$vendor/../assets");
 			echo "Copy assets files\n";
 		}
+
+		// Rebuild all
+		$application->run(new ArrayInput(['command' => 'install-project']));
 	}
 
 	/**

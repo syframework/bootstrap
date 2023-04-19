@@ -56,7 +56,7 @@ class Plugin {
 
 		// Copy assets files
 		if (is_dir("$vendor/$plugin/assets")) {
-			self::copyDir("$vendor/$plugin/assets", "$vendor/../assets");
+			self::copyDir("$vendor/$plugin/assets", "$vendor/../../assets");
 			echo "Copy assets files\n";
 		}
 

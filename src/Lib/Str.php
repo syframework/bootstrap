@@ -93,7 +93,7 @@ class Str {
 		if (empty($name)) {
 			return 'Someone';
 		} else {
-			return self::convertHtmlTag($name);
+			return self::escape($name);
 		}
 	}
 

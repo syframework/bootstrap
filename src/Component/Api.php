@@ -23,7 +23,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 	public function __construct() {
 		try {
 			parent::__construct();
-			$this->setTemplateContent('{RESPONSE}');
+			$this->setTemplateContent('<? echo $RESPONSE ?>', 'php');
 			$this->action = ucfirst(Str::snakeToCaml($this->request(ACTION_TRIGGER, '')));
 			$param = $this->request(ACTION_PARAM, ['']);
 			$this->method = array_shift($param);

@@ -114,12 +114,13 @@ class Url {
 	 * @param string $email the user email
 	 */
 	public static function avatar($email) {
+		if (empty($email)) return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktcGVyc29uLWNpcmNsZSIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBkPSJNMTEgNmEzIDMgMCAxIDEtNiAwIDMgMyAwIDAgMSA2IDB6Ii8+CiAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMCA4YTggOCAwIDEgMSAxNiAwQTggOCAwIDAgMSAwIDh6bTgtN2E3IDcgMCAwIDAtNS40NjggMTEuMzdDMy4yNDIgMTEuMjI2IDQuODA1IDEwIDggMTBzNC43NTcgMS4yMjUgNS40NjggMi4zN0E3IDcgMCAwIDAgOCAxeiIvPgo8L3N2Zz4=';
 		$md5 = md5(strtolower(trim($email)));
 		if (file_exists(AVATAR_DIR . "/$md5.png")) {
 			return PROJECT_URL . AVATAR_ROOT . "/$md5.png";
 		} else {
-			// TO DO: libravatar federated servers
-			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/5.x/avataaars/svg?seed=$md5");
+			// TODO: libravatar federated servers
+			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/6.x/avataaars/svg?seed=$md5");
 		}
 	}
 

@@ -83,15 +83,15 @@ class Str {
 	}
 
 	/**
-	 * Transform a user name, return 'Someone' if name is empty
+	 * Transform a user name, return 'John Doe' if name is empty
 	 *
 	 * @param  string $name
 	 * @return string
 	 */
 	public static function convertName($name) {
-		$name = trim($name);
+		$name = trim(is_null($name) ? '' : $name);
 		if (empty($name)) {
-			return 'Someone';
+			return 'John Doe';
 		} else {
 			return self::escape($name);
 		}

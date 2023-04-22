@@ -22,7 +22,8 @@ class StrTest extends TestCase {
 	}
 
 	public function testConvertName() {
-		$this->assertEquals('Someone', Str::convertName(''));
+		$this->assertEquals('John Doe', Str::convertName(null));
+		$this->assertEquals('John Doe', Str::convertName(''));
 		$this->assertEquals('John Doe', Str::convertName('John Doe'));
 		$this->assertEquals('John &lt;b&gt;Doe&lt;/b&gt;', Str::convertName('John <b>Doe</b>'));
 		$this->assertEquals('John {Doe&rcub;', Str::convertName('John {Doe}'));

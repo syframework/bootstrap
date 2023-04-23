@@ -258,14 +258,13 @@ abstract class Page extends \Sy\Component\Html\Page {
 			$form = new \Sy\Bootstrap\Component\Page\Create();
 			$form->initialize();
 			$body->setComponent('NEW_PAGE_FORM', $form);
-			$body->addJsCode("$('#new-page-modal').has('div.alert').modal('show');");
 			$body->setBlock('CREATE_BTN_BLOCK');
 			$body->setBlock('CREATE_MODAL_BLOCK');
 		}
 
 		// Javascript code
 		$js = new \Sy\Component();
-		$js->setTemplateFile(__DIR__ . '/Page/Body.js.tpl');
+		$js->setTemplateFile(__DIR__ . '/Page/Body.js');
 
 		// Update inline
 		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {

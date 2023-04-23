@@ -283,6 +283,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 				'FILE_UPLOAD_AJAX' => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file', 'json' => '']),
 				'CKEDITOR_ROOT'    => CKEDITOR_ROOT,
 				'GET_URL'          => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
+				'CSRF_URL'         => Url::build('api', 'csrf'),
 			]);
 			$js->setBlock('UPDATE_BLOCK');
 			$body->setBlock('UPDATE_INLINE_BTN_BLOCK');

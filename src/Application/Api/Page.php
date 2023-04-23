@@ -56,7 +56,6 @@ class Page extends \Sy\Bootstrap\Component\Api {
 			$service->pageHistory->change([
 				'user_id'      => $service->user->getCurrentUser()->id,
 				'page_id'      => $id,
-				'page_lang'    => $lang,
 				'page_crc32'   => crc32($content),
 				'page_content' => $content,
 			], [

@@ -80,6 +80,7 @@ $(function() {
 				$('#content').attr('contenteditable', true);
 				if (!CKEDITOR.instances.content) {
 					var editor = CKEDITOR.inline('content', {
+						entities: false,
 						title: false,
 						startupFocus: true,
 						linkShowAdvancedTab: false,
@@ -91,16 +92,13 @@ $(function() {
 						filebrowserWindowHeight: 400,
 						imageUploadUrl: '{IMG_UPLOAD_AJAX}',
 						uploadUrl: '{FILE_UPLOAD_AJAX}',
-						extraPlugins: 'sharedspace,sycomponent,sywidget,tableresize,embedbase,embed,autoembed,uploadimage,uploadfile',
+						extraPlugins: 'sharedspace,sycomponent,sywidget,tableresize,uploadimage,uploadfile',
 						allowedContent: true,
 						justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
 						disallowedContent: 'script; *[on*]; img{width,height}',
 						removePlugins: 'about',
 						templates: 'websyte',
 						templates_files: ['{CKEDITOR_ROOT}/templates.js'],
-						<!-- BEGIN IFRAMELY_BLOCK -->
-						embed_provider: '{IFRAMELY}?url={' + 'url' + '}&callback={' + 'callback' + '}&api_key={IFRAMELY_KEY}',
-						<!-- END IFRAMELY_BLOCK -->
 						sharedSpaces: {
 							top: 'sy-page-topbar',
 							bottom: 'sy-page-bottombar'
@@ -171,6 +169,12 @@ $(function() {
 	setInterval(function() {
 		if (changed) save();
 	}, 60000);
+
+	setInterval(function() {
+		fetch('{CSRF_URL}').then(response => response.json()).then(data => {
+			csrf = data.csrf;
+		});
+	}, 1200000);
 	<!-- END UPDATE_BLOCK -->
 
 	<!-- BEGIN DELETE_BLOCK -->

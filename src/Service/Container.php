@@ -40,9 +40,6 @@ class Container extends \Sy\Container {
 		$this->page = function () {
 			return new Crud('page');
 		};
-		$this->pageHistory = function () {
-			return new Crud('pageHistory');
-		};
 		$this->cache = function() {
 			return new SimpleCache(CACHE_DIR);
 		};

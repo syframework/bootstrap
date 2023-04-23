@@ -223,4 +223,7 @@ $(function() {
 		this.css.value = ace.edit('codearea_{CM_CSS_ID}').getValue();
 	});
 	<!-- END CODE_BLOCK -->
+
+	$('#sy-new-page-modal').has('div.alert').modal('show');
+	$('#sy-update-page-modal').has('div.alert').modal('show');
 });

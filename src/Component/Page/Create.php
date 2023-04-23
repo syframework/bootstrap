@@ -44,15 +44,15 @@ class Create extends \Sy\Bootstrap\Component\Form\Crud\Create {
 		try {
 			$this->validatePost();
 			$fields = $this->post('form');
-			if (!file_exists(TPL_DIR . '/Application/Page/content/' . $fields['lang'] . '/' . $fields['id'] . '.html')) {
-				if (!file_exists(TPL_DIR . '/Application/Page/content/' . $fields['lang'])) {
-					mkdir(TPL_DIR . '/Application/Page/content/' . $fields['lang'], 0666, true);
+			if (!file_exists(TPL_DIR . '/Application/Page/content/' . $fields['id'] . '.html')) {
+				if (!file_exists(TPL_DIR . '/Application/Page/content/')) {
+					mkdir(TPL_DIR . '/Application/Page/content/', 0666, true);
 				}
 				$content = new Content();
 				if (file_exists(TPL_DIR . '/Application/Page/content/_default.html')) {
 					$content->setTemplateFile(TPL_DIR . '/Application/Page/content/_default.html');
 				}
-				$file = TPL_DIR . '/Application/Page/content/' . $fields['lang'] . '/' . $fields['id'] . '.html';
+				$file = TPL_DIR . '/Application/Page/content/' . $fields['id'] . '.html';
 				file_put_contents($file, strval($content));
 				chmod($file, 0666);
 			}

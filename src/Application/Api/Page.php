@@ -52,16 +52,6 @@ class Page extends \Sy\Bootstrap\Component\Api {
 				]);
 			}
 			if (is_null($id) or is_null($lang) or is_null($content)) $this->requestError();
-			// Save a version in t_page_history
-			$service->pageHistory->change([
-				'user_id'      => $service->user->getCurrentUser()->id,
-				'page_id'      => $id,
-				'page_crc32'   => crc32($content),
-				'page_content' => $content,
-			], [
-				'user_id'    => $service->user->getCurrentUser()->id,
-				'updated_at' => date('Y-m-d H:i:s'),
-			]);
 
 			if (!file_exists(TPL_DIR . "/Application/Page/content/$lang")) {
 				if (!mkdir(TPL_DIR . "/Application/Page/content/$lang", 0777, true)) {

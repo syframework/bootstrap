@@ -16,6 +16,13 @@
 			$('#{TEXT_AREA_ID}').closest('form').submit();
 		}
 	});
+	editor.commands.addCommand({
+		name: 'format',
+		bindKey: {win: 'Ctrl-Shift-F',  mac: 'Command-Shift-F'},
+		exec: function() {
+			ace.require("ace/ext/beautify").beautify(editor.session);
+		}
+	});
 	editor.setOption('enableLiveAutocompletion', true);
 	editor.setOption('enableEmmet', true);
 	return editor;

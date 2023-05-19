@@ -3,7 +3,7 @@ namespace Sy\Bootstrap\Component\Form\Element;
 
 class CodeArea extends \Sy\Component\Html\Form\Textarea {
 
-	private $cdn = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13';
+	private $cdn = 'https://cdn.jsdelivr.net/npm/ace-builds/src-min-noconflict';
 
 	private $theme = 'chrome';
 
@@ -25,7 +25,8 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 	private function preInit() {
 		$this->setTemplateFile(__DIR__ . '/CodeArea/CodeArea.tpl', 'php');
 		$cdn = $this->cdn . '/';
-		$this->addJsLink($cdn . 'ace.js');
+		$this->addJsLink($cdn . 'ace.min.js');
+		$this->addJsLink($cdn . 'ext-beautify.js');
 		$this->addJsLink($cdn . 'ext-language_tools.min.js');
 		$this->addJsLink($cdn . 'ext-emmet.min.js');
 		$this->addJsLink('https://cloud9ide.github.io/emmet-core/emmet.js');

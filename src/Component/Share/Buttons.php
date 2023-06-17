@@ -8,6 +8,10 @@ class Buttons extends \Sy\Component\WebComponent {
 	public function __construct($url) {
 		parent::__construct();
 		$this->url = $url;
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	private function init() {
@@ -20,11 +24,6 @@ class Buttons extends \Sy\Component\WebComponent {
 		}
 		$this->addJsCode(__DIR__ . '/Buttons.js');
 		$this->setVar('URL', $this->url);
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

@@ -1,7 +1,9 @@
 <?php
 namespace Sy\Bootstrap\Component\Modal;
 
-class Dialog extends \Sy\Component\WebComponent {
+use Sy\Component\WebComponent;
+
+class Dialog extends WebComponent {
 
 	/**
 	 * @var string
@@ -41,6 +43,10 @@ class Dialog extends \Sy\Component\WebComponent {
 		$this->body   = $body;
 		$this->footer = $footer;
 		$this->size   = null;
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	/**
@@ -110,7 +116,7 @@ class Dialog extends \Sy\Component\WebComponent {
 		if (!is_null($this->footer)) {
 			if (is_array($this->footer)) {
 				foreach ($this->footer as $footer) {
-					$this->setVar('FOOTER', $this->footer, true);
+					$this->setVar('FOOTER', $footer, true);
 				}
 			} else {
 				$this->setVar('FOOTER', $this->footer);
@@ -122,11 +128,6 @@ class Dialog extends \Sy\Component\WebComponent {
 		if (!is_null($this->size)) {
 			$this->setVar('SIZE', 'modal-' . $this->size);
 		}
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

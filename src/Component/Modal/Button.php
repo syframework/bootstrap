@@ -42,6 +42,10 @@ class Button extends \Sy\Component\WebComponent {
 		$this->title = $title;
 		$this->attributes = $attributes;
 		$this->dialog = new Dialog($id, '');
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	/**
@@ -62,28 +66,21 @@ class Button extends \Sy\Component\WebComponent {
 		}
 
 		$this->setVars([
-			'ID'    => $this->id,
-			'LABEL' => $this->_($this->label),
-			'ICON'  => empty($this->icon) ? '' : 'fas fa-fw fa-' . $this->icon,
-			'COLOR' => $this->color,
-			'WIDTH' => empty($this->width) ? '' : 'w-' . $this->width,
-			'SIZE'  => empty($this->size) ? '' : 'btn-' . $this->size,
-			'TITLE' => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
-			'ATTR'  => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes)),
+			'ID'     => $this->id,
+			'LABEL'  => $this->_($this->label),
+			'ICON'   => empty($this->icon) ? '' : 'fas fa-fw fa-' . $this->icon,
+			'COLOR'  => $this->color,
+			'WIDTH'  => empty($this->width) ? '' : 'w-' . $this->width,
+			'SIZE'   => empty($this->size) ? '' : 'btn-' . $this->size,
+			'TITLE'  => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
+			'ATTR'   => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes)),
+			'DIALOG' => htmlentities(strval($this->dialog), ENT_QUOTES),
 		]);
 
-		$js = new \Sy\Component();
-		$js->setTemplateFile(__DIR__ . '/Button.js');
-		$js->setComponent('DIALOG', $this->dialog);
-		$this->addJsCode($js);
+		$this->addJsCode(__DIR__ . '/Button.js');
 
 		// Need to merge dialog javascript
 		$this->mergeJs($this->dialog);
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

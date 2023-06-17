@@ -7,18 +7,17 @@ class Button extends ModalButton {
 
 	public function __construct($label = '', $url = '', $icon = 'share-alt', $color = 'secondary', $width = '100', $size = '', $title = '') {
 		parent::__construct('shareModal', $label, $icon, $color, $width, $size, $title, ['data-url' => $url]);
+
+		$dialog = $this->getDialog();
+		$dialog->setBody(new Buttons(''));
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	private function init() {
-		$this->addTranslator(LANG_DIR);
-		$dialog = $this->getDialog();
-		$dialog->setBody(new Buttons(''));
 		$this->addJsCode(__DIR__ . '/Button.js');
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

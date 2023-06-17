@@ -39,7 +39,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch (\Sy\Bootstrap\Service\User\SignUpException $e) {
+		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
 			$this->fill($_POST);
 			$this->setError($this->_($e->getMessage()));

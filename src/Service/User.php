@@ -112,6 +112,13 @@ class User extends Crud {
 				$service->mail->sendWelcome($email, $password, $token);
 				return $userId;
 			});
+		} catch (\Sy\Db\MySql\DuplicateEntryException $e) {
+			$user = $this->retrieve(['email' => $email]);
+			if ($user['status'] === 'inactive') {
+				throw new User\ActivateAccountException('Account not activated', 0, $e);
+			} else {
+				throw new User\AccountExistException('Account already exists', 0, $e);
+			}
 		} catch (\Sy\Db\MySql\Exception $e) {
 			throw new User\SignUpException('Database error', 0, $e);
 		} catch (\Sy\Mail\Exception $e) {

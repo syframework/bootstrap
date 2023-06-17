@@ -9,6 +9,5 @@
 		var id = $(this).data('bs-target');
 		if ($(id).length > 0) return;
 		$('body').append($(this).data('dialog'));
-		console.log(id);
 	});
 })();

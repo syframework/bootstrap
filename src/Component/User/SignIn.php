@@ -1,10 +1,15 @@
 <?php
 namespace Sy\Bootstrap\Component\User;
 
+use Sy\Bootstrap\Lib\Url;
+
 class SignIn extends \Sy\Bootstrap\Component\Form {
 
 	public function init() {
 		parent::init();
+
+		// Redirection url
+		Url::setReferer(Url::getReferer() ?? $_SERVER['HTTP_REFERER'] ?? WEB_ROOT . '/');
 
 		// Anti spam and CSRF field
 		$this->addAntiSpamField();
@@ -41,9 +46,10 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 	public function submitAction() {
 		try {
 			$this->validatePost();
+			$redirection = Url::getReferer();
 			$service = \Project\Service\Container::getInstance();
 			$service->user->signIn($this->post('email'), $this->post('password'));
-			$this->setSuccess($this->_('You are connected'), \Sy\Bootstrap\Lib\Url::getReferer());
+			$this->setSuccess($this->_('You are connected'), $redirection);
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));

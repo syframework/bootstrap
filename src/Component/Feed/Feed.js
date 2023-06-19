@@ -2,6 +2,8 @@
 	$('body').on('click', '.feed-next-page-button', function() {
 		var button = $(this);
 		button.removeClass('feed-next-page-button');
+		button.prop('disabled', true);
+		button.find('.bi').replaceWith('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 		var lastId = button.prev().data('id');
 		if (lastId === undefined) {
 			lastId = button.next().data('id');

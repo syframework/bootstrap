@@ -68,7 +68,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->setContentVars([
 			'CONNECT_PANEL' => new \Sy\Bootstrap\Component\User\ConnectPanel(),
 		]);
-		Url::setReferer(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : WEB_ROOT . '/');
 	}
 
 	/**

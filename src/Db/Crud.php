@@ -8,7 +8,7 @@ class Crud extends \Sy\Db\MySql\Crud {
 	 * @param array $pk Optionnal primary key
 	 */
 	public function __construct($table, $pk = []) {
-		parent::__construct($table, $pk);
+		parent::__construct($table);
 		if (defined('DATABASE_CONFIG')) {
 			$this->setConfig(DATABASE_CONFIG);
 		}

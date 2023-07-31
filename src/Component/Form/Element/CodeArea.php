@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Component\Form\Element;
 
+use Sy\Component\WebComponent;
+
 class CodeArea extends \Sy\Component\Html\Form\Textarea {
 
 	private $cdn = 'https://cdn.jsdelivr.net/npm/ace-builds/src-min-noconflict';
@@ -25,10 +27,10 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 	private function preInit() {
 		$this->setTemplateFile(__DIR__ . '/CodeArea/CodeArea.tpl', 'php');
 		$cdn = $this->cdn . '/';
-		$this->addJsLink($cdn . 'ace.min.js');
-		$this->addJsLink($cdn . 'ext-beautify.js');
-		$this->addJsLink($cdn . 'ext-language_tools.min.js');
-		$this->addJsLink($cdn . 'ext-emmet.min.js');
+		$this->addJsLink($cdn . 'ace.min.js', ['position' => WebComponent::JS_TOP]);
+		$this->addJsLink($cdn . 'ext-beautify.js', ['position' => WebComponent::JS_TOP]);
+		$this->addJsLink($cdn . 'ext-language_tools.min.js', ['position' => WebComponent::JS_TOP]);
+		$this->addJsLink($cdn . 'ext-emmet.min.js', ['position' => WebComponent::JS_TOP]);
 		$this->addJsLink('https://cloud9ide.github.io/emmet-core/emmet.js');
 	}
 
@@ -52,7 +54,7 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 			'MODE'         => $this->mode,
 			'PLACEHOLDER'  => $this->getAttribute('placeholder'),
 		]);
-		$this->addJsCode($js);
+		$this->addJsCode($js, ['position' => WebComponent::JS_TOP]);
 	}
 
 	public function __toString() {

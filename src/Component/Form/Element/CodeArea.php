@@ -31,7 +31,7 @@ class CodeArea extends \Sy\Component\Html\Form\Textarea {
 		$this->addJsLink($cdn . 'ext-beautify.js', ['position' => WebComponent::JS_TOP]);
 		$this->addJsLink($cdn . 'ext-language_tools.min.js', ['position' => WebComponent::JS_TOP]);
 		$this->addJsLink($cdn . 'ext-emmet.min.js', ['position' => WebComponent::JS_TOP]);
-		$this->addJsLink('https://cloud9ide.github.io/emmet-core/emmet.js');
+		$this->addJsLink('https://cdn.jsdelivr.net/npm/emmet-core/emmet.min.js', ['position' => WebComponent::JS_TOP]);
 	}
 
 	private function postInit() {

@@ -51,7 +51,8 @@ abstract class Application {
 	 * @return string|null
 	 */
 	protected function controllerClass($name) {
-		$namespace = implode('\\', array_slice(explode('\\', get_class($this)), 0, -1));
+		$class = get_class($this);
+		$namespace = substr_replace($class, '', strrpos($class, '\\'));
 		$class = $namespace . '\\Application\\' . ucfirst(Str::snakeToCaml($name));
 		if (class_exists($class)) return $class;
 		$class = __NAMESPACE__ . '\\Application\\' . ucfirst(Str::snakeToCaml($name));

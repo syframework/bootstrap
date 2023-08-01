@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Lib\Str;
+
 class Sitemap extends \Sy\Component\WebComponent {
 
 	private $providers;
@@ -8,14 +10,22 @@ class Sitemap extends \Sy\Component\WebComponent {
 	public function __construct() {
 		parent::__construct();
 		$this->providers = [];
+
+		$this->mount(function () {
+			$method = $this->request(ACTION_TRIGGER);
+			$this->actionDispatch(ACTION_TRIGGER, $method ?? 'index');
+			if (!is_null($method)) $this->$method();
+			header('Content-Type: application/xml; charset=utf-8');
+		});
 	}
 
 	/**
-	 * @param string $name Sitemap name
+	 * Add a sitemap provider
+	 *
 	 * @param \Sy\Bootstrap\Application\Sitemap\IProvider $provider Sitemap urls provider
 	 */
-	public function addProvider(string $name, \Sy\Bootstrap\Application\Sitemap\IProvider $provider) {
-		$this->providers[$name] = $provider;
+	public function addProvider(\Sy\Bootstrap\Application\Sitemap\IProvider $provider) {
+		$this->providers[md5(get_class($provider))] = $provider;
 	}
 
 	/**
@@ -32,11 +42,20 @@ class Sitemap extends \Sy\Component\WebComponent {
 		}
 	}
 
-	public function __toString() {
-		$method = $this->get(ACTION_TRIGGER, 'index') . 'Action';
-		$this->$method();
-		header('Content-Type: application/xml; charset=utf-8');
-		return parent::__toString();
+	/**
+	 * Return the full name of a provider class
+	 *
+	 * @param  string $name
+	 * @return string|null
+	 */
+	protected function providerClass($name) {
+		$class = get_class($this);
+		$namespace = substr_replace($class, '', strrpos($class, '\\'));
+		$class = $namespace . '\\Sitemap\\' . ucfirst(Str::snakeToCaml($name));
+		if (class_exists($class)) return $class;
+		$class = __NAMESPACE__ . '\\Sitemap\\' . ucfirst(Str::snakeToCaml($name));
+		if (class_exists($class)) return $class;
+		return null;
 	}
 
 	/**
@@ -46,16 +65,16 @@ class Sitemap extends \Sy\Component\WebComponent {
 	 * @param array $arguments
 	 */
 	public function __call($name, $arguments) {
-		if (!str_ends_with($name, 'Action')) return;
-		$name = substr_replace($name, '', -6);
-		if (!isset($this->providers[$name])) {
+		$class = $this->providerClass($name);
+
+		if (is_null($class) or !isset($this->providers[md5($class)])) {
 			http_response_code(404);
 			return;
 		}
 
 		$this->setTemplateFile(__DIR__ . '/Sitemap/Sitemap.xml');
 
-		foreach ($this->providers[$name]->getUrls() as $url) {
+		foreach ($this->providers[md5($class)]->getUrls() as $url) {
 			$this->setVar('LOC', $url['loc']);
 
 			if (isset($url['alternate'])) {

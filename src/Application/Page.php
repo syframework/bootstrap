@@ -140,8 +140,8 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Title, description and body
 		$this->addBody($this->body());
-		$this->setTitle(HeadData::getTitle() . ' - ' . PROJECT);
-		$this->setDescription(HeadData::getDescription());
+		$this->setTitle($this->_(HeadData::getTitle()) . ' - ' . PROJECT);
+		$this->setDescription($this->_(HeadData::getDescription()));
 
 		// Meta
 		foreach (HeadData::getMeta() as $meta) {

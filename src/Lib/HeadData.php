@@ -9,6 +9,8 @@ class HeadData {
 
 	private static $canonical = '';
 
+	private static $base = [];
+
 	private static $meta = [];
 
 	private static $htmlAttributes = [];
@@ -25,6 +27,14 @@ class HeadData {
 		if (empty($title)) return;
 		self::$title = $title;
 		self::addMeta('og:title', $title);
+	}
+
+	public static function getBase() {
+		return self::$base;
+	}
+
+	public static function setBase($href = '', $target = '') {
+		self::$base = array_filter(['href' => $href, 'target' => $target]);
 	}
 
 	public static function getDescription() {

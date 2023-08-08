@@ -82,7 +82,10 @@ class Plugin {
 		// Rebuild all
 		$application = new Application();
 		$application->setAutoExit(false);
-		$application->run(new ArrayInput(['command' => 'install-project']));
+		$application->run(new ArrayInput(['command' => 'build']));
+
+		// Db migrate
+		self::migratePlugin($vendor, $plugin);
 	}
 
 	public static function postPackageUpdate(PackageEvent $event) {
@@ -108,7 +111,10 @@ class Plugin {
 		// Rebuild all
 		$application = new Application();
 		$application->setAutoExit(false);
-		$application->run(new ArrayInput(['command' => 'install-project']));
+		$application->run(new ArrayInput(['command' => 'build']));
+
+		// Db migrate
+		self::migratePlugin($vendor, $plugin);
 	}
 
 	private static function copyTemplates(string $vendor, string $plugin) {

@@ -114,6 +114,9 @@ class Plugin {
 		$application->run(new ArrayInput(['command' => 'build']));
 
 		// Db migrate
+		$executor = new ProcessExecutor();
+		$executor->execute('composer db repair');
+		$executor->execute('composer db migrate');
 		self::migratePlugin($vendor, $plugin);
 	}
 

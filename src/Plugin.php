@@ -86,8 +86,10 @@ class Plugin {
 
 		// Db migrate
 		$executor = new ProcessExecutor();
-		$executor->execute('composer db repair');
-		$executor->execute('composer db migrate');
+		$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task repair";
+		$executor->execute($command);
+		$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task migrate";
+		$executor->execute($command);
 		self::migratePlugin($vendor, $plugin);
 	}
 

@@ -121,14 +121,10 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body overflow-hidden p-0">
-				<div class="tab-content">
-					<div class="tab-pane fade show active" id="sy-html-tab-content" role="tabpanel" aria-labelledby="html-tab">{HTML_FORM}</div>
-					<div class="tab-pane fade" id="sy-css-tab-content" role="tabpanel" aria-labelledby="css-tab">{CSS_FORM}</div>
-					<div class="tab-pane fade" id="sy-js-tab-content" role="tabpanel" aria-labelledby="js-tab">{JS_FORM}</div>
-				</div>
+				{CODE_FORM}
 			</div>
 			<div class="modal-footer">
-				<button form="{FORM_HTML_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>
+				<button form="{CODE_FORM_ID}" type="submit" class="btn btn-primary"><span class="fas fa-save"></span> {"Save"}</button>
 			</div>
 		</div>
 	</div>

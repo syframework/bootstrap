@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Component\Page\Code;
 use Sy\Bootstrap\Lib\HeadData;
 use Sy\Bootstrap\Lib\Url;
 use Sy\Component\WebComponent;
@@ -313,22 +314,10 @@ abstract class Page extends \Sy\Component\Html\Page {
 
 		// Code
 		if ($service->user->getCurrentUser()->hasPermission('page-code')) {
-			// HTML Code
-			$body->setComponent('HTML_FORM', new \Sy\Bootstrap\Component\Page\Html($name, $lang));
-			$body->setVar('FORM_HTML_ID', 'form_html_' . $name);
-			$js->setVars([
-				'CM_HTML_ID' => 'codearea_html_' . $name,
+			$body->setVars([
+				'CODE_FORM'    => new Code($name, $lang),
+				'CODE_FORM_ID' => 'code_form_' . $name,
 			]);
-
-			// CSS Code
-			$body->setComponent('CSS_FORM', new \Sy\Bootstrap\Component\Page\Css($name));
-			$body->setVar('FORM_CSS_ID', 'form_css_' . $name);
-			$js->setVar('CM_CSS_ID', 'codearea_css_' . $name);
-
-			// JS Code
-			$body->setComponent('JS_FORM', new \Sy\Bootstrap\Component\Page\Js($name));
-			$body->setVar('FORM_JS_ID', 'form_js_' . $name);
-			$js->setVar('CM_JS_ID', 'codearea_js_' . $name);
 
 			$js->setBlock('CODE_BLOCK');
 			$body->setBlock('CODE_BTN_BLOCK');
@@ -336,7 +325,7 @@ abstract class Page extends \Sy\Component\Html\Page {
 		}
 
 		// Add javascript code
-		$body->addJsCode($js);
+		$body->addJsCode($js, ['position' => WebComponent::JS_TOP]);
 
 		return $body;
 	}

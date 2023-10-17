@@ -93,7 +93,7 @@ class AliasConverter implements IConverter {
 			}
 		}
 
-		$params['lang'] = $lang;
+		$params['sy_language'] = $lang;
 
 		$queryParams = [];
 		if (!is_null($queryString)) parse_str($queryString, $queryParams);

@@ -129,7 +129,8 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$this->preInit();
 
 		// Lang
-		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		$service = \Project\Service\Container::getInstance();
+		$lang = $service->lang->getLang();
 		HeadData::setHtmlAttribute('lang', $lang);
 
 		// JSON-LD
@@ -194,7 +195,8 @@ abstract class Page extends \Sy\Component\Html\Page {
 		}
 
 		// Detect language
-		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		$service = \Project\Service\Container::getInstance();
+		$lang = $service->lang->getLang();
 
 		// Retrieve page
 		$service = \Project\Service\Container::getInstance();

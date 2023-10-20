@@ -100,10 +100,11 @@ class User extends Crud {
 
 				$password = is_null($password) ? Str::generatePassword() : $password; // Generate a password
 				$token = sha1(uniqid());
+				$service = Container::getInstance();
 				$userId = $this->create([
 					'firstname' => $name,
 					'email'    => $email,
-					'language' => \Sy\Translate\LangDetector::getInstance(LANG)->getLang(),
+					'language' => $service->lang->getLang(),
 					'password' => password_hash($password, PASSWORD_DEFAULT),
 					'token'    => $token,
 					'ip'       => sprintf("%u", ip2long($_SERVER['REMOTE_ADDR'])),
@@ -234,12 +235,8 @@ class User extends Crud {
 	 * @param string $language
 	 */
 	public function setLanguage($language) {
-		if (!in_array($language, array_keys(LANGS))) $language = LANG;
-		setcookie('sy_language', $language, time() + 60 * 60 * 24 * 365, WEB_ROOT . '/');
-		$_COOKIE['sy_language'] = $language;
-		$_SESSION['sy_language'] = $language;
-		$_GET['sy_language'] = $language;
-		\Sy\Translate\LangDetector::getInstance(LANG)->setLang($language);
+		$service = Container::getInstance();
+		$service->lang->setLang($language);
 	}
 
 	/**

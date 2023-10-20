@@ -90,6 +90,17 @@ class ItemIdConverterTest extends TestCase {
 			'p2' => 'world',
 		];
 		$this->assertEquals(WEB_ROOT . '/foo/123?p1=hello&p2=world', $converter->paramsToUrl($params));
+
+		// Lang parameter
+		$params = [
+			CONTROLLER_TRIGGER => 'page',
+			ACTION_TRIGGER => 'foo',
+			'id' => '123',
+			'p1' => 'hello',
+			'p2' => 'world',
+			'lang' => 'en',
+		];
+		$this->assertEquals(WEB_ROOT . '/en/foo/123?p1=hello&p2=world', $converter->paramsToUrl($params));
 	}
 
 	public function testUrlToParams() {
@@ -154,6 +165,17 @@ class ItemIdConverterTest extends TestCase {
 			'p2' => 'world',
 		];
 		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/foo/123?p1=hello&p2=world'));
+
+		// Lang parameter
+		$params = [
+			CONTROLLER_TRIGGER => 'page',
+			ACTION_TRIGGER => 'foo',
+			'id' => '123',
+			'p1' => 'hello',
+			'p2' => 'world',
+			'lang' => 'en',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/en/foo/123?p1=hello&p2=world'));
 	}
 
 }

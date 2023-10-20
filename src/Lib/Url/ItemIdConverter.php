@@ -51,7 +51,14 @@ class ItemIdConverter implements IConverter {
 		$id = $params['id'];
 		unset($params['id']);
 
-		return WEB_ROOT . '/' . $this->urlId . '/' . $id . (empty($params) ? '' : '?' . http_build_query($params));
+		$url = WEB_ROOT . '/';
+		$service = \Project\Service\Container::getInstance();
+		if (!empty($params['lang']) and $service->lang->isAvailable($params['lang'])) {
+			$url .= $params['lang'] . '/';
+			unset($params['lang']);
+		}
+
+		return $url . $this->urlId . '/' . $id . (empty($params) ? '' : '?' . http_build_query($params));
 	}
 
 	/**
@@ -72,8 +79,18 @@ class ItemIdConverter implements IConverter {
 		$url = trim($url);
 		if (empty($url)) return false;
 		$uri = parse_url($url, PHP_URL_PATH);
+		$uri = substr($uri, strlen(WEB_ROOT) + 1);
 		$queryString = parse_url($url, PHP_URL_QUERY);
-		list($id) = sscanf(substr($uri, strlen(WEB_ROOT) + 1), $this->urlId . '/%s');
+
+		// Check if there is the lang parameter
+		$parts = explode('/', $uri);
+		$service = \Project\Service\Container::getInstance();
+		if ($service->lang->isAvailable($parts[0])) {
+			$params['lang'] = $parts[0];
+			$uri = implode('/', array_slice($parts, 1));
+		}
+
+		list($id) = sscanf($uri, $this->urlId . '/%s');
 		if (empty($id)) return false;
 
 		$params[CONTROLLER_TRIGGER] = 'page';

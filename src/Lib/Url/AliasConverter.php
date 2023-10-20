@@ -12,9 +12,6 @@ class AliasConverter implements IConverter {
 	 * @param string|null $lang
 	 */
 	public function __construct($lang = null) {
-		if (is_null($lang)) {
-			$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
-		}
 		$this->lang = $lang;
 	}
 
@@ -39,7 +36,7 @@ class AliasConverter implements IConverter {
 			$action = $params[ACTION_TRIGGER];
 			unset($params[ACTION_TRIGGER]);
 		}
-		$lang = $params['lang'] ?? $this->lang;
+		$lang = $params['lang'] ?? $this->getLang();
 		unset($params['lang']);
 		$query = http_build_query($params);
 		$path = "$controller" . (isset($action) ? "/$action" : '');
@@ -93,12 +90,21 @@ class AliasConverter implements IConverter {
 			}
 		}
 
-		$params['sy_language'] = $lang;
+		$params['lang'] = $lang;
+		$this->lang = $lang;
 
 		$queryParams = [];
 		if (!is_null($queryString)) parse_str($queryString, $queryParams);
 
 		return $params + $queryParams;
+	}
+
+	private function getLang() {
+		if (empty($this->lang)) {
+			$service = \Project\Service\Container::getInstance();
+			$this->lang = $service->lang->getLang();
+		}
+		return $this->lang;
 	}
 
 }

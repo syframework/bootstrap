@@ -75,6 +75,13 @@ class Url {
 		if (!is_null($action)) {
 			$params[ACTION_TRIGGER] = is_array($action) ? implode('/', $action) : $action;
 		}
+
+		// Lang parameter
+		if ($controller === 'page' and empty($parameters['lang'])) {
+			$service = \Project\Service\Container::getInstance();
+			$params['lang'] = $service->lang->getLang();
+		}
+
 		$url = self::convertToUrl($params + $parameters);
 		if ($url) return $url . (empty($anchor) ? '' : "#$anchor");
 		if (!is_null($action)) {

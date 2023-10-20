@@ -56,6 +56,15 @@ class ControllerActionConverterTest extends TestCase {
 			'p2' => 'two',
 		];
 		$this->assertEquals(WEB_ROOT . '/foo/bar/hello/world?p1=one&p2=two', $converter->paramsToUrl($params));
+
+		// Lang parameter
+		$params = [
+			CONTROLLER_TRIGGER => 'foo',
+			ACTION_TRIGGER => 'bar',
+			'other' => 'baz',
+			'lang' => 'en',
+		];
+		$this->assertEquals(WEB_ROOT . '/en/foo/bar?other=baz', $converter->paramsToUrl($params));
 	}
 
 	public function testUrlToParams() {
@@ -99,6 +108,15 @@ class ControllerActionConverterTest extends TestCase {
 			'p2' => 'two',
 		];
 		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/foo/bar/hello/world?p1=one&p2=two'));
+
+		// Lang param
+		$params = [
+			CONTROLLER_TRIGGER => 'foo',
+			ACTION_TRIGGER => 'bar',
+			'other' => 'baz',
+			'lang' => 'en',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/en/foo/bar?other=baz'));
 	}
 
 }

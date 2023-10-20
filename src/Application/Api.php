@@ -57,6 +57,8 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		if (is_null($class)) {
 			return $this->requestError(['message' => 'Missing class parameter']);
 		}
+		$service = \Project\Service\Container::getInstance();
+		$service->lang->setLang($this->get('language'));
 		$feed = new $class();
 		if (!$feed instanceof \Sy\Bootstrap\Component\Feed) {
 			return $this->requestError(['message' => "$class is not an instance of Feed"]);

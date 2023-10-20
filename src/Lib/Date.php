@@ -64,7 +64,8 @@ class Date {
 	 * @return string
 	 */
 	public function f($format, $timezone = null) {
-		$lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		$service = \Project\Service\Container::getInstance();
+		$lang = $service->lang->getLang();
 		$formatter = new \IntlDateFormatter($lang, \IntlDateFormatter::NONE, \IntlDateFormatter::NONE, $timezone, null, $format);
 		return $formatter->format($this->timestamp());
 	}

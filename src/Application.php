@@ -25,14 +25,7 @@ abstract class Application {
 
 		// Set language
 		$service = \Project\Service\Container::getInstance();
-		$user = $service->user->getCurrentUser();
-		if ($user->isConnected() and ($user->language !== \Sy\Http::session('sy_language'))) {
-			$service->user->setLanguage($user->language);
-		}
-		if (is_null(\Sy\Http::session('sy_language'))) {
-			$l = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : LANG;
-			$service->user->setLanguage($l);
-		}
+		$service->lang->getLang();
 
 		// Find controller class
 		$class = $this->controllerClass(\Sy\Http::get(CONTROLLER_TRIGGER, 'page'));

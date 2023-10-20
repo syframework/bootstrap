@@ -17,7 +17,13 @@ class ControllerActionConverter implements IConverter {
 	 */
 	public function paramsToUrl(array $params) {
 		if (empty($params[CONTROLLER_TRIGGER])) return false;
-		$url = WEB_ROOT . '/' . $params[CONTROLLER_TRIGGER];
+		$service = \Project\Service\Container::getInstance();
+		if (!empty($params['lang']) and $service->lang->isAvailable($params['lang'])) {
+			$url = WEB_ROOT . '/' . $params['lang'] . '/' . $params[CONTROLLER_TRIGGER];
+			unset($params['lang']);
+		} else {
+			$url = WEB_ROOT . '/' . $params[CONTROLLER_TRIGGER];
+		}
 		unset($params[CONTROLLER_TRIGGER]);
 		if (!empty($params[ACTION_TRIGGER])) {
 			$url .= '/' . $params[ACTION_TRIGGER];
@@ -54,6 +60,14 @@ class ControllerActionConverter implements IConverter {
 		if (empty($path)) return false;
 		$p = explode('/', $path);
 		$c = array_shift($p);
+
+		// Check if there is the lang parameter
+		$service = \Project\Service\Container::getInstance();
+		if ($service->lang->isAvailable($c)) {
+			$params['lang'] = $c;
+			$c = array_shift($p);
+		}
+
 		$params[CONTROLLER_TRIGGER] = $c;
 		$queryParams = [];
 		if (!is_null($queryString)) parse_str($queryString, $queryParams);

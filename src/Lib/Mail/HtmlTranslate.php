@@ -27,7 +27,8 @@ abstract class HtmlTranslate extends \Sy\Bootstrap\Lib\Mail {
 
 	public function __construct($to = '', $from = '', $subject = '', $body = '') {
 		parent::__construct($to, $from, $subject, $body);
-		$this->lang = \Sy\Translate\LangDetector::getInstance(LANG)->getLang();
+		$service = \Project\Service\Container::getInstance();
+		$this->lang = $service->lang->getLang();
 		$this->htmlComponent = new \Sy\Component\WebComponent();
 		$this->htmlComponent->setTemplateFile(__DIR__ . '/HtmlTranslate.html');
 	}

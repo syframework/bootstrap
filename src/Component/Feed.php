@@ -23,6 +23,8 @@ abstract class Feed extends \Sy\Component\WebComponent {
 		$this->auto      = $auto;
 		// pre init js
 		$this->addJsCode(__DIR__ . '/Feed/Feed.js');
+
+		$this->mount(fn () => $this->init());
 	}
 
 	public function getTemplate() {
@@ -38,6 +40,7 @@ abstract class Feed extends \Sy\Component\WebComponent {
 	}
 
 	public function init() {
+		$service = \Project\Service\Container::getInstance();
 		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile($this->getTemplate());
 
@@ -50,17 +53,12 @@ abstract class Feed extends \Sy\Component\WebComponent {
 		}
 		$this->setVars([
 			'CLASS'   => get_class($this),
-			'LOCATION' => \Sy\Bootstrap\Lib\Url::build('api', 'feed', ['sy_language' => \Sy\Translate\LangDetector::getInstance()->getLang()]),
+			'LOCATION' => \Sy\Bootstrap\Lib\Url::build('api', 'feed', ['language' => $service->lang->getLang()]),
 			'PARAMS'  => htmlspecialchars(json_encode($this->getParams(), JSON_FORCE_OBJECT), ENT_QUOTES, 'UTF-8'),
 			'START'   => $this->start,
 		]);
 		$auto = $this->auto ? '_AUTO' : '';
 		$this->setBlock($this->direction . '_MORE' . $auto . '_BLOCK');
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

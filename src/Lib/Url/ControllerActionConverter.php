@@ -56,7 +56,7 @@ class ControllerActionConverter implements IConverter {
 		if (empty($url)) return false;
 		$uri = parse_url($url, PHP_URL_PATH);
 		$queryString = parse_url($url, PHP_URL_QUERY);
-		$path = substr($uri, strlen(WEB_ROOT) + 1);
+		$path = trim(substr($uri, strlen(WEB_ROOT) + 1), '/');
 		if (empty($path)) return false;
 		$p = explode('/', $path);
 		$c = array_shift($p);

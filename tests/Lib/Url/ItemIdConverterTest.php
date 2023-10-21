@@ -123,9 +123,24 @@ class ItemIdConverterTest extends TestCase {
 			CONTROLLER_TRIGGER => 'page',
 			ACTION_TRIGGER => 'foo',
 			'id' => '123',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/boo/123/'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'page',
+			ACTION_TRIGGER => 'foo',
+			'id' => '123',
 			'p1' => 'hello',
 		];
 		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/boo/123?p1=hello'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'page',
+			ACTION_TRIGGER => 'foo',
+			'id' => '123',
+			'p1' => 'hello',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/boo/123/?p1=hello'));
 
 		$params = [
 			CONTROLLER_TRIGGER => 'page',

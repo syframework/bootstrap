@@ -79,7 +79,7 @@ class ItemIdConverter implements IConverter {
 		$url = trim($url);
 		if (empty($url)) return false;
 		$uri = parse_url($url, PHP_URL_PATH);
-		$uri = substr($uri, strlen(WEB_ROOT) + 1);
+		$uri = trim(substr($uri, strlen(WEB_ROOT) + 1), '/');
 		$queryString = parse_url($url, PHP_URL_QUERY);
 
 		// Check if there is the lang parameter

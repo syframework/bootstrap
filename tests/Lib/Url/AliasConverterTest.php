@@ -90,10 +90,25 @@ class AliasConverterTest extends TestCase {
 		$params = [
 			CONTROLLER_TRIGGER => 'first',
 			ACTION_TRIGGER => 'realpath',
+			'lang' => 'fr',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/first/alias/in/french/'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'first',
+			ACTION_TRIGGER => 'realpath',
 			'foo' => 'bar',
 			'lang' => 'fr',
 		];
 		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/first/alias/in/french?foo=bar'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'first',
+			ACTION_TRIGGER => 'realpath',
+			'foo' => 'bar',
+			'lang' => 'fr',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/first/alias/in/french/?foo=bar'));
 
 		$params = [
 			CONTROLLER_TRIGGER => 'third',

@@ -88,9 +88,22 @@ class ControllerActionConverterTest extends TestCase {
 		$params = [
 			CONTROLLER_TRIGGER => 'foo',
 			ACTION_TRIGGER => 'bar',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/foo/bar/'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'foo',
+			ACTION_TRIGGER => 'bar',
 			'other' => 'baz',
 		];
 		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/foo/bar?other=baz'));
+
+		$params = [
+			CONTROLLER_TRIGGER => 'foo',
+			ACTION_TRIGGER => 'bar',
+			'other' => 'baz',
+		];
+		$this->assertEquals($params, $converter->urlToParams(WEB_ROOT . '/foo/bar/?other=baz'));
 
 		$params = [
 			CONTROLLER_TRIGGER => 'foo',

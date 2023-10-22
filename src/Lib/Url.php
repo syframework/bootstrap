@@ -31,7 +31,7 @@ class Url {
 	public static function convertToParams($url) {
 		foreach (self::$converters as $converter) {
 			$params = $converter->urlToParams($url);
-			if ($params) return $params;
+			if (is_array($params)) return $params;
 		}
 		return false;
 	}
@@ -46,7 +46,7 @@ class Url {
 	public static function convertToUrl(array $params) {
 		foreach (self::$converters as $converter) {
 			$url = $converter->paramsToUrl($params);
-			if ($url) return $url;
+			if (is_string($url)) return $url;
 		}
 		return false;
 	}
@@ -83,7 +83,7 @@ class Url {
 		}
 
 		$url = self::convertToUrl($params + $parameters);
-		if ($url) return $url . (empty($anchor) ? '' : "#$anchor");
+		if (is_string($url)) return $url . (empty($anchor) ? '' : "#$anchor");
 		if (!is_null($action)) {
 			$action = is_array($action) ? $action : explode('/', $action);
 			$a = array_shift($action);

@@ -46,6 +46,19 @@ class User {
 	}
 
 	/**
+	 * Get user permissions
+	 *
+	 * @return array
+	 */
+	public function getPermissions() {
+		if (is_null($this->permissions)) {
+			$service           = \Project\Service\Container::getInstance();
+			$this->permissions = $service->user->getPermissions($this->data['id']);
+		}
+		return $this->permissions;
+	}
+
+	/**
 	 * Check if user has a specific permission
 	 *
 	 * @param  string $permission
@@ -53,11 +66,18 @@ class User {
 	 */
 	public function hasPermission($permission) {
 		if (!$this->data) return false;
-		if (is_null($this->permissions)) {
-			$service           = \Project\Service\Container::getInstance();
-			$this->permissions = $service->user->getPermissions($this->data['id']);
-		}
-		return in_array($permission, $this->permissions);
+		return in_array($permission, $this->getPermissions());
+	}
+
+	/**
+	 * Check if user has at least one permission among given permissions
+	 *
+	 * @param array $permissions
+	 * @return boolean
+	 */
+	public function hasPermissionAmong($permissions) {
+		$result = array_intersect($permissions, $this->getPermissions());
+		return (count($result) > 0);
 	}
 
 	/**

@@ -65,7 +65,7 @@ class User {
 	 * @return boolean
 	 */
 	public function hasPermission($permission) {
-		if (!$this->data) return false;
+		if (!$this->isConnected()) return false;
 		return in_array($permission, $this->getPermissions());
 	}
 
@@ -76,6 +76,7 @@ class User {
 	 * @return boolean
 	 */
 	public function hasPermissionAmong($permissions) {
+		if (!$this->isConnected()) return false;
 		$result = array_intersect($permissions, $this->getPermissions());
 		return (count($result) > 0);
 	}

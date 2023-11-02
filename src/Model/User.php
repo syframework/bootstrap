@@ -72,7 +72,7 @@ class User {
 	/**
 	 * Check if user has at least one permission among given permissions
 	 *
-	 * @param array $permissions
+	 * @param  array $permissions
 	 * @return boolean
 	 */
 	public function hasPermissionAmong($permissions) {

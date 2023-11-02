@@ -4,7 +4,7 @@ namespace Sy\Bootstrap\Component\Form;
 class Crud extends \Sy\Bootstrap\Component\Form {
 
 	/**
-	 * @var Container
+	 * @var \Sy\Bootstrap\Service\Container
 	 */
 	private $serviceContainer;
 
@@ -28,18 +28,37 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	 */
 	private $item;
 
+	/**
+	 * @param string $service
+	 * @param array $id
+	 */
 	public function __construct($service, array $id = []) {
+		parent::__construct();
 		$this->service = $service;
 		$this->id = $id;
 		$this->fields = [];
-		parent::__construct();
 	}
 
-	public function init() {
-		$this->initInputs();
-		$this->initButton();
+	/**
+	 * @inheritDoc
+	 */
+	public function initialize($preInit = null, $postInit = null) {
+		parent::initialize(function () use ($preInit) {
+			$this->initInputs();
+			$this->initButton();
+
+			if (is_callable($preInit)) $preInit();
+		}, $postInit);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function submitAction() {
 		try {
 			$this->validatePost();
@@ -58,6 +77,9 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		}
 	}
 
+	/**
+	 * @param array|null $fields
+	 */
 	public function updateRow($fields = null) {
 		if (is_null($fields)) {
 			$this->validatePost();
@@ -74,8 +96,10 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		}
 	}
 
+	/**
+	 * Add form inputs
+	 */
 	public function initInputs() {
-		parent::init();
 		$this->addCsrfField();
 		$rows = $this->getService()->getColumns();
 		$item = $this->getItem();
@@ -125,7 +149,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	}
 
 	/**
-	 * @return Container
+	 * @return \Sy\Bootstrap\Service\Container
 	 */
 	public function getServiceContainer() {
 		if (empty($this->serviceContainer)) {
@@ -134,22 +158,31 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		return $this->serviceContainer;
 	}
 
+	/**
+	 * @param \Sy\Bootstrap\Service\Container $serviceContainer
+	 */
 	public function setServiceContainer($serviceContainer) {
 		$this->serviceContainer = $serviceContainer;
 	}
 
 	/**
-	 * @return \Sy\Bootstrap\Service\Container\Crud
+	 * @return \Sy\Bootstrap\Service\Crud
 	 */
 	public function getService() {
 		$service = $this->service;
 		return $this->getServiceContainer()->$service;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getId() {
 		return $this->id;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getItem() {
 		if (!isset($this->item)) {
 			$this->item = empty($this->id) ? [] : $this->getService()->retrieve($this->id);
@@ -157,14 +190,27 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		return $this->item;
 	}
 
+	/**
+	 * @param  string $name
+	 * @return \Sy\Component\Html\Form\Element
+	 */
 	public function getField($name) {
 		return $this->fields[$name];
 	}
 
+	/**
+	 * Add submit button
+	 */
 	protected function initButton() {
 		$this->addButton('Save', ['type' => 'submit'], ['icon' => 'fas fa-save', 'color' => 'primary']);
 	}
 
+	/**
+	 * Convert row field name to form input label
+	 *
+	 * @param  string $name
+	 * @return string
+	 */
 	protected function fieldLabel($name) {
 		return str_replace('_', ' ', ucwords(strtolower($name)));
 	}

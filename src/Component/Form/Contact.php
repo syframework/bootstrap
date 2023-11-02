@@ -11,7 +11,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 	private $email;
 
 	/**
-	 * @var Form\Textarea
+	 * @var \Sy\Component\Html\Form\Textarea
 	 */
 	private $textarea;
 
@@ -26,26 +26,27 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 	private $message;
 
 	public function __construct($email, $subject = null, $message = null) {
+		parent::__construct();
 		$this->email = $email;
 		$this->subject = $subject;
 		$this->message = $message;
-		parent::__construct();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getEmail() {
 		return $this->email;
 	}
 
 	/**
-	 * @return Form\Textarea
+	 * @return \Sy\Component\Html\Form\Textarea
 	 */
 	public function getTextarea() {
 		return $this->textarea;
 	}
 
 	public function init() {
-		parent::init();
-
 		// Email field
 		$service = \Project\Service\Container::getInstance();
 		$mail = '';
@@ -95,7 +96,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			$this->logWarning($e);
 			$this->setError($this->_('Please fill the form correctly'));
 			$this->fill($_POST);
-		} catch (\Sy\Bootstrap\Lib\Mail\Exception $e) {
+		} catch (\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
 			$this->setError($this->_('Message not sent'));
 			$this->fill($_POST);

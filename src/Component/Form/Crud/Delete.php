@@ -7,15 +7,6 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 		parent::__construct($service, $id);
 	}
 
-	public function init() {
-		$this->addTranslator(LANG_DIR);
-		foreach ($this->getId() as $key => $value) {
-			$this->addHidden(['name' => $key, 'value' => $value, 'required' => 'required']);
-		}
-		$this->addCsrfField();
-		$this->initButton();
-	}
-
 	public function submitAction() {
 		try {
 			$this->validatePost();
@@ -38,6 +29,13 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 			$this->setDanger($this->_('Database error'));
 			$this->fill($_POST);
 		}
+	}
+
+	public function initInputs() {
+		foreach ($this->getId() as $key => $value) {
+			$this->addHidden(['name' => $key, 'value' => $value, 'required' => 'required']);
+		}
+		$this->addCsrfField();
 	}
 
 	protected function initButton() {

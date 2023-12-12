@@ -116,6 +116,10 @@ class User extends Crud {
 		} catch (\Sy\Db\MySql\DuplicateEntryException $e) {
 			$user = $this->retrieve(['email' => $email]);
 			if ($user['status'] === 'inactive') {
+				$pwd = Str::generatePassword();
+				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
+				$service = \Project\Service\Container::getInstance();
+				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
 				throw new User\ActivateAccountException('Account not activated', 0, $e);
 			} else {
 				throw new User\AccountExistException('Account already exists', 0, $e);

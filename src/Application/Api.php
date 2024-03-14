@@ -39,10 +39,9 @@ class Api extends \Sy\Bootstrap\Component\Api {
 			return $this->forbidden(['message' => 'CSRF token error']);
 		}
 
-		$fileName = AVATAR_DIR . '/' . "$md5.png";
+		$fileName = AVATAR_DIR . '/' . "$md5.webp";
 		try {
 			\Sy\Bootstrap\Lib\Upload::proceed($fileName, 'file', '\Sy\Bootstrap\Lib\Image::isImage');
-			\Sy\Bootstrap\Lib\Image::resize($fileName, 200, 200, 'png');
 			return $this->ok(['message' => 'Upload complete']);
 		} catch (\Sy\Bootstrap\Lib\Upload\Exception $e) {
 			return $this->serverError(['message' => $e->getMessage()]);

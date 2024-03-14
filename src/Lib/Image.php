@@ -4,12 +4,13 @@ namespace Sy\Bootstrap\Lib;
 class Image {
 
 	/**
+	 * Deprecated: image resize must be done on the client side now
 	 * Resize an image with extending the canvas
 	 *
 	 * @param string $fileName
 	 * @param int $width
 	 * @param int $height
-	 * @param type $type
+	 * @param string $type
 	 */
 	public static function resize($fileName, $width, $height, $type = 'jpeg') {
 		list($wo, $ho) = getimagesize($fileName);
@@ -28,12 +29,13 @@ class Image {
 	}
 
 	/**
+	 * Deprecated: image crop must be done on the client side now
 	 * Resize image with cropping
 	 *
-	 * @param type $fileName
-	 * @param type $width
-	 * @param type $height
-	 * @param type $type
+	 * @param string $fileName
+	 * @param int $width
+	 * @param int $height
+	 * @param string $type
 	 */
 	public static function crop($fileName, $width, $height, $type = 'jpeg') {
 		list($wo, $ho) = getimagesize($fileName);
@@ -65,6 +67,12 @@ class Image {
 		}
 	}
 
+	/**
+	 * Check if the file is an image
+	 *
+	 * @param  string $file
+	 * @return boolean
+	 */
 	public static function isImage($file) {
 		if (\file_exists($file) and \filesize($file) > 11 and \exif_imagetype($file)) {
 			return true;

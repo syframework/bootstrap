@@ -1,88 +1,90 @@
 (function () {
-	var crop;
-	var size = $('#avatar-input-file').data('size');
+	let crop;
+	const avatarInputFile = document.getElementById('avatar-input-file');
+	const size = parseInt(avatarInputFile.dataset.size);
+	const avatarModal = bootstrap.Modal.getOrCreateInstance('#avatar-modal');
+	const avatarProgressModal = bootstrap.Modal.getOrCreateInstance('#avatar-progress-modal');
 
-	function createThumbnail(f) {
-		if (!f.type.match('image.*')) {
-			alert($('#avatar-input-file').data('alert-image'));
+	function createThumbnail(file) {
+		if (!file.type.match('image.*')) {
+			alert(avatarInputFile.dataset.alertImage);
 			return;
 		}
 
-		var reader = new FileReader();
+		const reader = new FileReader();
 
-		reader.onload = function() {
-			var img = new Image();
-			img.onload = function() {
-				if (img.width < size || img.heigth < size) {
-					alert($('#avatar-input-file').data('alert-dimension'));
+		reader.onload = function (e) {
+			const img = new Image();
+			img.onload = function () {
+				if (img.width < size || img.height < size) {
+					alert(avatarInputFile.dataset.alertDimension);
 				} else {
-					$('#avatar').replaceWith('<img id="avatar" class="img-fluid" src="' + img.src + '"/>');
-					$('#avatar-modal').modal('show');
+					const avatar = document.getElementById('avatar');
+					avatar.src = img.src;
+					avatar.classList.add('img-fluid');
+					avatarModal.show();
 				}
 			};
-			img.src = reader.result;
+			img.src = e.target.result;
 		};
 
-		reader.readAsDataURL(f);
+		reader.readAsDataURL(file);
 	}
 
-	function handleFileSelectBtn(evt) {
-		var files = evt.target.files;
+	function handleFileSelectBtn(event) {
+		const files = event.target.files;
 		createThumbnail(files[0]);
 	}
 
-	$('#avatar-input-file').change(handleFileSelectBtn);
+	avatarInputFile.addEventListener('change', handleFileSelectBtn);
 
-	$('#avatar-modal').on('shown.bs.modal', function() {
+	document.getElementById('avatar-modal').addEventListener('shown.bs.modal', function () {
 		crop = new Cropper(document.getElementById('avatar'), {
 			aspectRatio: 1,
 			autoCropArea: 1
 		});
 	});
 
-	$('#avatar-modal').on('hidden.bs.modal', function() {
+	document.getElementById('avatar-modal').addEventListener('hidden.bs.modal', function () {
 		crop.destroy();
 	});
 
-	$('#avatar-upload-btn').click(function() {
-		$('#avatar-modal').modal('hide');
+	document.getElementById('avatar-upload-btn').addEventListener('click', function () {
+		avatarModal.hide();
 
-		$('#avatar-progress').css('width', '0%');
-		$('#avatar-progress-modal').modal('show');
-		$('#avatar-progress-modal').on('shown.bs.modal', function () {
-			if (xhr.status > 0) $('#avatar-progress-modal').modal('hide');
-		})
+		const avatarProgress = document.getElementById('avatar-progress');
+		avatarProgress.style.width = '0%';
+		avatarProgressModal.show();
 
-		var xhr = new XMLHttpRequest();
+		const xhr = new XMLHttpRequest();
+		xhr.open('POST', avatarInputFile.dataset.uploadUrl);
 
-		xhr.open('POST', $('#avatar-input-file').data('upload-url'));
-
-		xhr.upload.onprogress = function(e) {
-			var percentage = e.loaded * 100 / e.total;
-			$('#avatar-progress').css('width', percentage + '%');
+		xhr.upload.onprogress = function (e) {
+			const percentage = e.loaded * 100 / e.total;
+			avatarProgress.style.width = percentage + '%';
 		};
 
-		xhr.onload = function() {
-			$('#avatar-original').attr('src', canvas.toDataURL());
+		xhr.onload = function () {
+			document.getElementById('avatar-original').src = canvas.toDataURL();
 		};
 
-		xhr.onloadend = function() {
-			$('#avatar-progress-modal').modal('hide');
-		}
+		xhr.onloadend = function () {
+			avatarProgressModal.hide();
+		};
 
-		var canvas = crop.getCroppedCanvas({
-			width: 500,
-			height: 500,
+		const canvas = crop.getCroppedCanvas({
+			width: size,
+			height: size,
 			imageSmoothingEnabled: true,
 			imageSmoothingQuality: 'high'
 		});
 
-		canvas.toBlob(function (file) {
-			var form = new FormData();
-			form.append('file', file);
-			form.append('__csrf', $('#avatar-input-file').data('csrf'));
+		canvas.toBlob(function (blob) {
+			const form = new FormData();
+			form.append('file', blob);
+			form.append('__csrf', avatarInputFile.dataset.csrf);
 
 			xhr.send(form);
-		}, 'image/png');
+		}, 'image/webp');
 	});
 })();

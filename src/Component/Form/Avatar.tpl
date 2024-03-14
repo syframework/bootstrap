@@ -27,7 +27,7 @@
 	</div>
 </div>
 
-<div id="avatar-progress-modal" class="modal fade" data-bs-backdrop="static">
+<div id="avatar-progress-modal" class="modal" data-bs-backdrop="static">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-body">

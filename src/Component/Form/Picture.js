@@ -1,78 +1,132 @@
-var SyFormPicture = {
+const SyFormPicture = {
 
-	handleFileSelectBtn: function(input) {
-		var files = [].slice.call(input.files).reverse();
-		var l = files.length + $(input).nextAll('.sy-picture-div').first().find('img.sy-picture-img').length;
-		if (l > $(input).data('img-max-count')) {
-			alert($(input).data('alert-count'));
+	getNextSibling: function (el, selector) {
+		let sibling = el.nextElementSibling;
+		if (!selector) return sibling;
+
+		while (sibling) {
+			if (sibling.matches(selector)) return sibling;
+			sibling = sibling.nextElementSibling
+		}
+		return null;
+	},
+
+	getPreviousSibling: function (el, selector) {
+		let sibling = el.previousElementSibling;
+		if (!selector) return sibling;
+
+		while (sibling) {
+			if (sibling.matches(selector)) return sibling;
+			sibling = sibling.previousElementSibling
+		}
+		return null;
+	},
+
+	handleFileSelectBtn: function (input) {
+		const form = input.closest('form');
+		const hiddenField = SyFormPicture.getPreviousSibling(input, '.sy-picture-input-hidden');
+		const loader = SyFormPicture.getNextSibling(input, '.sy-picture-loader');
+		const pictureDiv = SyFormPicture.getNextSibling(input, '.sy-picture-div');
+		const files = Array.from(input.files).reverse();
+		const imageCount = files.length + pictureDiv.querySelectorAll('img.sy-picture-img').length;
+
+		if (imageCount > input.dataset.imgMaxCount) {
+			alert(input.dataset.alertCount);
 			return;
 		}
-		$(input).closest('form').find('[type="submit"]').attr('disabled', 'disabled');
-		$(input).nextAll('.sy-picture-loader').first().show();
 
-		let hiddenField = $(input).prevAll('input.sy-picture-input-hidden').first();
-		let data = JSON.parse(hiddenField.val() || '{}');
+		form.querySelector('[type="submit"]').disabled = true;
+		loader.style.display = 'block';
 
-		var promises = [];
-		for (var i = 0; i < files.length; i++) {
-			var id = files[i].name.replace(/\W/g, '');
-			if ($(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').length === 0) {
-				$(input).nextAll('.sy-picture-div').first().append('<div class="sy-picture-container" data-id="' + id + '" style="position:relative;display:inline-block"></div>');
+		let data = JSON.parse(hiddenField.value || '{}');
+
+		let promises = files.map((file) => {
+			let id = file.name.replace(/\W/g, '');
+			if (!pictureDiv.querySelector(`div[data-id="${id}"]`)) {
+				let container = document.createElement('div');
+				container.className = 'sy-picture-container';
+				container.setAttribute('data-id', id);
+				container.style.cssText = 'position:relative;display:inline-block';
+				pictureDiv.appendChild(container);
 			}
-			promises.push(new Promise(function(resolve) {
-				SyFormPicture.createThumbnail(files[i], input, id, resolve);
-			}));
-		}
 
-		Promise.all(promises).then(function(values) {
-			for (var i = 0; i < values.length; i++) {
-				if (values[i].image) {
-					data[values[i].id] = {image: values[i].image};
+			return new Promise((resolve) => {
+				SyFormPicture.createThumbnail(file, input, id, resolve);
+			});
+		});
+
+		Promise.all(promises).then((values) => {
+			values.forEach((value) => {
+				if (value.image) {
+					data[value.id] = { image: value.image };
 				} else {
-					$(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').remove();
+					let divToRemove = pictureDiv.querySelector(`div[data-id="${value.id}"]`);
+					if (divToRemove) {
+						divToRemove.remove();
+					}
 				}
-			}
-			$(input).nextAll('.sy-picture-loader').first().hide();
-			hiddenField.val(JSON.stringify(data));
-			hiddenField.change();
-			$(input).closest('form').find('[type="submit"]').removeAttr('disabled');
+			});
+
+			loader.style.display = 'none';
+			hiddenField.value = JSON.stringify(data);
+			hiddenField.dispatchEvent(new Event('change'));
+			form.querySelector('[type="submit"]').disabled = false;
 		});
 	},
 
-	createThumbnail: function(f, input, id, callback) {
+	createThumbnail: function (f, input, id, callback) {
 		if (!f.type.match('image.*')) {
-			alert($(input).data('alert-image'));
-			callback({id: id, image: false});
+			alert(input.dataset.alertImage);
+			callback({ id: id, image: false });
 			return;
 		}
 
 		var reader = new FileReader();
 
-		reader.onload = function() {
-			var img = new Image();
-			img.onload = function() {
-				if (img.width < $(input).data('img-min-width') || img.heigth < $(input).data('img-min-height')) {
-					alert($(input).data('alert-dimension'));
-					callback({id: id, image: false});
+		reader.onload = function () {
+			let img = new Image();
+			img.onload = function () {
+				let minWidth = parseInt(input.dataset.imgMinWidth);
+				let minHeight = parseInt(input.dataset.imgMinHeight);
+				let maxWidth = parseInt(input.dataset.imgMaxWidth);
+				let maxHeight = parseInt(input.dataset.imgMaxHeight);
+				let quality = parseFloat(input.dataset.imgQuality);
+				let width = img.width;
+				let height = img.height;
+
+				if (width < minWidth || height < minHeight) {
+					alert(input.dataset.alertDimension);
+					callback({ id: id, image: false });
 					return;
 				}
 
-				$(input).nextAll('.sy-picture-div').first().find('div[data-id="' + id + '"]').html(
-					'<img class="sy-picture-img img-fluid rounded" src="' + img.src + '" style="margin:10px;max-width:250px;max-height:250px" />' +
-					'<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="' + id + '"><span class="fas fa-times"></span></button>' +
-					'<input type="text" class="form-control sy-picture-caption" data-id="' + id + '" placeholder="' + $(input).data('caption-placeholder') + '" />'
-				);
+				const pictureDiv = SyFormPicture.getNextSibling(input, '.sy-picture-div');
 
-				var width = img.width;
-				var height = img.height;
+				let targetDiv = pictureDiv.querySelector(`div[data-id="${id}"]`);
+				if (!targetDiv) {
+					targetDiv = document.createElement('div');
+					targetDiv.setAttribute('data-id', id);
+					targetDiv.className = 'sy-picture-container';
+					pictureDiv.appendChild(targetDiv);
+				}
 
-				if (width > $(input).data('img-max-width') || height > $(input).data('img-max-height')) {
+				targetDiv.innerHTML = `
+					<img class="sy-picture-img img-fluid rounded" src="${img.src}" style="margin:10px;max-width:250px;max-height:250px" />
+					<button style="position:absolute;top:10px;right:0;display:flex;justify-content:center;align-items:center" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+							<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+						</svg>
+					</button>
+					<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${input.dataset.captionPlaceholder}" />
+				`;
+
+				if (width > maxWidth || height > maxHeight) {
 					if (width / height > 1) {
-						height = Math.round(height * $(input).data('img-max-height') / width);
-						width = $(input).data('img-max-width');
+						height = Math.round(height * maxHeight / width);
+						width = maxWidth;
 					} else {
-						width = Math.round(width * $(input).data('img-max-width') / height);
-						height = $(input).data('img-max-height');
+						width = Math.round(width * maxWidth / height);
+						height = maxHeight;
 					}
 				}
 
@@ -83,7 +137,7 @@ var SyFormPicture = {
 				ctx.drawImage(img, 0, 0, width, height);
 				callback({
 					id: id,
-					image: canvas.toDataURL("image/jpeg", $(input).data('img-quality')).split(',')[1]
+					image: canvas.toDataURL("image/webp", quality).split(',')[1]
 				});
 			};
 			img.src = reader.result;
@@ -92,62 +146,82 @@ var SyFormPicture = {
 		reader.readAsDataURL(f);
 	},
 
-	removePicture: function(btn) {
-		let pic = $(btn).closest('.sy-picture-container');
-		let hiddenField = pic.parent().prevAll('input.sy-picture-input-hidden').first(); //supposedly pic.parent() == pic.closest('.sy-picture-div')
-		let data = JSON.parse(hiddenField.val() || '{}');
+	removePicture: function (btn) {
+		const pic = btn.closest('div.sy-picture-container');
+		const hiddenField = SyFormPicture.getPreviousSibling(btn.closest('div.sy-picture-div'), 'input.sy-picture-input-hidden');
+		let data = JSON.parse(hiddenField.value || '{}');
 		pic.remove();
-		delete data[$(btn).data('id')];
-		hiddenField.val(JSON.stringify(data));
-		hiddenField.change();
+		delete data[btn.dataset.id];
+		hiddenField.value = JSON.stringify(data);
+		hiddenField.dispatchEvent(new Event('change'));
 	},
 
-	updateCaption: function(input) {
-		let hiddenField = $(input).closest('.sy-picture-div').prevAll('input.sy-picture-input-hidden').first();
-		let data = JSON.parse(hiddenField.val() || '{}');
-		data[$(input).data('id')].caption = $(input).val();
-		hiddenField.val(JSON.stringify(data));
-		hiddenField.change();
+	updateCaption: function (input) {
+		const hiddenField = SyFormPicture.getPreviousSibling(input.closest('div.sy-picture-div'), 'input.sy-picture-input-hidden');
+		let data = JSON.parse(hiddenField.value || '{}');
+		data[input.dataset.id].caption = input.value;
+		hiddenField.value = JSON.stringify(data);
+		hiddenField.dispatchEvent(new Event('change'));
 	},
 
-	drawPictures: function(hidden) {
-		let val = $(hidden).val();
-		if (val === '') val = '{}';
+	drawPictures: function (hidden) {
+		let val = hidden.value || '{}';
 		let pictures = JSON.parse(val);
 		let html = '';
-		let placeholder = $(hidden).nextAll('input[type=file].sy-picture-input-file').first().data('caption-placeholder');
+		let fileInput = SyFormPicture.getNextSibling(hidden, 'input[type=file].sy-picture-input-file');
+		let placeholder = fileInput ? fileInput.dataset.captionPlaceholder : '';
 
-		for (var id in pictures) {
-			var caption = pictures[id].caption === undefined ? '' : pictures[id].caption;
-			html += `
-			<div class="sy-picture-container" style="position:relative;display:inline-block">
-				<img class="sy-picture-img img-fluid rounded" src="data:image/png;base64,${pictures[id].image}" style="margin:10px;max-width:250px;max-height:250px" />
-				<button style="position:absolute;top:10px;right:0" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}"><span class="fas fa-times"></span></button>
-				<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
-			</div>`;
+		for (let id in pictures) {
+			if (pictures.hasOwnProperty(id)) {
+				let caption = pictures[id].caption || '';
+				html += `
+				<div class="sy-picture-container" style="position:relative;display:inline-block">
+					<img class="sy-picture-img img-fluid rounded" src="data:image/png;base64,${pictures[id].image}" style="margin:10px;max-width:250px;max-height:250px" />
+					<button style="position:absolute;top:10px;right:0;display:flex;justify-content:center;align-items:center" class="btn btn-secondary btn-sm sy-picture-rm" data-id="${id}">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+							<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+						</svg>
+					</button>
+					<input type="text" class="form-control sy-picture-caption" data-id="${id}" placeholder="${placeholder}" value="${caption}" />
+				</div>`;
+			}
 		}
-		$(hidden).nextAll('.sy-picture-div').first().html(html);
+
+		let syPictureDiv = SyFormPicture.getNextSibling(hidden, 'div.sy-picture-div');
+		if (syPictureDiv) {
+			syPictureDiv.innerHTML = html;
+		}
 	}
 
 };
 
-$('body').on('change.sy-picture', '.sy-picture-input-file', function() {
-	SyFormPicture.handleFileSelectBtn(this);
+document.body.addEventListener('change', function (event) {
+	if (event.target.matches('.sy-picture-input-file')) {
+		SyFormPicture.handleFileSelectBtn(event.target);
+	}
 });
 
-$('body').on('click.sy-picture', '.sy-picture-rm', function() {
-	SyFormPicture.removePicture(this);
+document.body.addEventListener('click', function (event) {
+	let target = event.target;
+	while (target && !target.matches('.sy-picture-rm')) {
+		target = target.parentElement;
+	}
+	if (target) {
+		SyFormPicture.removePicture(target);
+	}
 });
 
-$('body').on('change.sy-picture', '.sy-picture-caption', function() {
-	SyFormPicture.updateCaption(this);
+document.body.addEventListener('change', function (event) {
+	if (event.target.matches('.sy-picture-caption')) {
+		SyFormPicture.updateCaption(event.target);
+	}
 });
 
 document.querySelectorAll('.sy-picture-input-hidden').forEach(input => {
 	SyFormPicture.drawPictures(input);
 });
 
-(function() {
+(function () {
 	let observer = new MutationObserver(mutations => {
 
 		for (let mutation of mutations) {

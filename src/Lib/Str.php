@@ -148,7 +148,7 @@ class Str {
 	 */
 	public static function convertSimpleImg($string) {
 		return preg_replace(
-			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
+			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png|webp)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
 			'<figure class="figure"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /><figcaption class="figure-caption text-center">$7</figcaption></figure>',
 			$string
 		);
@@ -162,7 +162,7 @@ class Str {
 	 */
 	public static function convertImg($string) {
 		return preg_replace(
-			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
+			'/http(s?):\/\/(\S*)\.(jpg|jpeg|gif|png|webp)(\?(\S*))?(?=\s|$|\pP)(\s\[(.*?)\])?/i',
 			'<figure class="figure"><a href="http$1://$2.$3$4" target="_blank"><img class="figure-img img-fluid rounded" src="http$1://$2.$3$4" alt="$7" /></a><figcaption class="figure-caption text-center">$7</figcaption></figure>',
 			$string
 		);
@@ -233,7 +233,7 @@ class Str {
 	 * @return array
 	 */
 	public static function extractImgUrl($string) {
-		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
+		preg_match_all('/https?:\/\/(\S*)\.(jpg|jpeg|gif|png|webp)(\?(\S*))?(?=\s|$|\pP)/i', $string, $matches);
 		return $matches[0];
 	}
 

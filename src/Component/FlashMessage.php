@@ -6,6 +6,10 @@ class FlashMessage extends \Sy\Component\WebComponent {
 	public function __construct() {
 		parent::__construct();
 		$this->actionDispatch('flash_message_action');
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
 	public function clearAction() {
@@ -17,7 +21,7 @@ class FlashMessage extends \Sy\Component\WebComponent {
 		$this->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.html');
 
 		$js = new \Sy\Component\WebComponent();
-		$js->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.js.tpl');
+		$js->setTemplateFile(__DIR__ . '/FlashMessage/FlashMessage.js');
 
 		$message = \Sy\Bootstrap\Lib\FlashMessage::getMessage();
 		if (!is_null($message)) {
@@ -38,11 +42,6 @@ class FlashMessage extends \Sy\Component\WebComponent {
 			$this->setVar('TYPE', 'success');
 		}
 		$this->addJsCode($js, ['type' => 'text/javascript']);
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

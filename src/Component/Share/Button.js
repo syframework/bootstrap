@@ -1,8 +1,9 @@
-$('body').on('show.bs.modal', '#shareModal', function (event) {
-	var button = $(event.relatedTarget);
-	var url = button.data('url');
-	if (url !== undefined && url.length > 0) {
-		$(this).find('.share-url').val(url);
-		$(this).find('.popup').data('url', url);
+document.body.addEventListener('show.bs.modal', function (event) {
+	if (!event.target.matches('#shareModal')) return;
+	var button = event.relatedTarget;
+	var url = button.dataset.url;
+	if (url) {
+		document.querySelector('#shareModal .share-url').value = url;
+		document.querySelectorAll('#shareModal .popup').forEach(e => e.dataset.url = url);
 	}
-});
+}, false);

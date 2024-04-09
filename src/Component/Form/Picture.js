@@ -35,7 +35,11 @@ const SyFormPicture = {
 			return;
 		}
 
-		form.querySelector('[type="submit"]').disabled = true;
+		let submit = false;
+		if (form) {
+			submit = form.querySelector('[type="submit"]');
+			if (submit) submit.disabled = true;
+		}
 		loader.style.display = 'block';
 
 		let data = JSON.parse(hiddenField.value || '{}');
@@ -70,7 +74,7 @@ const SyFormPicture = {
 			loader.style.display = 'none';
 			hiddenField.value = JSON.stringify(data);
 			hiddenField.dispatchEvent(new Event('change'));
-			form.querySelector('[type="submit"]').disabled = false;
+			if (submit) submit.disabled = false;
 		});
 	},
 
@@ -202,13 +206,9 @@ document.body.addEventListener('change', function (event) {
 });
 
 document.body.addEventListener('click', function (event) {
-	let target = event.target;
-	while (target && !target.matches('.sy-picture-rm')) {
-		target = target.parentElement;
-	}
-	if (target) {
-		SyFormPicture.removePicture(target);
-	}
+	let target = event.target.closest('.sy-picture-rm');
+	if (!target) return;
+	SyFormPicture.removePicture(target);
 });
 
 document.body.addEventListener('change', function (event) {

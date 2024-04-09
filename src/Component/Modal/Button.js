@@ -1,17 +1,21 @@
-(function() {
-	$('body').on('mousedown', '[data-bs-toggle="modal"][data-dialog]', function () {
-		var id = $(this).data('bs-target');
-		if ($(id).length > 0) return;
-		$('body').append($(this).data('dialog'));
+(function () {
+	document.body.addEventListener('mousedown', function (event) {
+		if (event.target.matches('[data-bs-toggle="modal"][data-dialog]')) {
+			var id = event.target.getAttribute('data-bs-target');
+			if (document.querySelector(id)) return;
+			document.body.insertAdjacentHTML('beforeend', event.target.getAttribute('data-dialog'));
+		}
 	});
 
-	$('button[data-bs-toggle="modal"][data-dialog]').each(function () {
-		if ($($(this).data('dialog')).find('div.alert-danger').length > 0) {
-			var id = $(this).data('bs-target');
-			if ($(id).length == 0) {
-				$('body').append($(this).data('dialog'));
+	document.querySelectorAll('button[data-bs-toggle="modal"][data-dialog]').forEach(function (button) {
+		var dialog = button.getAttribute('data-dialog');
+		var parsedHTML = new DOMParser().parseFromString(dialog, 'text/html');
+		if (parsedHTML.querySelector('div.alert-danger')) {
+			var id = button.getAttribute('data-bs-target');
+			if (!document.querySelector(id)) {
+				document.body.insertAdjacentHTML('beforeend', dialog);
 			}
-			$(this).click();
+			button.click();
 		}
 	});
 })();

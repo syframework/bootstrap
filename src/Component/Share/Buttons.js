@@ -29,6 +29,6 @@
 		tooltip.setContent({ '.tooltip-inner': btn.dataset.success });
 		setTimeout(function () {
 			tooltip.setContent({ '.tooltip-inner': title });
-		}, 1000);
+		}, 2000);
 	});
 })();

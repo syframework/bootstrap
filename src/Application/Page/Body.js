@@ -1,47 +1,36 @@
-(function ($) {
-	$.fn.drags = function (opt) {
+(function () {
 
-		opt = $.extend({ handle: "", cursor: "move" }, opt);
+	<!-- BEGIN UPDATE_BLOCK -->
+	function draggable(element) {
+		var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+		element.onmousedown = dragMouseDown;
 
-		if (opt.handle === "") {
-			var $el = this;
-		} else {
-			var $el = this.find(opt.handle);
+		function dragMouseDown(e) {
+			e = e || window.event;
+			e.preventDefault();
+			pos3 = e.clientX;
+			pos4 = e.clientY;
+			document.onmouseup = closeDragElement;
+			document.onmousemove = elementDrag;
 		}
 
-		return $el.css('cursor', opt.cursor).on("mousedown", function (e) {
-			if (opt.handle === "") {
-				var $drag = $(this).addClass('draggable');
-			} else {
-				var $drag = $(this).addClass('active-handle').parent().addClass('draggable');
-			}
-			var z_idx = $drag.css('z-index'),
-				drg_h = $drag.outerHeight(),
-				drg_w = $drag.outerWidth(),
-				pos_y = $drag.offset().top + drg_h - e.pageY,
-				pos_x = $drag.offset().left + drg_w - e.pageX;
-			$drag.css('z-index', 1060).parents().on("mousemove", function (e) {
-				$('.draggable').offset({
-					top: e.pageY + pos_y - drg_h,
-					left: e.pageX + pos_x - drg_w
-				}).on("mouseup", function () {
-					$(this).removeClass('draggable').css('z-index', z_idx);
-				});
-			});
-			e.preventDefault(); // disable selection
-		}).on("mouseup", function () {
-			if (opt.handle === "") {
-				$(this).removeClass('draggable');
-			} else {
-				$(this).removeClass('active-handle').parent().removeClass('draggable');
-			}
-		});
+		function elementDrag(e) {
+			e = e || window.event;
+			e.preventDefault();
+			pos1 = pos3 - e.clientX;
+			pos2 = pos4 - e.clientY;
+			pos3 = e.clientX;
+			pos4 = e.clientY;
+			element.style.top = (element.offsetTop - pos2) + 'px';
+			element.style.left = (element.offsetLeft - pos1) + 'px';
+		}
 
+		function closeDragElement() {
+			document.onmouseup = null;
+			document.onmousemove = null;
+		}
 	}
-})(jQuery);
 
-$(function() {
-	<!-- BEGIN UPDATE_BLOCK -->
 	var changed = false;
 	var csrf = "{CSRF}";
 
@@ -51,33 +40,45 @@ $(function() {
 	CKEDITOR.plugins.addExternal('sywidget', '{CKEDITOR_ROOT}/plugins/sywidget/');
 
 	function save(reload) {
-		$.post("{URL}", {
-			id: "{ID}",
-			lang: "{LANG}",
-			csrf: csrf,
-			content: CKEDITOR.instances.content.getData()
-		}, function(res) {
-			if (res.status === 'ko') {
-				alert($('<p/>').html(res.message).text());
-				if (res.csrf) {
-					csrf = res.csrf;
-					changed = true;
-				} else {
+		fetch("{URL}", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				id: "{ID}",
+				lang: "{LANG}",
+				csrf: csrf,
+				content: CKEDITOR.instances.content.getData()
+			})
+		})
+			.then(response => response.json())
+			.then(res => {
+				if (res.status === 'ko') {
+					alert(document.createElement('p').appendChild(document.createTextNode(res.message)).parentNode.textContent);
+					if (res.csrf) {
+						csrf = res.csrf;
+						changed = true;
+					} else {
+						location.reload(true);
+					}
+				} else if (reload) {
 					location.reload(true);
 				}
-			} else if (reload) {
-				location.reload(true);
-			}
-		}, 'json');
+			})
+			.catch(error => console.error('Error:', error));
 		changed = false;
 	}
 
-	$('#sy-btn-page-update-start').click(function(e) {
+	document.getElementById('sy-btn-page-update-start').addEventListener('click', function (e) {
 		e.preventDefault();
-		$.getJSON('{GET_URL}', function(res) {
+		fetch('{GET_URL}').then(
+			response => response.json()
+		).then(res => {
 			if (res.status === 'ok') {
-				$('#content').html(res.content);
-				$('#content').attr('contenteditable', true);
+				var contentElement = document.getElementById('content');
+				contentElement.innerHTML = res.content;
+				contentElement.setAttribute('contenteditable', 'true');
 				if (!CKEDITOR.instances.content) {
 					var editor = CKEDITOR.inline('content', {
 						entities: false,
@@ -94,7 +95,7 @@ $(function() {
 						uploadUrl: '{FILE_UPLOAD_AJAX}',
 						extraPlugins: 'sharedspace,sycomponent,sywidget,tableresize,uploadimage,uploadfile',
 						allowedContent: true,
-						justifyClasses: [ 'text-left', 'text-center', 'text-right', 'text-justify' ],
+						justifyClasses: ['text-left', 'text-center', 'text-right', 'text-justify'],
 						disallowedContent: 'script; *[on*]; img{width,height}',
 						removePlugins: 'about',
 						templates: 'websyte',
@@ -121,43 +122,45 @@ $(function() {
 								});
 								this.dataProcessor.htmlFilter.addRules({
 									elements: {
-										img: function(el) {
+										img: function (el) {
 											el.addClass('img-fluid');
 										}
 									}
 								});
-								$('#sy-page-topbar').drags();
+								draggable(document.getElementById('sy-page-topbar'));
 							}
 						}
 					});
 
-					editor.on('blur', function() {
+					editor.on('blur', function () {
 						if (changed) save();
 					});
 
-					editor.on('change', function() {
+					editor.on('change', function () {
 						changed = true;
 					});
 
 					editor.config.toolbar = [
-						{ name: 'document', items: [ 'Templates' ] },
-						{ name: 'clipboard', items: [ 'Undo', 'Redo' ] },
-						{ name: 'editing', items: [ 'Find', 'Replace', 'Scayt' ] },
-						{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike' ] },
-						{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight' ] },
-						{ name: 'links', items: [ 'Link', 'Unlink' ] },
-						{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Iframe' ] },
-						{ name: 'styles', items: [ 'Format' ] },
-						{ name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+						{ name: 'document', items: ['Templates'] },
+						{ name: 'clipboard', items: ['Undo', 'Redo'] },
+						{ name: 'editing', items: ['Find', 'Replace', 'Scayt'] },
+						{ name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+						{ name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+						{ name: 'links', items: ['Link', 'Unlink'] },
+						{ name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'Iframe'] },
+						{ name: 'styles', items: ['Format'] },
+						{ name: 'colors', items: ['TextColor', 'BGColor'] }
 					];
 				}
-				$('#sy-btn-page-update-start').hide();
-				$('#sy-btn-page-update-stop').removeClass("d-none");
+				document.getElementById('sy-btn-page-update-start').style.display = 'none';
+				document.getElementById('sy-btn-page-update-stop').classList.remove('d-none');
 			}
-		});
+		}).catch(
+			error => console.error('Error:', error)
+		);
 	});
 
-	$('#sy-btn-page-update-stop').click(function(e) {
+	document.getElementById('sy-btn-page-update-stop').addEventListener('click', function(e) {
 		e.preventDefault();
 		if (changed) {
 			save(true);
@@ -166,11 +169,11 @@ $(function() {
 		}
 	});
 
-	setInterval(function() {
+	setInterval(function () {
 		if (changed) save();
 	}, 60000);
 
-	setInterval(function() {
+	setInterval(function () {
 		fetch('{CSRF_URL}').then(response => response.json()).then(data => {
 			csrf = data.csrf;
 		});
@@ -178,10 +181,10 @@ $(function() {
 	<!-- END UPDATE_BLOCK -->
 
 	<!-- BEGIN DELETE_BLOCK -->
-	$('#sy-btn-page-delete').click(function(e) {
+	document.getElementById('sy-btn-page-delete').addEventListener('click', function(e) {
 		e.preventDefault();
-		if (confirm($('<div />').html("{CONFIRM_DELETE}").text())) {
-			$('#{DELETE_FORM_ID}').submit();
+		if (confirm(document.createElement('div').appendChild(document.createTextNode("{CONFIRM_DELETE}")).parentNode.textContent)) {
+			document.getElementById('{DELETE_FORM_ID}').submit();
 		}
 	});
 	<!-- END DELETE_BLOCK -->
@@ -189,47 +192,72 @@ $(function() {
 	<!-- BEGIN CODE_BLOCK -->
 	let htmlLoaded = false;
 
+	const codeEditorHtml = ace.edit('codearea_codearea_html_{ID}');
+	const codeEditorCss = ace.edit('codearea_codearea_css_{ID}');
+	const codeEditorJs = ace.edit('codearea_codearea_js_{ID}');
+
 	function resizeCodeArea() {
-		let codeEditorHeight = window.innerHeight - $('#sy-code-modal').find('.modal-header').outerHeight() - $('#sy-code-modal').find('.modal-footer').outerHeight();
-		$('#codearea_codearea_html_{ID}').height(codeEditorHeight);
-		ace.edit('codearea_codearea_html_{ID}').resize();
-		$('#codearea_codearea_css_{ID}').height(codeEditorHeight);
-		ace.edit('codearea_codearea_css_{ID}').resize();
-		$('#codearea_codearea_js_{ID}').height(codeEditorHeight);
-		ace.edit('codearea_codearea_js_{ID}').resize();
+		let codeEditorHeight = document.querySelector('#sy-code-modal .modal-body').offsetHeight;
+		let codeEditorWidth = document.querySelector('#sy-code-modal .modal-body').offsetWidth;
+
+		let htmlEditor = document.querySelector('#codearea_codearea_html_{ID}');
+		htmlEditor.style.height = codeEditorHeight + 'px';
+		htmlEditor.style.width = codeEditorWidth + 'px';
+		codeEditorHtml.resize();
+
+		let cssEditor = document.querySelector('#codearea_codearea_css_{ID}');
+		cssEditor.style.height = codeEditorHeight + 'px';
+		cssEditor.style.width = codeEditorWidth + 'px';
+		codeEditorCss.resize();
+
+		let jsEditor = document.querySelector('#codearea_codearea_js_{ID}');
+		jsEditor.style.height = codeEditorHeight + 'px';
+		jsEditor.style.width = codeEditorWidth + 'px';
+		codeEditorJs.resize();
 	}
 
 	window.addEventListener('resize', resizeCodeArea);
 
-	$('#sy-code-modal').on('shown.bs.modal', function (e) {
+	// Event listener for modal when it's shown
+	document.getElementById('sy-code-modal').addEventListener('shown.bs.modal', function(e) {
 		resizeCodeArea();
 
 		if (htmlLoaded) return;
-		$.getJSON('{GET_URL}', function(res) {
-			if (res.status === 'ok') {
-				ace.edit('codearea_codearea_html_{ID}').session.setValue(res.content);
-				htmlLoaded = true;
-			}
-		});
+		fetch('{GET_URL}')
+			.then(response => response.json())
+			.then(res => {
+				if (res.status === 'ok') {
+					codeEditorHtml.session.setValue(res.content);
+					htmlLoaded = true;
+				}
+			});
 	});
 
-	$('#sy-code-modal form').submit(function(e) {
-		let code = ace.edit('codearea_codearea_js_{ID}').getValue();
-		this.js.value = code;
-		this.css.value = ace.edit('codearea_codearea_css_{ID}').getValue();
+	// Form submission event listener
+	document.querySelector('#sy-code-modal form').addEventListener('submit', function(e) {
+		e.preventDefault();
+		this.js.value = codeEditorJs.getValue();
+		this.css.value = codeEditorCss.getValue();
+		this.submit();
 	});
 
-	$('#sy-new-page-modal').has('div.alert').modal('show');
-	$('#sy-update-page-modal').has('div.alert').modal('show');
-	$('#sy-code-modal').has('div.alert').modal('show');
+	// Show modals if they contain an alert
+	['sy-new-page-modal', 'sy-update-page-modal', 'sy-code-modal'].forEach(function(modalId) {
+		let modal = document.getElementById(modalId);
+		if (modal.querySelector('div.alert')) {
+			new bootstrap.Modal(modal).show();
+		}
+	});
 
-	// Error message
-	let errorMsg = $('#sy-code-modal div.alert').text();
-	if (errorMsg) {
+	// Display error message
+	let errorMsgElement = document.querySelector('#sy-code-modal div.alert');
+	if (errorMsgElement) {
+		let errorMsg = errorMsgElement.textContent;
 		if (errorMsg.startsWith('SCSS')) {
-			$('#sy-css-tab').tab('show');
+			new bootstrap.Tab(document.querySelector('#sy-css-tab')).show();
 		}
 		flash(errorMsg, 'danger');
 	}
 	<!-- END CODE_BLOCK -->
-});
+
+})();

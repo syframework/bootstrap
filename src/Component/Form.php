@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Component;
 
+use Sy\Component\WebComponent;
+
 abstract class Form extends \Sy\Component\Html\Form {
 
 	public function init() {}
@@ -531,10 +533,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 
 		// Icon
 		if (isset($options['icon'])) {
-			$iconAttributes = is_string($options['icon']) ? ['class' => $options['icon']] : $options['icon'];
-			$span = new \Sy\Component\Html\Element('span');
-			$span->setAttributes($iconAttributes);
-			$text = $span->__toString() . ' ' . $this->_($label);
+			$icon = is_string($options['icon']) ? new Icon($options['icon']) : $options['icon'];
+			$text = WebComponent::concat($icon, ' ', $this->_($label));
 		} else {
 			$text = $this->_($label);
 		}

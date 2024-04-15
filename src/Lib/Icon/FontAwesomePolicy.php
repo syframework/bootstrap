@@ -23,8 +23,11 @@ class FontAwesomePolicy implements IPolicy {
 	 * @inheritDoc
 	 */
 	public function apply(\Sy\Bootstrap\Component\Icon $icon) {
-		$icon->setTemplateContent('<span class="fa-solid {NAME}"></span>');
-		$icon->setVar('NAME', $icon->getName());
+		$icon->setTemplateContent('<span class="fa-solid {NAME} {CLASS}"></span>');
+		$icon->setVars([
+			'NAME'  => $icon->getName(),
+			'CLASS' => $icon->getOption('class'),
+		]);
 		$icon->addJsLink($this->cdnJsUrl);
 	}
 

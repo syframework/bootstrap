@@ -8,6 +8,10 @@ class Menu extends Element {
 	public function __construct(array $menu = []) {
 		parent::__construct();
 		$this->menu = $menu;
+
+		$this->mount(function () {
+			$this->init($this->menu);
+		});
 	}
 
 	public function addDropdown($title, SubMenu $subMenu, $active = false) {
@@ -50,8 +54,8 @@ class Menu extends Element {
 					}
 				}
 				$icon = '';
-				if (isset($array['fa'])) $icon = '<span class="fas fa-' . $array['fa'] . '"></span> ';
-				$this->addDropdown($icon . $this->_($label), $subMenu, $active);
+				if (isset($array['icon'])) $icon = $array['icon'];
+				$this->addDropdown(\Sy\Component\WebComponent::concat($icon, ' ', $this->_($label)), $subMenu, $active);
 			} else {
 				$this->addLink($label, $array);
 			}
@@ -62,11 +66,6 @@ class Menu extends Element {
 		$this->addTranslator(LANG_DIR);
 		$this->addClass('navbar-nav');
 		$this->add($menu);
-	}
-
-	public function __toString() {
-		$this->init($this->menu);
-		return parent::__toString();
 	}
 
 }

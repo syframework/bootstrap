@@ -38,6 +38,17 @@ class Icon extends WebComponent {
 		return $this->options;
 	}
 
+	/**
+	 * Return option value
+	 *
+	 * @param  string $optionName
+	 * @return mixed
+	 */
+	public function getOption($optionName) {
+		$res = isset($this->options[$optionName]) ? $this->options[$optionName] : '';
+		return $res;
+	}
+
 	private function init() {
 		$policy = \Sy\Bootstrap\Lib\Icon\PolicyManager::retrievePolicy($this->name);
 		if (!$policy) return;

@@ -5,7 +5,7 @@ use Sy\Bootstrap\Component\Modal\Button as ModalButton;
 
 class Button extends ModalButton {
 
-	public function __construct($label = '', $url = '', $icon = 'share-alt', $color = 'secondary', $width = '100', $size = '', $title = '') {
+	public function __construct($label = '', $url = '', $icon = 'share', $color = 'secondary', $width = '100', $size = '', $title = '') {
 		parent::__construct('shareModal', $label, $icon, $color, $width, $size, $title, ['data-url' => $url]);
 
 		$dialog = $this->getDialog();

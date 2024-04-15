@@ -17,7 +17,7 @@ class Element extends Navigation {
 		$link = null;
 		$active = false;
 		$attributes = [];
-		if (isset($data['fa'])) $icon = '<span class="fas fa-' . $data['fa'] . '"></span> ';
+		if (isset($data['icon'])) $icon = $data['icon'];
 		if (isset($data['page'])) {
 			if (isset($data['param'])) {
 				$link = Url::build('page', $data['page'], $data['param']);
@@ -47,7 +47,7 @@ class Element extends Navigation {
 		if ($active) {
 			$attributes['class'] .= ' active';
 		}
-		$this->addItem(new Link($icon . $this->_($label), $link, $attributes), attributes: ['class' => 'nav-item']);
+		$this->addItem(new Link(\Sy\Component\WebComponent::concat($icon, ' ', $this->_($label)), $link, $attributes), attributes: ['class' => 'nav-item']);
 		return $active;
 	}
 

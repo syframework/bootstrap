@@ -16,12 +16,12 @@ class Dialog extends WebComponent {
 	private $title;
 
 	/**
-	 * @var mixed String or WebComponent or Array of String or WebComponent
+	 * @var string|WebComponent|array[string|WebComponent]
 	 */
 	private $body;
 
 	/**
-	 * @var mixed String or WebCcomponent or Array of String or WebComponent
+	 * @var string|WebComponent|array[string|WebComponent]
 	 */
 	private $footer;
 
@@ -33,8 +33,8 @@ class Dialog extends WebComponent {
 	/**
 	 * @param string $id
 	 * @param string $title
-	 * @param string|WebComponent|array $body
-	 * @param string|WebComponent|array $footer
+	 * @param string|WebComponent|array[string|WebComponent] $body
+	 * @param string|WebComponent|array[string|WebComponent] $footer
 	 */
 	public function __construct($id, $title = null, $body = null, $footer = null) {
 		parent::__construct();
@@ -57,7 +57,7 @@ class Dialog extends WebComponent {
 	}
 
 	/**
-	 * @param mixed $body String or WebComponent or Array of String or WebComponent
+	 * @param string|WebComponent|array[string|WebComponent] $body
 	 */
 	public function setBody(...$body) {
 		// Flatten array
@@ -69,7 +69,7 @@ class Dialog extends WebComponent {
 	}
 
 	/**
-	 * @param mixed $footer String or WebComponent or Array of String or WebComponent
+	 * @param string|WebComponent|array[string|WebComponent] $footer
 	 */
 	public function setFooter(...$footer) {
 		// Flatten array

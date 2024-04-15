@@ -19,7 +19,7 @@ class SubMenu extends \Sy\Component\Html\Element {
 		$link = null;
 		$active = false;
 		$attributes = [];
-		if (isset($data['fa'])) $icon = '<span class="fas fa-' . $data['fa'] . '"></span> ';
+		if (isset($data['icon'])) $icon = $data['icon'];
 		if (isset($data['page'])) {
 			if (isset($data['param'])) {
 				$link = \Sy\Bootstrap\Lib\Url::build('page', $data['page'], $data['param']);
@@ -47,7 +47,7 @@ class SubMenu extends \Sy\Component\Html\Element {
 		}
 		$li = new \Sy\Component\Html\Element('li');
 		$item = new \Sy\Component\Html\Element('a');
-		$item->addText($icon . $this->_($label));
+		$item->addContent(\Sy\Component\WebComponent::concat($icon, ' ', $this->_($label)));
 		$item->setAttributes($attributes);
 		$item->setAttribute('href', $link);
 		if ($active) {

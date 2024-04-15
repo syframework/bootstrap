@@ -1,46 +1,70 @@
-(function() {
-	$('body').on('click', '.feed-next-page-button', function() {
-		var button = $(this);
-		button.removeClass('feed-next-page-button');
-		button.prop('disabled', true);
-		button.find('.bi').replaceWith('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-		var lastId = button.prev().data('id');
-		if (lastId === undefined) {
-			lastId = button.next().data('id');
+(function () {
+	document.body.addEventListener('click', function (event) {
+		var button = null;
+		if (event.target.classList.contains('feed-next-page-button')) {
+			button = event.target;
 		}
-		if (lastId === undefined) {
-			lastId = button.data('start');
+		if (!button) {
+			button = event.target.closest('.feed-next-page-button');
 		}
-		var params = button.data('params');
-		params['class'] = button.data('class');
+		if (!button) return;
+		button.classList.remove('feed-next-page-button');
+		button.disabled = true;
+		var spinner = document.createElement('span');
+		spinner.className = 'spinner-border spinner-border-sm';
+		spinner.setAttribute('role', 'status');
+		spinner.setAttribute('aria-hidden', 'true');
+		var biIcon = button.querySelector('.bi');
+		if (biIcon) {
+			biIcon.parentNode.replaceChild(spinner, biIcon);
+		}
+		var lastId = button.previousElementSibling ? button.previousElementSibling.dataset.id : null;
+		if (!lastId) {
+			lastId = button.nextElementSibling ? button.nextElementSibling.dataset.id : null;
+		}
+		if (!lastId) {
+			lastId = button.dataset.start;
+		}
+		var params = JSON.parse(button.dataset.params);
+		params['class'] = button.dataset.class;
 		params['last'] = lastId;
-		$.get(
-			button.data('location'),
-			params,
-			function(result) {
-				button.replaceWith(result);
-				$('body').trigger('feed-loaded');
-			}
-		);
+		var location = new URL(button.dataset.location, window.location.origin);
+		Object.entries(params).forEach(([key, value]) => {
+			if (value === null) return;
+			location.searchParams.set(key, value);
+		});
+		fetch(location.href)
+			.then(response => response.text())
+			.then(result => {
+				button.outerHTML = result;
+				document.body.dispatchEvent(new CustomEvent('feed-loaded'));
+			});
 	});
 
-	$('.feed-next-page-button.feed-next-page-auto:visible').click();
+	// Trigger click on visible auto-load buttons
+	document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
+		if (button.offsetParent !== null) {
+			button.click();
+		}
+	});
 
+	// Scroll event for auto-loading feeds
 	function setFeedScroll() {
 		var timer;
-		$(window).one('scroll.feed', function() {
+		window.addEventListener('scroll', function () {
 			if (timer) {
-				window.clearTimeout(timer);
+				clearTimeout(timer);
 			}
-			timer = window.setTimeout(function() {
-				$('.feed-next-page-button.feed-next-page-auto:visible').each(function() {
-					if ($(this).offset().top < ($(window).scrollTop() + $(window).height() + 300)) {
-						$(this).click();
+			timer = setTimeout(function () {
+				document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
+					var rect = button.getBoundingClientRect();
+					if (rect.top < window.innerHeight + 300) {
+						button.click();
 					}
 				});
 				setFeedScroll();
 			}, 500);
-		});
+		}, { once: true });
 	}
 	setFeedScroll();
 })();

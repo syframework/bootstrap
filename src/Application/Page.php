@@ -271,29 +271,6 @@ abstract class Page extends \Sy\Component\Html\Page {
 		$js = new \Sy\Component();
 		$js->setTemplateFile(__DIR__ . '/Page/Body.js');
 
-		// Update inline
-		if ($service->user->getCurrentUser()->hasPermission('page-update-inline')) {
-			$body->addJsLink(CKEDITOR_JS);
-			$js->setVars([
-				'ID'               => $page['id'],
-				'LANG'             => $lang,
-				'CSRF'             => $service->user->getCsrfToken(),
-				'URL'              => Url::build('api', 'page'),
-				'WEB_ROOT'         => WEB_ROOT,
-				'IMG_BROWSE'       => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'image']),
-				'IMG_UPLOAD'       => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image']),
-				'FILE_BROWSE'      => Url::build('editor', 'page/browse', ['id' => $name, 'type' => 'file']),
-				'FILE_UPLOAD'      => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file']),
-				'IMG_UPLOAD_AJAX'  => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'image', 'json' => '']),
-				'FILE_UPLOAD_AJAX' => Url::build('editor', 'page/upload', ['id' => $name, 'type' => 'file', 'json' => '']),
-				'CKEDITOR_ROOT'    => CKEDITOR_ROOT,
-				'GET_URL'          => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
-				'CSRF_URL'         => Url::build('api', 'csrf'),
-			]);
-			$js->setBlock('UPDATE_BLOCK');
-			$body->setBlock('UPDATE_INLINE_BTN_BLOCK');
-		}
-
 		// Update
 		if ($service->user->getCurrentUser()->hasPermission('page-update')) {
 			$body->setComponent('UPDATE_PAGE_FORM', new \Sy\Bootstrap\Component\Page\Update($name));
@@ -321,6 +298,10 @@ abstract class Page extends \Sy\Component\Html\Page {
 				'CODE_FORM_ID' => 'code_form_' . $name,
 			]);
 
+			$js->setVars([
+				'ID' => $page['id'],
+				'GET_URL' => Url::build('api', 'page', ['id' => $name, 'lang' => $lang]),
+			]);
 			$js->setBlock('CODE_BLOCK');
 			$body->setBlock('CODE_BTN_BLOCK');
 			$body->setBlock('CODE_MODAL_BLOCK');

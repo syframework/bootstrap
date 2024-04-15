@@ -1,28 +1,44 @@
 (function () {
 	document.body.addEventListener('click', function (event) {
-		var button = event.target.closest('.feed-next-page-button');
-		if (button) {
-			button.classList.remove('feed-next-page-button');
-			button.disabled = true;
-			var spinner = document.createElement('span');
-			spinner.className = 'spinner-border spinner-border-sm';
-			spinner.setAttribute('role', 'status');
-			spinner.setAttribute('aria-hidden', 'true');
-			var biIcon = button.querySelector('.bi');
-			if (biIcon) {
-				biIcon.parentNode.replaceChild(spinner, biIcon);
-			}
-			var lastId = button.getAttribute('data-id-start') || button.previousElementSibling.getAttribute('data-id') || button.nextElementSibling.getAttribute('data-id');
-			var params = JSON.parse(button.getAttribute('data-params'));
-			params['class'] = button.getAttribute('data-class');
-			params['last'] = lastId;
-			fetch(button.getAttribute('data-location') + '?' + new URLSearchParams(params))
-				.then(response => response.text())
-				.then(result => {
-					button.outerHTML = result;
-					document.body.dispatchEvent(new CustomEvent('feed-loaded'));
-				});
+		var button = null;
+		if (event.target.classList.contains('feed-next-page-button')) {
+			button = event.target;
 		}
+		if (!button) {
+			button = event.target.closest('.feed-next-page-button');
+		}
+		if (!button) return;
+		button.classList.remove('feed-next-page-button');
+		button.disabled = true;
+		var spinner = document.createElement('span');
+		spinner.className = 'spinner-border spinner-border-sm';
+		spinner.setAttribute('role', 'status');
+		spinner.setAttribute('aria-hidden', 'true');
+		var biIcon = button.querySelector('.bi');
+		if (biIcon) {
+			biIcon.parentNode.replaceChild(spinner, biIcon);
+		}
+		var lastId = button.previousElementSibling ? button.previousElementSibling.dataset.id : null;
+		if (!lastId) {
+			lastId = button.nextElementSibling ? button.nextElementSibling.dataset.id : null;
+		}
+		if (!lastId) {
+			lastId = button.dataset.start;
+		}
+		var params = JSON.parse(button.dataset.params);
+		params['class'] = button.dataset.class;
+		params['last'] = lastId;
+		var location = new URL(button.dataset.location, window.location.origin);
+		Object.entries(params).forEach(([key, value]) => {
+			if (value === null) return;
+			location.searchParams.set(key, value);
+		});
+		fetch(location.href)
+			.then(response => response.text())
+			.then(result => {
+				button.outerHTML = result;
+				document.body.dispatchEvent(new CustomEvent('feed-loaded'));
+			});
 	});
 
 	// Trigger click on visible auto-load buttons

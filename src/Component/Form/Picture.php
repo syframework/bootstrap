@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Component\Form;
 
+use Sy\Bootstrap\Component\Icon;
+
 class Picture extends \Sy\Component\Html\Form\Element {
 
 	/**
@@ -19,7 +21,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 	 * 'class' => '' by default (button class)
 	 * 'color' => 'primary' | 'secondary' by default | 'info' | 'warning' | 'danger' (button color)
 	 * 'size'  => '' by default | 'sm' | 'lg' (button size)
-	 * 'icon'  => 'camera' by default (font awesome icon name)
+	 * 'icon'  => 'camera' by default
 	 * 'label' => '' by default (button label text)
 	 * 'title' => '' by default (button title attribute)
 	 * 'img-min-width'  => 50 by default (image minimum width)
@@ -70,7 +72,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 			'CLASS' => isset($this->options['class']) ? $this->options['class']           : '',
 			'COLOR' => isset($this->options['color']) ? $this->options['color']           : 'secondary',
 			'SIZE'  => isset($this->options['size'])  ? $this->options['size']            : '',
-			'ICON'  => isset($this->options['icon'])  ? $this->options['icon']            : 'camera',
+			'ICON'  => isset($this->options['icon'])  ? new Icon($this->options['icon'])  : new Icon('camera'),
 			'LABEL' => isset($this->options['label']) ? $this->_($this->options['label']) : '',
 			'TITLE' => isset($this->options['title']) ? $this->_($this->options['title']) : '',
 			'VALUE' => $this->value,

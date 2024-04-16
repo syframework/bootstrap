@@ -1,4 +1,5 @@
 (function () {
+
 	document.body.addEventListener('click', function (event) {
 		var button = null;
 		if (event.target.classList.contains('feed-next-page-button')) {
@@ -42,11 +43,16 @@
 	});
 
 	// Trigger click on visible auto-load buttons
-	document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
-		if (button.offsetParent !== null) {
-			button.click();
-		}
-	});
+	function clickLoad() {
+		document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
+			if (!isVisible(button)) return;
+			var rect = button.getBoundingClientRect();
+			if (rect.top < window.innerHeight + 300) {
+				button.click();
+			}
+		});
+	}
+	clickLoad();
 
 	// Scroll event for auto-loading feeds
 	function setFeedScroll() {
@@ -56,15 +62,21 @@
 				clearTimeout(timer);
 			}
 			timer = setTimeout(function () {
-				document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
-					var rect = button.getBoundingClientRect();
-					if (rect.top < window.innerHeight + 300) {
-						button.click();
-					}
-				});
+				clickLoad();
 				setFeedScroll();
 			}, 500);
 		}, { once: true });
 	}
 	setFeedScroll();
+
+	function isVisible(elem) {
+		return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
+	}
+
+	let observer = new MutationObserver(mutations => {
+		clickLoad();
+	});
+
+	observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
 })();

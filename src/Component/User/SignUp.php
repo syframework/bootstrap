@@ -26,7 +26,7 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			]
 		);
 
-		$this->addButton('Sign Up', ['class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-check']);
+		$this->addButton('Sign Up', ['class' => 'w-100'], ['color' => 'primary', 'icon' => 'check']);
 	}
 
 	public function submitAction() {

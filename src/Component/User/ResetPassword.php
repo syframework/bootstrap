@@ -45,7 +45,7 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 			]
 		);
 		$this->addHidden(['name' => 'email', 'value' => $this->email]);
-		$this->addButton('Save', ['type' => 'submit'], ['color' => 'primary', 'icon' => 'fas fa-save']);
+		$this->addButton('Save', ['type' => 'submit'], ['color' => 'primary', 'icon' => 'save']);
 	}
 
 	public function submitAction() {

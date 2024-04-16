@@ -1,12 +1,25 @@
 <?php
 namespace Sy\Bootstrap\Component\Form;
 
+use Sy\Bootstrap\Component\Icon;
+
 class UploadButton extends \Sy\Component\Html\Form\Element {
 
+	/**
+	 * @var Icon|string
+	 */
 	private $icon;
 
+	/**
+	 * @var string
+	 */
 	private $accept;
 
+	/**
+	 * @param string $label
+	 * @param Icon|string $icon
+	 * @param string $accept
+	 */
 	public function __construct($label, $icon = 'upload', $accept = '') {
 		parent::__construct();
 		$this->addTranslator(LANG_DIR);
@@ -19,22 +32,34 @@ class UploadButton extends \Sy\Component\Html\Form\Element {
 		]);
 		$this->icon   = $icon;
 		$this->accept = $accept;
+
+		$this->mount(function () {
+			$this->init();
+		});
 	}
 
+	/**
+	 * @param Icon|string $icon
+	 */
 	public function setIcon($icon) {
+		if (is_string($icon)) {
+			$icon = new Icon($icon);
+		}
 		$this->icon = $icon;
 	}
 
+	/**
+	 * @param string $accept
+	 */
 	public function setAccept($accept) {
 		$this->accept = $accept;
 	}
 
-	public function __toString() {
+	private function init() {
 		$this->setVars([
 			'ICON'   => $this->icon,
 			'ACCEPT' => $this->accept,
 		]);
-		return parent::__toString();
 	}
 
 }

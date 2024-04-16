@@ -21,7 +21,7 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 			],
 			['label' => 'E-mail', 'floating-label' => true]
 		);
-		$this->addButton('Send', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-paper-plane']);
+		$this->addButton('Send', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'paper-plane']);
 	}
 
 	public function submitAction() {

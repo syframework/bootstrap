@@ -28,7 +28,7 @@ class Create extends \Sy\Bootstrap\Component\Form\Crud {
 	}
 
 	protected function initButton() {
-		$this->addButton('Create', ['type' => 'submit'], ['icon' => 'fas fa-plus', 'color' => 'primary']);
+		$this->addButton('Create', ['type' => 'submit'], ['icon' => 'plus', 'color' => 'primary']);
 	}
 
 }

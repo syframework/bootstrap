@@ -39,7 +39,7 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 	}
 
 	protected function initButton() {
-		$this->addButton('Delete', ['type' => 'submit'], ['icon' => 'fas fa-trash-alt', 'color' => 'danger']);
+		$this->addButton('Delete', ['type' => 'submit'], ['icon' => 'trash', 'color' => 'danger']);
 	}
 
 }

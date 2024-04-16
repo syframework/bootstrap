@@ -40,7 +40,7 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 			],
 			$fieldset
 		);
-		$this->addButton('Sign In', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'fas fa-power-off'], $fieldset);
+		$this->addButton('Sign In', ['type' => 'submit', 'class' => 'w-100'], ['color' => 'primary', 'icon' => 'power'], $fieldset);
 	}
 
 	public function submitAction() {

@@ -202,7 +202,7 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	 * Add submit button
 	 */
 	protected function initButton() {
-		$this->addButton('Save', ['type' => 'submit'], ['icon' => 'fas fa-save', 'color' => 'primary']);
+		$this->addButton('Save', ['type' => 'submit'], ['icon' => 'save', 'color' => 'primary']);
 	}
 
 	/**

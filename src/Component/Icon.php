@@ -45,7 +45,7 @@ class Icon extends WebComponent {
 	 * @return mixed
 	 */
 	public function getOption($optionName) {
-		$res = isset($this->options[$optionName]) ? $this->options[$optionName] : '';
+		$res = isset($this->options[$optionName]) ? $this->options[$optionName] : null;
 		return $res;
 	}
 

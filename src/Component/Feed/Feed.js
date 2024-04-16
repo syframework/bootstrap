@@ -43,9 +43,8 @@
 
 	// Trigger click on visible auto-load buttons
 	document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
-		if (button.offsetParent !== null) {
-			button.click();
-		}
+		if (!isVisible(button)) return;
+		button.click();
 	});
 
 	// Scroll event for auto-loading feeds
@@ -57,6 +56,7 @@
 			}
 			timer = setTimeout(function () {
 				document.querySelectorAll('.feed-next-page-button.feed-next-page-auto').forEach(function (button) {
+					if (!isVisible(button)) return;
 					var rect = button.getBoundingClientRect();
 					if (rect.top < window.innerHeight + 300) {
 						button.click();
@@ -67,4 +67,9 @@
 		}, { once: true });
 	}
 	setFeedScroll();
+
+	function isVisible(elem) {
+		return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
+	}
+
 })();

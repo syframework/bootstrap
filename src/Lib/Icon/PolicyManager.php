@@ -15,6 +15,17 @@ class PolicyManager {
 	}
 
 	/**
+	 * Add a variable number of policy
+	 *
+	 * @param IPolicy ...$policies
+	 */
+	public static function addPolicies(IPolicy ...$policies) {
+		foreach ($policies as $policy) {
+			self::addPolicy($policy);
+		}
+	}
+
+	/**
 	 * Return the matching policy
 	 *
 	 * @param  string $iconName

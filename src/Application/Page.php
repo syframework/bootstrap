@@ -59,6 +59,17 @@ abstract class Page extends \Sy\Component\Html\Page {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function render() {
+		try {
+			return parent::render();
+		} catch (\Sy\Bootstrap\Application\Page\NotFoundException $e) {
+			$this->copy('404');
+		}
+	}
+
+	/**
 	 * User connection page
 	 */
 	public function userConnectionAction() {

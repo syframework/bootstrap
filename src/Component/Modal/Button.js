@@ -4,7 +4,7 @@
 		if (!modalTrigger) return;
 		var id = modalTrigger.dataset.bsTarget;
 		if (document.querySelector(id)) return;
-		document.body.insertAdjacentHTML('beforeend', modalTrigger.dataset.dialog);
+		document.body.appendChild(document.getElementById(modalTrigger.dataset.dialog).content.cloneNode(true));
 	});
 
 	document.querySelectorAll('button[data-bs-toggle="modal"][data-dialog]').forEach(function (button) {
@@ -13,7 +13,7 @@
 		if (parsedHTML.querySelector('div.alert-danger')) {
 			var id = button.dataset.bsTarget;
 			if (!document.querySelector(id)) {
-				document.body.insertAdjacentHTML('beforeend', dialog);
+				document.body.appendChild(document.getElementById(dialog).content.cloneNode(true));
 			}
 			button.click();
 		}

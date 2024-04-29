@@ -5,22 +5,49 @@ use Sy\Bootstrap\Component\Icon;
 
 class Button extends \Sy\Component\WebComponent {
 
+	/**
+	 * @var string
+	 */
 	private $id;
 
+	/**
+	 * @var string
+	 */
 	private $label;
 
+	/**
+	 * @var string
+	 */
 	private $icon;
 
+	/**
+	 * @var string
+	 */
 	private $color;
 
+	/**
+	 * @var string
+	 */
 	private $width;
 
+	/**
+	 * @var string
+	 */
 	private $size;
 
+	/**
+	 * @var string
+	 */
 	private $title;
 
+	/**
+	 * @var array
+	 */
 	private $attributes;
 
+	/**
+	 * @var Dialog
+	 */
 	private $dialog;
 
 	/**
@@ -33,9 +60,9 @@ class Button extends \Sy\Component\WebComponent {
 	 * @param string $title Button title
 	 * @param array $attributes Additionnal button attributes
 	 */
-	public function __construct($id, $label = '', $icon = '', $color = 'secondary', $width = '100', $size = '', $title = '', $attributes = []) {
+	public function __construct($id = '', $label = '', $icon = '', $color = 'secondary', $width = '100', $size = '', $title = '', $attributes = []) {
 		parent::__construct();
-		$this->id = $id;
+		$this->id = empty($id) ? uniqid('modal-') : $id;
 		$this->label = $label;
 		$this->icon = $icon;
 		$this->color = $color;
@@ -43,7 +70,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->size = $size;
 		$this->title = $title;
 		$this->attributes = $attributes;
-		$this->dialog = new Dialog($id, '');
+		$this->dialog = new Dialog($this->id, '');
 
 		$this->mount(function () {
 			$this->init();
@@ -58,7 +85,6 @@ class Button extends \Sy\Component\WebComponent {
 	}
 
 	private function init() {
-		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Button.html');
 
 		// Class attribute
@@ -66,6 +92,9 @@ class Button extends \Sy\Component\WebComponent {
 			$this->setVar('CLASS', $this->attributes['class']);
 			unset($this->attributes['class']);
 		}
+
+		// Translators transmission
+		$this->dialog->setTranslators($this->getTranslators());
 
 		$this->setVars([
 			'ID'     => $this->id,
@@ -76,7 +105,8 @@ class Button extends \Sy\Component\WebComponent {
 			'SIZE'   => empty($this->size) ? '' : 'btn-' . $this->size,
 			'TITLE'  => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
 			'ATTR'   => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes)),
-			'DIALOG' => htmlentities(strval($this->dialog), ENT_QUOTES),
+			// 'DIALOG' => htmlentities(strval($this->dialog), ENT_QUOTES),
+			'DIALOG' => $this->dialog,
 		]);
 
 		$this->addJsCode(__DIR__ . '/Button.js');

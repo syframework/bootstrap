@@ -88,7 +88,6 @@ class Dialog extends WebComponent {
 	}
 
 	private function init() {
-		$this->addTranslator(LANG_DIR);
 		$this->setTemplateFile(__DIR__ . '/Dialog.html');
 		$this->addJsCode(__DIR__ . '/Dialog.js');
 

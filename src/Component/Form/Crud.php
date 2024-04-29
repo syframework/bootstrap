@@ -45,10 +45,11 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 	public function initialize($preInit = null, $postInit = null) {
 		parent::initialize(function () use ($preInit) {
 			$this->initInputs();
-			$this->initButton();
-
 			if (is_callable($preInit)) $preInit();
-		}, $postInit);
+		}, function () use($postInit) {
+			$this->initButton();
+			if (is_callable($postInit)) $postInit();
+		});
 	}
 
 	/**

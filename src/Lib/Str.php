@@ -98,13 +98,13 @@ class Str {
 	}
 
 	/**
-	 * Replace the '>' character by its html entity '&gt;' found in a string
+	 * Replace special characters (& " ' < >) by its html entity found in a string
 	 *
 	 * @param  string $string
 	 * @return string
 	 */
 	public static function convertHtmlTag($string) {
-		return htmlspecialchars($string, ENT_NOQUOTES, 'UTF-8');
+		return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 	}
 
 	/**

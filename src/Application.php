@@ -4,19 +4,15 @@ namespace Sy\Bootstrap;
 use Sy\Bootstrap\Lib\Str;
 use Sy\Bootstrap\Lib\Url;
 
-abstract class Application {
+class Application extends \Sy\Component {
 
-	/**
-	 * @var \Sy\Component\WebComponent
-	 */
-	private $controller;
-
-	abstract protected function initUrlConverter();
-
-	/**
-	 * Application constructor
-	 */
 	public function __construct() {
+		$this->mount(function () {
+			$this->init();
+		});
+	}
+
+	protected function init() {
 		// Extract url data
 		if (URL_REWRITING) {
 			$this->initUrlConverter();
@@ -31,11 +27,16 @@ abstract class Application {
 		$class = $this->controllerClass(\Sy\Http::get(CONTROLLER_TRIGGER, 'page'));
 		if (is_null($class)) {
 			$page = $this->controllerClass('page');
-			$this->controller = new $page(404);
+			$controller = new $page(404);
 		} else {
-			$this->controller = new $class();
+			$controller = new $class();
 		}
+
+		$this->setTemplateContent('{APP}');
+		$this->setVar('APP', $controller);
 	}
+
+	protected function initUrlConverter() {}
 
 	/**
 	 * Retrieve controller class
@@ -51,15 +52,6 @@ abstract class Application {
 		$class = __NAMESPACE__ . '\\Application\\' . ucfirst(Str::snakeToCaml($name));
 		if (class_exists($class)) return $class;
 		return null;
-	}
-
-	/**
-	 * Return Application render
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->controller->__toString();
 	}
 
 }

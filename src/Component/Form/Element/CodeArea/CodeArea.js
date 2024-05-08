@@ -1,18 +1,23 @@
 (function() {
-	var editor = ace.edit("{CODE_AREA_ID}");
-	editor.setTheme("ace/theme/{THEME}");
-	editor.session.setMode("ace/mode/{MODE}");
-	editor.session.setUseSoftTabs(false);
-	editor.setShowPrintMargin(false);
+	const textArea = document.getElementById('{TEXT_AREA_ID}');
 
-	var textArea = document.getElementById('{TEXT_AREA_ID}');
-    editor.session.setValue(textArea.value);
+	const editor = ace.edit('{CODE_AREA_ID}', {
+		theme: 'ace/theme/{THEME}',
+		mode: 'ace/mode/{MODE}',
+		placeholder: '{PLACEHOLDER}',
+		fontSize: '{FONT_SIZE}',
+		useSoftTabs: false,
+		showPrintMargin: false,
+		enableAutoIndent: true,
+		enableLiveAutocompletion: true,
+		enableEmmet: true,
+		enableSnippets: true,
+		value: textArea.value
+	});
 
 	editor.session.on('change', function() {
 		textArea.value = editor.getValue();
 	});
-
-	editor.setOption('placeholder', `{PLACEHOLDER}`);
 
 	editor.commands.addCommand({
 		name: 'save',
@@ -29,9 +34,4 @@
 			ace.require("ace/ext/beautify").beautify(editor.session);
 		}
 	});
-
-	editor.setOption('enableLiveAutocompletion', true);
-	editor.setOption('enableEmmet', true);
-
-	return editor;
 })();

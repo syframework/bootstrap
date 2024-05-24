@@ -4,7 +4,7 @@
 	"type": "library",
 	"require": {
 		"php": ">=7",
-		"sy/html": "^2.0",
+		"sy/html": "dev-develop",
 		"sy/mysql": "^3.0",
 		"sy/container": "^1",
 		"sy/cache": "^1",

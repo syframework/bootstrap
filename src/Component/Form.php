@@ -5,11 +5,20 @@ use Sy\Component\WebComponent;
 
 abstract class Form extends \Sy\Component\Html\Form {
 
+	/**
+	 * For retro compatibility when parent::init() is called in init() definition
+	 */
 	public function init() {}
 
+	/**
+	 * @param callable|null $preInit
+	 * @param callable|null $postInit
+	 */
 	public function initialize($preInit = null, $postInit = null) {
 		parent::initialize(function () use ($preInit) {
-			$this->addTranslator(LANG_DIR);
+			$this->addJsCode(__DIR__ . '/Form/Form.js');
+
+			$this->addClass('syform');
 
 			$this->setOptions([
 				'error-class'   => 'alert alert-danger',
@@ -20,20 +29,51 @@ abstract class Form extends \Sy\Component\Html\Form {
 		}, $postInit);
 	}
 
+	/**
+	 * Validate post data
+	 *
+	 * @throws \Sy\Component\Html\Form\Exception
+	 */
 	public function validatePost() {
 		$_POST = $this->trim($_POST);
 		parent::validate($_POST);
 	}
 
+	/**
+	 * Deprecated @deprecated
+	 *
+	 * @param string $message
+	 * @param string|null $redirection
+	 * @param int $timeout
+	 */
 	public function setSuccess($message, $redirection = null, $timeout = 3500) {
 		$this->setFlashMessage($message, 'success', $redirection, $timeout);
 	}
 
+	/**
+	 * Deprecated @deprecated
+	 *
+	 * @param string $message
+	 * @param string|null $redirection
+	 * @param int $timeout
+	 */
 	public function setDanger($message, $redirection = null, $timeout = 3500) {
 		$this->setFlashMessage($message, 'danger', $redirection, $timeout);
 	}
 
 	/**
+	 * Deprecated @deprecated
+	 *
+	 * @param string $error
+	 */
+	public function setError($error) {
+		echo $this->jsonResponse(['message' => $error]);
+		exit;
+	}
+
+	/**
+	 * Deprecated @deprecated
+	 *
 	 * @param string or array $message if array possible keys; 'title', 'message'
 	 * @param string $type 'success', 'info', 'warning', 'danger'
 	 * @param string $redirection url
@@ -44,6 +84,9 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$this->redirect(is_null($redirection) ? $_SERVER['REQUEST_URI'] : $redirection);
 	}
 
+	/**
+	 * Add a security honey pot for bot spam
+	 */
 	public function addAntiSpamField() {
 		$f = new \Sy\Component\Html\Form\FieldContainer('div');
 		$f->setAttribute('style', 'height:0;overflow:hidden');
@@ -62,13 +105,16 @@ abstract class Form extends \Sy\Component\Html\Form {
 		return $this->addElement($f);
 	}
 
+	/**
+	 * Add security for cross site forgery attack
+	 */
 	public function addCsrfField() {
 		$service = \Project\Service\Container::getInstance();
 		$token = $service->user->getCsrfToken();
 		$js = new \Sy\Component();
-		$js->setTemplateFile(__DIR__ . '/Form/Form.js');
+		$js->setTemplateFile(__DIR__ . '/Form/Csrf.js');
 		$js->setVar('URL', \Sy\Bootstrap\Lib\Url::build('api', 'csrf'));
-		$this->addJsCode($js->__toString());
+		$this->addJsCode(strval($js));
 		return $this->addHidden(
 			['name' => '__csrf', 'value' => $token],
 			[
@@ -667,6 +713,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 		return $input;
 	}
 
+	/**
+	 * @param string $button
+	 * @param \Sy\Component\Html\Form\FieldContainer $container
+	 */
 	protected function addGroupButton($button, $container) {
 		$label      = is_string($button) ? $button : '';
 		$attributes = [];
@@ -679,6 +729,45 @@ abstract class Form extends \Sy\Component\Html\Form {
 		$this->addButton($label, $attributes, $options, $container);
 	}
 
+	/**
+	 * Return json success response
+	 *
+	 * @param  string $message
+	 * @param  array $data
+	 * @return string
+	 */
+	protected function jsonSuccess($message, array $data = []) {
+		return $this->jsonResponse(['ok' => true, 'message' => $this->_($message)] + $data);
+	}
+
+	/**
+	 * Return json error response
+	 *
+	 * @param  string $message
+	 * @param  array $data
+	 * @return string
+	 */
+	protected function jsonError($message, array $data = []) {
+		return $this->jsonResponse(['ok' => false, 'message' => $this->_($message)] + $data);
+	}
+
+	/**
+	 * Return json encoded data
+	 *
+	 * @param  array $data
+	 * @return string
+	 */
+	protected function jsonResponse($data) {
+		header('Content-Type: application/json');
+		return json_encode($data);
+	}
+
+	/**
+	 * Trim a string or an array of string
+	 *
+	 * @param  string|array $v
+	 * @return string|array
+	 */
 	private function trim($v) {
 		if (!is_array($v)) return trim($v);
 		return array_map([$this, 'trim'], $v);

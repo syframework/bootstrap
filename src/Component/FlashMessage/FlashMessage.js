@@ -1,11 +1,11 @@
-function flash(message, type, timeout) {
-	if (type === undefined) type = 'success';
-	if (timeout === undefined) timeout = 3500;
+function flash(message, color, timeout) {
+	color = color ?? 'success';
+	timeout = timeout ?? 3500;
 
-	var title = '';
+	let title = '';
 
 	if (message instanceof Object) {
-		if (message['title'] !== undefined) title = message['title'];
+		title = message['title'] ?? '';
 		message = message['message'];
 	}
 
@@ -28,8 +28,8 @@ function flash(message, type, timeout) {
 		document.querySelector('#flash-message span.h4').innerHTML = title;
 	}
 	document.querySelector('#flash-message p').innerHTML = message;
-	document.getElementById('flash-message').classList.remove('alert-success', 'alert-info', 'alert-warning', 'alert-danger');
-	document.getElementById('flash-message').classList.add('in', 'alert-' + type);
+	document.getElementById('flash-message').classList.remove('alert-primary', 'alert-secondary', 'alert-success', 'alert-info', 'alert-warning', 'alert-danger', 'alert-light', 'alert-dark');
+	document.getElementById('flash-message').classList.add('in', 'alert-' + color);
 
 	var timer = setTimeout(function() {
 		document.getElementById('flash-message').classList.remove('in');
@@ -43,6 +43,15 @@ function flash(message, type, timeout) {
 		}, timeout);
 	});
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+	let fm = sessionStorage.getItem('flash-message');
+	if (!fm) return;
+	fm = JSON.parse(fm);
+	flash(fm.message, fm.color, fm.timeout);
+	sessionStorage.removeItem('flash-message');
+});
+
 <!-- BEGIN SESSION_BLOCK -->
 var ready = (callback) => {
 	if (document.readyState != "loading") callback();

@@ -25,6 +25,11 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 	 */
 	private $message;
 
+	/**
+	 * @param string $email
+	 * @param string|null $subject
+	 * @param string|null $message
+	 */
 	public function __construct($email, $subject = null, $message = null) {
 		parent::__construct();
 		$this->email = $email;
@@ -91,15 +96,13 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			);
 			$mail->setReplyTo($this->post('email'));
 			$mail->send();
-			$this->setSuccess($this->_('Message sent'));
+			return $this->jsonSuccess('Message sent');
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Please fill the form correctly'));
-			$this->fill($_POST);
+			return $this->jsonError('Please fill the form correctly');
 		} catch (\Sy\Mail\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Message not sent'));
-			$this->fill($_POST);
+			return $this->jsonError('Message not sent');
 		}
 	}
 

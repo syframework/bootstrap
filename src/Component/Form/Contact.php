@@ -67,8 +67,9 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 			'label' => 'E-mail',
 		]);
 
-		// Anti spam field
+		// Security fields
 		$this->addAntiSpamField();
+		$this->addCsrfField();
 
 		// Message field
 		$this->textarea = $this->addTextarea([
@@ -81,7 +82,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 
 		// Send button
 		$div = $this->addDiv(['class' => 'text-right']);
-		$this->addButton('Send', [], ['icon' => 'paper-plane'], $div);
+		$this->addButton(label: 'Send', options: ['icon' => 'paper-plane'], container: $div);
 	}
 
 	public function submitAction() {

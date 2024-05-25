@@ -18,15 +18,16 @@ abstract class Form extends \Sy\Component\Html\Form {
 		parent::initialize(function () use ($preInit) {
 			$this->addJsCode(__DIR__ . '/Form/Form.js');
 
-			$this->addClass('syform');
-
 			$this->setOptions([
 				'error-class'   => 'alert alert-danger',
 				'success-class' => 'alert alert-success',
 			]);
 
 			if (is_callable($preInit)) $preInit();
-		}, $postInit);
+		}, function () use ($postInit) {
+			if (is_callable($postInit)) $postInit();
+			$this->addClass('syform');
+		});
 	}
 
 	/**
@@ -733,7 +734,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * Return json success response
 	 *
 	 * @param  string $message
-	 * @param  array $data
+	 * @param  array $data Reserved keys: 'ok', 'message', 'redirection', 'color', 'timeout'
 	 * @return string
 	 */
 	protected function jsonSuccess($message, array $data = []) {
@@ -744,7 +745,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * Return json error response
 	 *
 	 * @param  string $message
-	 * @param  array $data
+	 * @param  array $data Reserved keys: 'ok', 'message', 'redirection', 'color', 'timeout'
 	 * @return string
 	 */
 	protected function jsonError($message, array $data = []) {
@@ -754,7 +755,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	/**
 	 * Return json encoded data
 	 *
-	 * @param  array $data
+	 * @param  array $data Reserved keys: 'ok', 'message', 'redirection', 'color', 'timeout'
 	 * @return string
 	 */
 	protected function jsonResponse($data) {

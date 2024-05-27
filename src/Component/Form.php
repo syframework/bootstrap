@@ -18,6 +18,8 @@ abstract class Form extends \Sy\Component\Html\Form {
 		parent::initialize(function () use ($preInit) {
 			$this->addJsCode(__DIR__ . '/Form/Form.js');
 
+			$this->setAttribute('data-network-error', $this->_('Network error'));
+
 			$this->setOptions([
 				'error-class'   => 'alert alert-danger',
 				'success-class' => 'alert alert-success',

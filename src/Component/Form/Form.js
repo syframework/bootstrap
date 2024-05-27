@@ -1,6 +1,16 @@
 (function() {
 
-	document.body.addEventListener('submit', e => {
+	function disableForm(form) {
+		Array.prototype.forEach.call(form.elements, el => el.disabled = true);
+	}
+
+	function enableForm(form) {
+		Array.prototype.forEach.call(form.elements, el => el.disabled = false);
+	}
+
+	window.addEventListener('submit', e => {
+		if (e.defaultPrevented) return;
+
 		const form = e.target.closest('form.syform');
 		if (!form) return;
 
@@ -10,8 +20,12 @@
 
 		e.preventDefault();
 
+		if (form.dataset.confirm) {
+			if (!confirm(form.dataset.confirm)) return;
+		}
+
 		// Disable form
-		Array.prototype.forEach.call(form.elements, el => el.disabled = true);
+		disableForm(form);
 
 		let url;
 		try {
@@ -41,10 +55,11 @@
 			return response.json();
 		}).then(result => {
 			form.dispatchEvent(new CustomEvent('submitted.syform', {bubbles: true, cancelable: true, detail: result}));
-
-			// Enable form
-			Array.prototype.forEach.call(form.elements, el => el.disabled = false);
-		}).catch(console.error);
+		}).catch(error => {
+			console.error(error);
+			flash(form.dataset.networkError ?? 'Network error', 'danger');
+			enableForm(form);
+		});
 	});
 
 	window.addEventListener('submitted.syform', e => {
@@ -67,6 +82,9 @@
 			window.location.href = data.redirection;
 			return;
 		}
+
+		// Enable form
+		enableForm(form);
 
 		// Error message
 		if (!data.ok) {

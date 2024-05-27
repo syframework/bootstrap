@@ -64,17 +64,13 @@ class Crud extends \Sy\Bootstrap\Component\Form {
 		try {
 			$this->validatePost();
 			$this->updateRow();
-			$this->setSuccess($this->_('Saved'));
+			return $this->jsonSuccess('Saved');
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			if (is_null($this->getOption('error'))) {
-				$this->setError($this->_('Please fill the form correctly'));
-			}
-			$this->fill($_POST);
+			return $this->jsonError($this->getOption('error') ?? 'Please fill the form correctly');
 		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Database error'));
-			$this->fill($_POST);
+			return $this->jsonError('Database error');
 		}
 	}
 

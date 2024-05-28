@@ -69,15 +69,13 @@
 		if (!form) return;
 
 		const data = e.detail;
-		const timeout = data.timeout ?? 3500;
-		const color = data.color ?? null;
 
 		// Redirection
 		if (data.redirection) {
 			sessionStorage.setItem('flash-message', JSON.stringify({
 				message: data.message,
 				color: data.color,
-				timeout: data.timeout,
+				autohide: data.autohide,
 			}));
 			window.location.href = data.redirection;
 			return;
@@ -88,12 +86,12 @@
 
 		// Error message
 		if (!data.ok) {
-			flash(data.message, color ?? 'danger', timeout);
+			flash(data.message, data.color ?? 'danger', data.autohide);
 			return;
 		}
 
 		// Ok
-		flash(data.message, color ?? 'success', timeout);
+		flash(data.message, data.color ?? 'success', data.autohide);
 
 		// Close modal if form is contained in it
 		const modal = form.closest('.modal');

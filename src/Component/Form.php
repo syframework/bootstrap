@@ -735,23 +735,27 @@ abstract class Form extends \Sy\Component\Html\Form {
 	/**
 	 * Return json success response
 	 *
-	 * @param  string $message
-	 * @param  array $data Reserved keys: 'ok', 'message', 'redirection', 'color', 'timeout'
+	 * @param  string|array $data The status message or an associative array of response fields.
+	 * @param  array $options Option fields: 'redirection', 'color' etc.
+	 * @param  array $custom Custom fields.
 	 * @return string
 	 */
-	protected function jsonSuccess($message, array $data = []) {
-		return $this->jsonResponse(['ok' => true, 'message' => $this->_($message)] + $data);
+	protected function jsonSuccess($data = [], array $options = [], array $custom = []) {
+		$data = ['ok' => true] + (is_string($data) ? ['message' => $this->_($data)] : $data) + $options + ['custom' => $custom];
+		return $this->jsonResponse($data);
 	}
 
 	/**
 	 * Return json error response
 	 *
-	 * @param  string $message
-	 * @param  array $data Reserved keys: 'ok', 'message', 'redirection', 'color', 'timeout'
+	 * @param  string|array $data The status message or an associative array of response fields.
+	 * @param  array $options Option fields: 'redirection', 'color' etc.
+	 * @param  array $custom Custom fields.
 	 * @return string
 	 */
-	protected function jsonError($message, array $data = []) {
-		return $this->jsonResponse(['ok' => false, 'message' => $this->_($message)] + $data);
+	protected function jsonError($data = [], array $options = [], array $custom = []) {
+		$data = ['ok' => false] + (is_string($data) ? ['message' => $this->_($data)] : $data) + $options + ['custom' => $custom];
+		return $this->jsonResponse($data);
 	}
 
 	/**

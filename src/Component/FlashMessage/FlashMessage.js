@@ -1,6 +1,7 @@
-function flash(message, color, timeout) {
+function flash(message, color, autohide) {
+	if (!message) return;
 	color = color ?? 'success';
-	timeout = timeout ?? 3500;
+	autohide = autohide ?? true;
 
 	let title = '';
 
@@ -9,8 +10,8 @@ function flash(message, color, timeout) {
 		message = message['message'];
 	}
 
-	if (timeout === 0) {
-		if (document.querySelector('#flash-message-modal h4') !== null) {
+	if (!autohide) {
+		if (document.querySelector('#flash-message-modal h4')) {
 			document.querySelector('#flash-message-modal h4').innerHTML = title;
 		}
 		document.querySelector('#flash-message-modal p').innerHTML = message;
@@ -31,6 +32,10 @@ function flash(message, color, timeout) {
 	document.getElementById('flash-message').classList.remove('alert-primary', 'alert-secondary', 'alert-success', 'alert-info', 'alert-warning', 'alert-danger', 'alert-light', 'alert-dark');
 	document.getElementById('flash-message').classList.add('in', 'alert-' + color);
 
+	let timeout = message.length * 100;
+	timeout = timeout < 3500 ? 3500 : timeout;
+	timeout = timeout > 35000 ? 35000 : timeout;
+
 	var timer = setTimeout(function() {
 		document.getElementById('flash-message').classList.remove('in');
 	}, timeout);
@@ -48,7 +53,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	let fm = sessionStorage.getItem('flash-message');
 	if (!fm) return;
 	fm = JSON.parse(fm);
-	flash(fm.message, fm.color, fm.timeout);
+	flash(fm.message, fm.color, fm.autohide);
 	sessionStorage.removeItem('flash-message');
 });
 

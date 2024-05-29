@@ -21,23 +21,24 @@ function flash(message, color, autohide) {
 		clone.querySelector('.btn').classList.add('btn-outline-' + color);
 		const element = clone.firstElementChild;
 		document.body.appendChild(clone);
-		// setTimeout(() => {
-			const modal = new bootstrap.Modal(element, {
-				keyboard: false,
-				backdrop: 'static'
-			});
-			modal.show();
-		// }, 50);
+		const modal = new bootstrap.Modal(element, {
+			keyboard: false,
+			backdrop: 'static'
+		});
+		modal.show();
 		return;
 	}
 
 	const clone = document.getElementById('flash-message-alert-template').content.cloneNode(true);
-	clone.querySelector('span.h4').innerHTML = title;
+	if (title === '') {
+		clone.querySelector('span.h4').remove();
+	} else {
+		clone.querySelector('span.h4').innerHTML = title;
+	}
 	clone.querySelector('p').innerHTML = message;
 	clone.querySelector('div.alert').classList.add('alert-' + color);
 	const alert = clone.firstElementChild;
 	document.getElementById('flash-message-container').appendChild(clone);
-
 
 	setTimeout(() => {
 		let timeout = message.length * 100;

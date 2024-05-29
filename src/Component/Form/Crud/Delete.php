@@ -3,8 +3,22 @@ namespace Sy\Bootstrap\Component\Form\Crud;
 
 class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 
-	public function __construct($service, array $id) {
+	/**
+	 * @param string $service Crud service name
+	 * @param array $id Crud item id
+	 * @param array $options Form options
+	 * @param array $attributes Form attributes
+	 */
+	public function __construct($service, array $id, array $options = [], array $attributes = []) {
 		parent::__construct($service, $id);
+		$this->setOptions($options);
+		$this->setAttributes($attributes);
+	}
+
+	public function init() {
+		$this->addClass('syform-delete');
+		$this->addJsCode(__DIR__ . '/Delete.js');
+		$this->setAttribute('data-confirm', $this->getOption('confirm') ?? $this->_('Are you sure to delete?'));
 	}
 
 	public function submitAction() {
@@ -15,19 +29,16 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 				$id[$key] = $this->post($key);
 			}
 			$this->getService()->delete($id);
-			$this->setSuccess($this->_('Deleted successfully'));
+			return $this->jsonSuccess('Deleted successfully', ['selector' => $this->getOption('selector'), 'redirection' => $this->getOption('redirection')]);
 		} catch (\Sy\Bootstrap\Component\Form\CsrfException $e) {
 			$this->logWarning($e);
-			$this->setDanger($e->getMessage());
-			$this->fill($_POST);
+			return $this->jsonError($e->getMessage());
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setDanger($this->_('Please fill the form correctly'));
-			$this->fill($_POST);
+			return $this->jsonError('Please fill the form correctly');
 		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
-			$this->setDanger($this->_('Database error'));
-			$this->fill($_POST);
+			return $this->jsonError('Database error');
 		}
 	}
 
@@ -39,7 +50,11 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 	}
 
 	protected function initButton() {
-		$this->addButton('Delete', ['type' => 'submit'], ['icon' => 'trash', 'color' => 'danger']);
+		$this->addButton(
+			$this->getOption('button-label') ?? '',
+			($this->getOption('button-attributes') ?? []) + ['type' => 'submit'],
+			($this->getOption('button-options') ?? []) + ['icon' => 'trash', 'color' => 'danger']
+		);
 	}
 
 }

@@ -6,27 +6,23 @@ class FlashMessage {
 	/**
 	 * Set a session flash message
 	 *
-	 * @param string or array $message
-	 * @param string $type 'success', 'info', 'warning', 'danger'
-	 * @param int $timeout
+	 * @param string|array $message String or an associative array with 2 keys: 'title' and 'body'
+	 * @param string $color 'success', 'info', 'warning', 'danger'
+	 * @param boolean $autohide
 	 */
-	public static function setMessage($message, $type = 'success', $timeout = 3500) {
+	public static function setMessage($message, $color = 'success', $autohide = true) {
 		if (!session_id()) session_start();
-		if (is_array($message)) {
-			$_SESSION['flash_message_title'] = $message['title'];
-			$_SESSION['flash_message'] = $message['message'];
-		} else {
-			$_SESSION['flash_message_title'] = '';
-			$_SESSION['flash_message'] = $message;
-		}
-		$_SESSION['flash_message_type'] = $type;
-		$_SESSION['flash_message_timeout'] = $timeout;
+		$_SESSION['flash_message'] = [
+			'message'  => $message,
+			'color'    => $color,
+			'autohide' => $autohide,
+		];
 	}
 
 	/**
 	 * Set a flash error message shortcut
 	 *
-	 * @param string $message
+	 * @param string|array $message
 	 */
 	public static function setError($message) {
 		self::setMessage($message, 'danger');
@@ -35,12 +31,11 @@ class FlashMessage {
 	/**
 	 * Retrieve session flash message
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public static function getMessage() {
 		if (!session_id()) session_start();
-		$message = isset($_SESSION['flash_message']) ? $_SESSION['flash_message'] : null;
-		return $message;
+		return $_SESSION['flash_message'] ?? [];
 	}
 
 	/**

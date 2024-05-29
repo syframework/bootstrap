@@ -77,7 +77,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 	 * Set the API response
 	 *
 	 * @param int $code
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function response($code, $data = null) {
 		http_response_code($code);
@@ -88,39 +88,41 @@ abstract class Api extends \Sy\Component\WebComponent {
 		}
 		if (!empty($data)) {
 			$this->setVar('RESPONSE', $data);
+			return;
 		}
+		$this->setVar('RESPONSE', '{}');
 	}
 
 	/**
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function requestError($data = null) {
 		$this->response(400, $data);
 	}
 
 	/**
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function serverError($data = null) {
 		$this->response(500, $data);
 	}
 
 	/**
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function notFound($data = null) {
 		$this->response(404, $data);
 	}
 
 	/**
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function forbidden($data = null) {
 		$this->response(403, $data);
 	}
 
 	/**
-	 * @param array|\Stringable
+	 * @param array|string|\Stringable
 	 */
 	public function ok($data = null) {
 		$this->response(200, $data);

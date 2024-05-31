@@ -29,7 +29,13 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 				$id[$key] = $this->post($key);
 			}
 			$this->getService()->delete($id);
-			return $this->jsonSuccess('Deleted successfully', ['selector' => $this->getOption('selector'), 'redirection' => $this->getOption('redirection')]);
+			return $this->jsonSuccess(
+				$this->getOption('flash-message') ?? [] + ['message' => 'Deleted successfully'],
+				[
+					'selector'    => $this->getOption('selector'),
+					'redirection' => $this->getOption('redirection'),
+				]
+			);
 		} catch (\Sy\Bootstrap\Component\Form\CsrfException $e) {
 			$this->logWarning($e);
 			return $this->jsonError($e->getMessage());

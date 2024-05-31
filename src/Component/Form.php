@@ -741,7 +741,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @return string
 	 */
 	protected function jsonSuccess($data = [], array $options = [], array $custom = []) {
-		$data = ['ok' => true] + (is_string($data) ? ['message' => $this->_($data)] : $data) + $options + ['custom' => $custom];
+		$data = ['ok' => true] + (is_string($data) ? ['message' => $data] : $data) + $options + (empty($custom) ? [] : ['custom' => $custom]);
 		return $this->jsonResponse($data);
 	}
 
@@ -754,7 +754,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 * @return string
 	 */
 	protected function jsonError($data = [], array $options = [], array $custom = []) {
-		$data = ['ok' => false] + (is_string($data) ? ['message' => $this->_($data)] : $data) + $options + ['custom' => $custom];
+		$data = ['ok' => false] + (is_string($data) ? ['message' => $data] : $data) + $options + (empty($custom) ? [] : ['custom' => $custom]);
 		return $this->jsonResponse($data);
 	}
 
@@ -766,6 +766,15 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	protected function jsonResponse($data) {
 		header('Content-Type: application/json');
+		if (isset($data['message'])) {
+			if (is_string($data['message'])) {
+				$data['message'] = $this->_($data['message']);
+			} elseif (is_array($data['message'])) {
+				foreach ($data['message'] as $key => $value) {
+					$data['message'][$key] = $this->_($value);
+				}
+			}
+		}
 		return json_encode($data);
 	}
 

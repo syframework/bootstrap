@@ -57,8 +57,9 @@
 			form.dispatchEvent(new CustomEvent('submitted.syform', {bubbles: true, cancelable: true, detail: result}));
 		}).catch(error => {
 			console.error(error);
-			flash(form.dataset.networkError ?? 'Network error', 'danger');
 			enableForm(form);
+			if (error.name === 'AbortError') return;
+			flash(form.dataset.networkError ?? 'Network error', 'danger');
 		});
 	});
 

@@ -13,12 +13,12 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 		parent::__construct($service, $id);
 		$this->setOptions($options);
 		$this->setAttributes($attributes);
-	}
-
-	public function init() {
 		$this->addClass('syform-delete');
-		$this->addJsCode(__DIR__ . '/Delete.js');
-		$this->setAttribute('data-confirm', $this->getOption('confirm') ?? $this->_('Are you sure to delete?'));
+
+		$this->mount(function () {
+			$this->addJsCode(__DIR__ . '/Delete.js');
+			$this->setAttribute('data-confirm', $this->_($this->getOption('confirm')) ?? $this->_('Are you sure to delete?'));
+		});
 	}
 
 	public function submitAction() {

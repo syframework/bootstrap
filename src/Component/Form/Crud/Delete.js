@@ -8,7 +8,7 @@
 		if (!data.ok) return;
 
 		if (!data.selector) return;
-		document.querySelector(data.selector).remove();
+		document.querySelectorAll(data.selector).forEach(el => el.remove());
 	});
 
 })();

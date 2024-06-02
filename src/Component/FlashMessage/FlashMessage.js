@@ -67,22 +67,6 @@ function flash(message, color, autohide) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-	// Check message on server session
-	const url = new URL('{API_URL}', window.location.origin);
-	url.searchParams.set('ts', Date.now());
-	fetch(url.href, {
-		cache: 'no-cache'
-	}).then(response => response.json()).then(data => {
-		if (!data.message) return;
-		fetch(url.href, {
-			method: 'DELETE',
-			cache: 'no-cache'
-		}).then(response => {
-			if (!response.ok) return;
-			flash(data.message, data.color, data.autohide);
-		}).catch(console.error);
-	}).catch(console.error);
-
 	// Check message on session storage
 	let fm = sessionStorage.getItem('flash-message');
 	if (!fm) return;
@@ -90,3 +74,18 @@ window.addEventListener('DOMContentLoaded', () => {
 	flash(fm.message, fm.color, fm.autohide);
 	sessionStorage.removeItem('flash-message');
 });
+
+<!-- BEGIN SESSION_BLOCK -->
+(() => {
+	const data = {DATA};
+	const url = new URL('{API_URL}', window.location.origin);
+	url.searchParams.set('ts', Date.now());
+	fetch(url.href, {
+		method: 'DELETE',
+		cache: 'no-cache'
+	}).then(response => {
+		if (!response.ok) return;
+		flash(data.message, data.color, data.autohide);
+	}).catch(console.error);
+})();
+<!-- END SESSION_BLOCK -->

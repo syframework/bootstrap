@@ -6,8 +6,8 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 	private $email;
 
 	public function __construct($email) {
-		$this->email = $email;
 		parent::__construct();
+		$this->email = $email;
 	}
 
 	public function init() {
@@ -54,16 +54,16 @@ class ResetPassword extends \Sy\Bootstrap\Component\Form {
 			$service = \Project\Service\Container::getInstance();
 			$service->user->update(['email' => $this->post('email')], ['password' => password_hash($this->post('new_password'), PASSWORD_DEFAULT), 'token' => '']);
 			$service->user->signIn($this->post('email'), $this->post('new_password'));
-			$this->setSuccess($this->_('You are connected'), PROJECT_URL);
+			return $this->jsonSuccess('You are connected', ['redirection' => PROJECT_URL]);
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setError(is_null($this->getOption('error')) ? $this->_('Please fill the form correctly') : $this->getOption('error'));
+			return $this->jsonError($this->getOption('error') ?? 'Please fill the form correctly');
 		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
-			$this->setError($this->_('Error'));
+			return $this->jsonError($e->getMessage());
 		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e->getMessage());
-			$this->setError($this->_('Database error'));
+			return $this->jsonError('Database error');
 		}
 	}
 

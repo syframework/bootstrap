@@ -49,20 +49,19 @@ class SignIn extends \Sy\Bootstrap\Component\Form {
 			$redirection = Url::getReferer();
 			$service = \Project\Service\Container::getInstance();
 			$service->user->signIn($this->post('email'), $this->post('password'));
-			$this->setSuccess($this->_('You are connected'), $redirection);
+			return $this->jsonSuccess('You are connected', ['redirection' => $redirection]);
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Please fill the form correctly'));
-			$this->fill($_POST);
+			return $this->jsonError($this->getOption('error') ?? 'Please fill the form correctly');
 		} catch (\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Account not activated'));
+			return $this->jsonError('Account not activated');
 		} catch (\Sy\Bootstrap\Service\User\SignInException $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('ID or password error'));
+			return $this->jsonError('ID or password error');
 		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Error'));
+			return $this->jsonError('Database error');
 		}
 	}
 

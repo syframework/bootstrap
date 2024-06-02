@@ -34,15 +34,13 @@ class SignUp extends \Sy\Bootstrap\Component\Form {
 			$this->validatePost();
 			$service = \Project\Service\Container::getInstance();
 			$service->user->signUp(strtolower(trim($this->post('email'))));
-			$this->setSuccess($this->_('Account created successfully'), null, 0);
+			return $this->jsonSuccess('Account created successfully', ['autohide' => false]);
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Please fill the form correctly'));
-			$this->fill($_POST);
+			return $this->jsonError($this->getOption('error') ?? 'Please fill the form correctly');
 		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
-			$this->fill($_POST);
-			$this->setError($this->_($e->getMessage()));
+			return $this->jsonError($e->getMessage());
 		}
 	}
 

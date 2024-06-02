@@ -29,19 +29,19 @@ class ForgetPassword extends \Sy\Bootstrap\Component\Form {
 			$this->validatePost();
 			$service = \Project\Service\Container::getInstance();
 			$service->user->forgetPassword($this->post('email'));
-			$this->setSuccess($this->_('An e-mail has been sent'));
+			return $this->jsonSuccess('An e-mail has been sent');
 		} catch (\Sy\Component\Html\Form\Exception $e) {
 			$this->logWarning($e);
-			$this->setError($this->_('Please fill the form correctly'));
+			return $this->jsonError($this->getOption('error') ?? 'Please fill the form correctly');
 		} catch (\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e->getMessage());
-			$this->setError($this->_('Account not activated'));
+			return $this->jsonError('Account not activated');
 		} catch (\Sy\Bootstrap\Service\User\Exception $e) {
 			$this->logWarning($e->getMessage());
-			$this->setError($this->_('Error'));
+			return $this->jsonError($e->getMessage());
 		} catch (\Sy\Db\MySql\Exception $e) {
 			$this->logWarning($e->getMessage());
-			$this->setError($this->_('Database error'));
+			return $this->jsonError('Database error');
 		}
 	}
 

@@ -3,6 +3,7 @@ namespace Sy\Bootstrap\Service;
 
 use Sy\Bootstrap\Lib\Upload;
 use Sy\Bootstrap\Lib\Str;
+use Sy\Event\Event;
 
 /**
  * @method array getPermissions(int $userId) Retrieve user permissions
@@ -48,13 +49,15 @@ class User extends Crud {
 
 		// Inactive user
 		if ($user['status'] === 'inactive') {
+			$service = \Project\Service\Container::getInstance();
 			// Activate account if password is good
 			if (!empty($pass) and $this->passwordVerify($password, $pass)) {
 				$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
+				// Dispatch an event after user activation
+				$service->event->dispatch(new Event('user.activated', ['email' => $email]));
 			} else {
 				$pwd = Str::generatePassword();
 				$this->update(['email' => $email], ['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
-				$service = \Project\Service\Container::getInstance();
 				$service->mail->sendWelcome($user['email'], $pwd, $user['token']);
 				throw new User\ActivateAccountException();
 			}
@@ -162,6 +165,9 @@ class User extends Crud {
 		if ($u['status'] === 'active') throw new User\ActivateAccountException();
 		if (!isset($u['token']) or $u['token'] !== $token) throw new User\ActivateAccountException();
 		$this->update(['email' => $email], ['status' => 'active', 'token' => '']);
+		// Dispatch an event after user activation
+		$service = \Project\Service\Container::getInstance();
+		$service->event->dispatch(new Event('user.activated', ['email' => $email]));
 	}
 
 	/**
@@ -258,6 +264,11 @@ class User extends Crud {
 	public function delete(array $pk) {
 		$res = $this->retrieve($pk);
 		parent::delete($pk);
+
+		if (empty($res)) return;
+		// Dispatch deleted user event
+		$service = \Project\Service\Container::getInstance();
+		$service->event->dispatch(new Event('user.deleted', $res));
 
 		// Delete uploaded pictures
 		if (empty($res['email'])) return;

@@ -21,10 +21,6 @@ class User extends \Sy\Component\WebComponent {
 			$service = \Project\Service\Container::getInstance();
 			$service->user->activate($this->get('email'), $this->get('token'));
 			$service->user->signIn($this->get('email'), $this->get('password'));
-
-			// Clear place cache required if user activate his account after posting a review or a message
-			$service->place->clearCache(['retrieve']);
-
 			\Sy\Bootstrap\Lib\FlashMessage::setMessage($this->_('You are connected'));
 		} catch (\Sy\Bootstrap\Service\User\ActivateAccountException $e) {
 			$this->logWarning($e);

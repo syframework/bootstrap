@@ -5,6 +5,10 @@ use Sy\Bootstrap\Lib\Url;
 
 class ConnectPanel extends \Sy\Component\WebComponent {
 
+	public function __construct() {
+		$this->mount(fn () => $this->init());
+	}
+
 	private function init() {
 		$this->addTranslator(LANG_DIR);
 
@@ -43,11 +47,6 @@ class ConnectPanel extends \Sy\Component\WebComponent {
 		$this->setComponent('SIGN_IN_FORM', new \Sy\Bootstrap\Component\User\SignIn());
 		$this->setComponent('SIGN_UP_FORM', new \Sy\Bootstrap\Component\User\SignUp());
 		$this->setComponent('FORGET_PASSWORD_FORM', new \Sy\Bootstrap\Component\User\ForgetPassword());
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

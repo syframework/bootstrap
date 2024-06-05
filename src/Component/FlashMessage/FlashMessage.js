@@ -20,7 +20,7 @@ function flash(message, color, autohide) {
 		clone.querySelector('.modal-body').innerHTML = message;
 		clone.querySelector('.btn').classList.add('btn-outline-' + color);
 		const element = clone.firstElementChild;
-		document.body.appendChild(clone);
+		document.body.prepend(clone);
 		const modal = new bootstrap.Modal(element, {
 			keyboard: false,
 			backdrop: 'static'
@@ -38,7 +38,7 @@ function flash(message, color, autohide) {
 	clone.querySelector('p').innerHTML = message;
 	clone.querySelector('div.alert').classList.add('alert-' + color);
 	const alert = clone.firstElementChild;
-	document.getElementById('flash-message-container').appendChild(clone);
+	document.getElementById('flash-message-container').append(clone);
 
 	setTimeout(() => {
 		let timeout = message.length * 100;

@@ -92,7 +92,8 @@
 		}
 
 		// Ok
-		form.reset();
+		const reset = data.reset ?? true;
+		if (reset) form.reset();
 		flash(data.message, data.color ?? 'success', data.autohide);
 
 		// Close modal if form is contained in it

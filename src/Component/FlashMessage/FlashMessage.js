@@ -66,14 +66,24 @@ function flash(message, color, autohide) {
 	}, 50);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+document.getElementById('flash-message-container').addEventListener('click', e => {
+	const button = e.target;
+	if (!button.classList.contains('btn-close')) return;
+
+	const div = button.closest('.flash-message');
+	if (!div) return;
+
+	div.classList.remove('in');
+});
+
+(() => {
 	// Check message on session storage
 	let fm = sessionStorage.getItem('flash-message');
 	if (!fm) return;
 	fm = JSON.parse(fm);
 	flash(fm.message, fm.color, fm.autohide);
 	sessionStorage.removeItem('flash-message');
-});
+})();
 
 <!-- BEGIN SESSION_BLOCK -->
 (() => {

@@ -73,9 +73,6 @@ class Plugin {
 		// Copy lang files
 		self::copyLangs($vendor, $plugin);
 
-		// Copy scss files
-		self::copyScss($vendor, $plugin);
-
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
@@ -107,9 +104,6 @@ class Plugin {
 		// Copy lang files
 		self::copyLangs($vendor, $plugin);
 
-		// Copy scss files
-		self::copyScss($vendor, $plugin);
-
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
@@ -132,12 +126,6 @@ class Plugin {
 		if (!is_dir("$vendor/$plugin/lang")) return;
 		self::copyDir("$vendor/$plugin/lang", "$vendor/../lang");
 		echo "Copy lang files\n";
-	}
-
-	private static function copyScss(string $vendor, string $plugin) {
-		if (!is_dir("$vendor/$plugin/scss")) return;
-		self::copyDir("$vendor/$plugin/scss", "$vendor/../scss");
-		echo "Copy scss files\n";
 	}
 
 	private static function copyAssets(string $vendor, string $plugin) {

@@ -1,0 +1,25 @@
+// Text utilities
+.text-capitalize-first {
+	display: inline-block;
+	&:first-letter {
+		text-transform: uppercase;
+	}
+}
+
+// Modal
+.modal-xl {
+	width: auto !important;
+	max-width: 100% !important;
+	margin: 10px !important;
+}
+
+// Button
+.btn-circle {
+	width: 2.5em !important;
+	height: 2.5em !important;
+	border-radius: 50% !important;
+	padding: 0 !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

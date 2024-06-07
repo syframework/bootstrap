@@ -1,0 +1,44 @@
+$social-colors : (
+	'website': #2780E3,
+	'facebook': #3C599F,
+	'instagram': #2A5B83,
+	'twitter': #55ACEE,
+	'youtube': #CC181E,
+	'vine': #55BE96,
+	'tumblr': #2C4762,
+	'android': #97C024,
+	'apple': #313131,
+	'tripadvisor': #569441,
+	'yelp': #C41200,
+	'pinterest': #BD2126,
+	'amazon': #232f3e,
+	'etsy': #f45800,
+	'foursquare': #e65778,
+	'linkedin': #0077B5,
+	'snapchat': #fffc01,
+	'twitch': #6441A5,
+	'viadeo': #F07355,
+	'vimeo': #1a2e3a,
+	'airbnb': #ff5a5f,
+	'blogger': #f49440,
+	'discord': #7289DA,
+	'github': #24292E,
+	'whatsapp': #00E676,
+	'telegram': #179CDE,
+	'tiktok': #000000,
+);
+
+@each $color, $value in $social-colors {
+	.btn-#{$color} {
+		color: #fff !important;
+		background-color: $value !important;
+
+		&:hover {
+			background-color: darken($value, 7.5%);
+		}
+
+		&:focus {
+			box-shadow: 0 0 0 var(--bs-focus-ring-width) rgba($value, .25);
+		}
+	}
+}

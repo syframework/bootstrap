@@ -56,10 +56,11 @@
 		}).then(result => {
 			form.dispatchEvent(new CustomEvent('submitted.syform', {bubbles: true, cancelable: true, detail: result}));
 		}).catch(error => {
-			console.error(error);
+			console.error(error.name, error.message);
 			enableForm(form);
-			if (error.name === 'AbortError') return;
-			flash(form.dataset.networkError ?? 'Network error', 'danger');
+			if (error instanceof TypeError || error instanceof AbortError || error instanceof NotAllowedError) {
+				flash(form.dataset.networkError ?? 'Network error', 'danger');
+			}
 		});
 	});
 

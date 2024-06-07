@@ -70,9 +70,6 @@ class Plugin {
 		// Copy template files
 		self::copyTemplates($vendor, $plugin);
 
-		// Copy lang files
-		self::copyLangs($vendor, $plugin);
-
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
@@ -101,9 +98,6 @@ class Plugin {
 		$vendor = $event->getComposer()->getConfig()->get('vendor-dir');
 		echo "Plugin vendor: $vendor\n";
 
-		// Copy lang files
-		self::copyLangs($vendor, $plugin);
-
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
@@ -120,12 +114,6 @@ class Plugin {
 		if (!is_dir("$vendor/$plugin/templates")) return;
 		self::copyDir("$vendor/$plugin/templates", "$vendor/../templates");
 		echo "Copy template files\n";
-	}
-
-	private static function copyLangs(string $vendor, string $plugin) {
-		if (!is_dir("$vendor/$plugin/lang")) return;
-		self::copyDir("$vendor/$plugin/lang", "$vendor/../lang");
-		echo "Copy lang files\n";
 	}
 
 	private static function copyAssets(string $vendor, string $plugin) {

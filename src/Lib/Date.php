@@ -4,7 +4,7 @@ namespace Sy\Bootstrap\Lib;
 class Date {
 
 	/**
-	 * @var DateTime
+	 * @var \DateTime
 	 */
 	private $dateTime;
 

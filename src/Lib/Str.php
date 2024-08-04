@@ -83,6 +83,24 @@ class Str {
 	}
 
 	/**
+	 * Truncate a text without cuting off in the middle of a word
+	 *
+	 * @param  string $text Text to truncate
+	 * @param  int $maxChars Truncate if text length is greater than $maxChars
+	 * @param  string $append String to append to the truncated text
+	 * @return string
+	 */
+	public static function truncateText($text, $maxChars = 200, $append = '...') {
+		$text = trim($text);
+		if (strlen($text) > $maxChars) {
+			$text = wordwrap($text, $maxChars);
+			$text = explode("\n", $text, 2);
+			$text = $text[0] . $append;
+		}
+		return $text;
+	}
+
+	/**
 	 * Transform a user name, return 'John Doe' if name is empty
 	 *
 	 * @param  string $name

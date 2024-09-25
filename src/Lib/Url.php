@@ -127,7 +127,7 @@ class Url {
 			return PROJECT_URL . AVATAR_ROOT . "/$md5.webp";
 		} else {
 			// TODO: libravatar federated servers
-			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/8.x/avataaars/svg?seed=$md5");
+			return "https://seccdn.libravatar.org/avatar/$md5?d=" . urlencode("https://api.dicebear.com/9.x/avataaars/svg?seed=$md5");
 		}
 	}
 

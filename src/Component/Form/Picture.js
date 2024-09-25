@@ -74,6 +74,7 @@ const SyFormPicture = {
 			loader.style.display = 'none';
 			hiddenField.value = JSON.stringify(data);
 			hiddenField.dispatchEvent(new Event('change'));
+			hiddenField.dispatchEvent(new Event('input'));
 			if (submit) submit.disabled = false;
 		});
 	},
@@ -158,6 +159,7 @@ const SyFormPicture = {
 		delete data[btn.dataset.id];
 		hiddenField.value = JSON.stringify(data);
 		hiddenField.dispatchEvent(new Event('change'));
+		hiddenField.dispatchEvent(new Event('input'));
 	},
 
 	updateCaption: function (input) {
@@ -166,6 +168,7 @@ const SyFormPicture = {
 		data[input.dataset.id].caption = input.value;
 		hiddenField.value = JSON.stringify(data);
 		hiddenField.dispatchEvent(new Event('change'));
+		hiddenField.dispatchEvent(new Event('input'));
 	},
 
 	drawPictures: function (hidden) {

@@ -1,4 +1,8 @@
+const flashMessageContainer = document.getElementById('flash-message-container');
+
 function flash(message, color, autohide) {
+	if (!flashMessageContainer) return;
+
 	if (!message) return;
 	color = color ?? 'success';
 	autohide = autohide ?? true;
@@ -66,15 +70,17 @@ function flash(message, color, autohide) {
 	}, 50);
 }
 
-document.getElementById('flash-message-container').addEventListener('click', e => {
-	const button = e.target;
-	if (!button.classList.contains('btn-close')) return;
+if (flashMessageContainer) {
+	flashMessageContainer.addEventListener('click', e => {
+		const button = e.target;
+		if (!button.classList.contains('btn-close')) return;
 
-	const div = button.closest('.flash-message');
-	if (!div) return;
+		const div = button.closest('.flash-message');
+		if (!div) return;
 
-	div.classList.remove('in');
-});
+		div.classList.remove('in');
+	});
+}
 
 (() => {
 	// Check message on session storage

@@ -19,11 +19,13 @@ class Avatar extends \Sy\Component\WebComponent {
 		$this->src     = $src;
 		$this->upload  = $upload;
 		$this->size    = $size;
+
+		$this->setTemplateFile(__DIR__ . '/Avatar.tpl');
+		$this->mount(fn () => $this->init());
 	}
 
 	private function init() {
 		$this->addTranslator(LANG_DIR);
-		$this->setTemplateFile(__DIR__ . '/Avatar.tpl');
 		$this->addJsCode(__DIR__ . '/Avatar.js');
 
 		// Include cropperjs
@@ -37,11 +39,6 @@ class Avatar extends \Sy\Component\WebComponent {
 			'CSRF_TOKEN' => $service->user->getCsrfToken(),
 			'UPLOAD_URL' => $this->upload,
 		]);
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

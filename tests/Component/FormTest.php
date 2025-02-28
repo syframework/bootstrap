@@ -170,8 +170,30 @@ class FormTest extends TestCase {
 		]));
 	}
 
+	public function testAddRange() {
+		$range = $this->form->addRange([
+			'name' => 'range',
+			'min' => 0,
+			'max' => 10,
+			'step' => 1,
+		]);
+		$this->assertEquals('range', $range->getAttribute('name'));
+		$this->assertEquals(0, $range->getAttribute('min'));
+		$this->assertEquals(10, $range->getAttribute('max'));
+		$this->assertEquals(1, $range->getAttribute('step'));
+		$this->assertEquals('form-range', $range->getAttribute('class'));
+
+		$rate = $this->form->addRange([
+			'name' => 'rate',
+			'class' => 'rating',
+		]);
+		$this->assertEquals('form-range rating', $rate->getAttribute('class'));
+	}
+
 	protected function setUp(): void {
-		$this->form = $this->getMockForAbstractClass(Form::class);
+		$this->form = $this->getMockBuilder(Form::class)
+			->disableOriginalConstructor()
+			->getMockForAbstractClass();
 	}
 
 }

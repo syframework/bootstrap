@@ -299,7 +299,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 	public function addRange(array $attributes = [], array $options = [], $container = null) {
 		$options['label-class'] = 'form-label';
 		$range = $this->addInput('range', $attributes, $options, $container);
-		$range->setAttribute('class', 'form-range');
+		$range->addClass('form-range');
 		return $range;
 	}
 

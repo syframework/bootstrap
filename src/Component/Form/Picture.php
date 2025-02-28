@@ -37,6 +37,7 @@ class Picture extends \Sy\Component\Html\Form\Element {
 		$this->value   = '';
 		$this->options = $options;
 		$this->setTemplateFile(__DIR__ . '/Picture.tpl');
+		$this->mount(fn () => $this->init());
 	}
 
 	/**
@@ -87,11 +88,6 @@ class Picture extends \Sy\Component\Html\Form\Element {
 		]);
 
 		$this->addJsCode(__DIR__ . '/Picture.js');
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

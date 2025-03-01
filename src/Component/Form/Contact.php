@@ -82,7 +82,7 @@ class Contact extends \Sy\Bootstrap\Component\Form {
 
 		// Send button
 		$div = $this->addDiv(['class' => 'text-right']);
-		$this->addButton(label: 'Send', options: ['icon' => 'paper-plane'], container: $div);
+		$this->addButton(label: 'Send', options: ['icon' => 'send'], container: $div);
 	}
 
 	public function submitAction() {

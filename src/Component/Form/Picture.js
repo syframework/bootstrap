@@ -73,8 +73,8 @@ const SyFormPicture = {
 
 			loader.style.display = 'none';
 			hiddenField.value = JSON.stringify(data);
-			hiddenField.dispatchEvent(new Event('change'));
-			hiddenField.dispatchEvent(new Event('input'));
+			hiddenField.dispatchEvent(new Event('change', { bubbles: true }));
+			hiddenField.dispatchEvent(new Event('input', { bubbles: true }));
 			if (submit) submit.disabled = false;
 		});
 	},
@@ -158,8 +158,8 @@ const SyFormPicture = {
 		pic.remove();
 		delete data[btn.dataset.id];
 		hiddenField.value = JSON.stringify(data);
-		hiddenField.dispatchEvent(new Event('change'));
-		hiddenField.dispatchEvent(new Event('input'));
+		hiddenField.dispatchEvent(new Event('change', { bubbles: true }));
+		hiddenField.dispatchEvent(new Event('input', { bubbles: true }));
 	},
 
 	updateCaption: function (input) {
@@ -167,8 +167,8 @@ const SyFormPicture = {
 		let data = JSON.parse(hiddenField.value || '{}');
 		data[input.dataset.id].caption = input.value;
 		hiddenField.value = JSON.stringify(data);
-		hiddenField.dispatchEvent(new Event('change'));
-		hiddenField.dispatchEvent(new Event('input'));
+		hiddenField.dispatchEvent(new Event('change', { bubbles: true }));
+		hiddenField.dispatchEvent(new Event('input', { bubbles: true }));
 	},
 
 	drawPictures: function (hidden) {

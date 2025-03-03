@@ -37,6 +37,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 			$this->dispatch();
 		} catch (Api\NotFoundException $e) {
 			$this->notFound(['message' => $e->getMessage()]);
+			throw new Api\NotFoundException($e->getMessage(), $e->getCode(), $e);
 		} catch (Api\ForbiddenException $e) {
 			$this->forbidden(['message' => $e->getMessage()]);
 		} catch (Api\RequestErrorException $e) {

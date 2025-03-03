@@ -1,6 +1,8 @@
 <?php
 namespace Sy\Bootstrap\Application;
 
+use Sy\Bootstrap\Component\Api\NotFoundException;
+
 class Api extends \Sy\Bootstrap\Component\Api {
 
 	public function security() {
@@ -17,13 +19,30 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	}
 
 	public function dispatch() {
-		// Check if a plugin api class exists
-		$class = 'Sy\\Bootstrap\\Application\\Api\\' . $this->action;
-		if (class_exists($class)) {
-			$this->setVar('RESPONSE', new $class());
-			return;
-		}
-		parent::dispatch();
+		$findAction = function ($class, $callback) {
+			try {
+				if (class_exists($class)) {
+					$this->setVar('RESPONSE', new $class());
+					return;
+				}
+				$callback();
+			} catch (NotFoundException $e) {
+				$callback();
+			}
+		};
+
+		// Check if a project api class exists
+		$findAction('Project\\Application\\Api\\' . $this->action, function () use ($findAction) {
+			// Check if a plugin api class exists
+			$findAction('Sy\\Bootstrap\\Application\\Api\\' . $this->action, function () {
+				// Check if an action exists in the current class
+				try {
+					parent::dispatch();
+				} catch (NotFoundException $e) {
+					$this->notFound(['message' => $e->getMessage()]);
+				}
+			});
+		});
 	}
 
 	/**

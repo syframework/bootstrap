@@ -44,8 +44,9 @@
 		codeEditorHtml.focus();
 
 		if (htmlLoaded) return;
-		var timestamp = new Date().getTime();
-		fetch('{GET_URL}&ts=' + timestamp)
+		const location = new URL('{GET_URL}', window.location.origin);
+		location.searchParams.set('ts', Date.now());
+		fetch(location.href)
 			.then(response => response.json())
 			.then(res => {
 				if (res.status === 'ok') {

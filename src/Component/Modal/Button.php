@@ -72,6 +72,7 @@ class Button extends \Sy\Component\WebComponent {
 		$this->attributes = $attributes;
 		$this->dialog = new Dialog($this->id, '');
 
+		$this->setTemplateFile(__DIR__ . '/Button.html');
 		$this->mount(function () {
 			$this->init();
 		});
@@ -85,8 +86,6 @@ class Button extends \Sy\Component\WebComponent {
 	}
 
 	private function init() {
-		$this->setTemplateFile(__DIR__ . '/Button.html');
-
 		// Class attribute
 		if (isset($this->attributes['class'])) {
 			$this->setVar('CLASS', $this->attributes['class']);
@@ -105,7 +104,6 @@ class Button extends \Sy\Component\WebComponent {
 			'SIZE'   => empty($this->size) ? '' : 'btn-' . $this->size,
 			'TITLE'  => empty($this->title) ? '' : 'title="' . $this->_($this->title) . '" data-bs-title="' . $this->_($this->title) . '"',
 			'ATTR'   => empty($this->attributes) ? '' : implode(' ', array_map(fn($k, $v) => $k . '="' . $v . '"', array_keys($this->attributes), $this->attributes)),
-			// 'DIALOG' => htmlentities(strval($this->dialog), ENT_QUOTES),
 			'DIALOG' => $this->dialog,
 		]);
 

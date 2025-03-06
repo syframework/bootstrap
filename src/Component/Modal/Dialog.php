@@ -44,6 +44,7 @@ class Dialog extends WebComponent {
 		$this->footer = $footer;
 		$this->size   = null;
 
+		$this->setTemplateFile(__DIR__ . '/Dialog.html');
 		$this->mount(function () {
 			$this->init();
 		});
@@ -88,7 +89,6 @@ class Dialog extends WebComponent {
 	}
 
 	private function init() {
-		$this->setTemplateFile(__DIR__ . '/Dialog.html');
 		$this->addJsCode(__DIR__ . '/Dialog.js');
 
 		// Id

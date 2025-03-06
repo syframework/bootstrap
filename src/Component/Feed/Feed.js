@@ -46,8 +46,9 @@
 		fetch(location.href)
 			.then(response => response.text())
 			.then(result => {
+				const feed = button.parentNode || document.body;
 				button.outerHTML = result;
-				document.body.dispatchEvent(new CustomEvent('feed-loaded'));
+				feed.dispatchEvent(new CustomEvent('feed-loaded', { bubbles: true }));
 			});
 	});
 

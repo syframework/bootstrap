@@ -11,6 +11,13 @@ abstract class Feed extends \Sy\Component\WebComponent {
 
 	private $auto;
 
+	/**
+	 * Set to true to remove parent container <div class="sy-feed">
+	 *
+	 * @var bool
+	 */
+	private $flush;
+
 	abstract public function getPage($n);
 
 	abstract public function isLastPage($n);
@@ -21,6 +28,7 @@ abstract class Feed extends \Sy\Component\WebComponent {
 		$this->last      = $this->get('last');
 		$this->direction = $direction;
 		$this->auto      = $auto;
+		$this->flush     = false;
 		// pre init js
 		$this->addJsCode(__DIR__ . '/Feed/Feed.js');
 
@@ -37,6 +45,10 @@ abstract class Feed extends \Sy\Component\WebComponent {
 
 	public function setLast($last) {
 		$this->last = $last;
+	}
+
+	public function flush() {
+		$this->flush = true;
 	}
 
 	public function init() {
@@ -59,6 +71,12 @@ abstract class Feed extends \Sy\Component\WebComponent {
 		]);
 		$auto = $this->auto ? '_AUTO' : '';
 		$this->setBlock($this->direction . '_MORE' . $auto . '_BLOCK');
+
+		// Wrap with a div on initial render
+		if (!$this->flush) {
+			$this->setBlock('DIV_OPEN');
+			$this->setBlock('DIV_CLOSE');
+		}
 	}
 
 }

@@ -81,6 +81,7 @@ class Api extends \Sy\Bootstrap\Component\Api {
 		if (!$feed instanceof \Sy\Bootstrap\Component\Feed) {
 			return $this->requestError(['message' => "$class is not an instance of Feed"]);
 		}
+		$feed->flush();
 		return $this->ok($feed);
 	}
 

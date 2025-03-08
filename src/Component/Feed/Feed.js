@@ -1,5 +1,41 @@
 (function () {
 
+	function urlAddParam(location, params) {
+		const addParam = (key, value) => {
+			if (value === null) return;
+			if (typeof value === 'object') {
+				Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+					addParam(`${key}[${nestedKey}]`, nestedValue);
+				});
+			} else {
+				location.searchParams.set(key, value);
+			}
+		};
+		Object.entries(params).forEach(([key, value]) => {
+			addParam(key, value);
+		});
+		return location;
+	}
+
+	Element.prototype.reload = function () {
+		if (!this.classList.contains('syfeed')) return;
+		const button = this.querySelector(':scope > .feed-next-page-button');
+		if (!button) return;
+
+		const params = JSON.parse(button.dataset.params);
+		params['class'] = button.dataset.class;
+		params['last'] = 0;
+		params['ts'] = Date.now();
+		const location = urlAddParam(new URL(button.dataset.location, window.location.origin), params);
+		fetch(location.href)
+			.then(response => response.text())
+			.then(result => {
+				const feed = button.parentElement;
+				feed.innerHTML = result;
+				feed.dispatchEvent(new CustomEvent('feed-loaded', { bubbles: true }));
+			});
+	};
+
 	document.body.addEventListener('click', function (event) {
 		let button = null;
 		if (event.target.classList.contains('feed-next-page-button')) {
@@ -29,24 +65,12 @@
 		const params = JSON.parse(button.dataset.params);
 		params['class'] = button.dataset.class;
 		params['last'] = lastId;
-		const location = new URL(button.dataset.location, window.location.origin);
-		const addParam = (key, value) => {
-			if (value === null) return;
-			if (typeof value === 'object') {
-				Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-					addParam(`${key}[${nestedKey}]`, nestedValue);
-				});
-			} else {
-				location.searchParams.set(key, value);
-			}
-		};
-		Object.entries(params).forEach(([key, value]) => {
-			addParam(key, value);
-		});
+		params['ts'] = Date.now();
+		const location = urlAddParam(new URL(button.dataset.location, window.location.origin), params);
 		fetch(location.href)
 			.then(response => response.text())
 			.then(result => {
-				const feed = button.parentNode || document.body;
+				const feed = button.parentElement;
 				button.outerHTML = result;
 				feed.dispatchEvent(new CustomEvent('feed-loaded', { bubbles: true }));
 			});
@@ -83,7 +107,7 @@
 		return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
 	}
 
-	let observer = new MutationObserver(mutations => {
+	let observer = new MutationObserver(() => {
 		clickLoad();
 	});
 

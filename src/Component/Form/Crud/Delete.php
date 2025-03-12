@@ -21,6 +21,13 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 		});
 	}
 
+	public function init() {
+		parent::init();
+
+		// Add selector option in a data attribute
+		$this->setAttribute('data-selector', $this->getOption('selector') ?? '');
+	}
+
 	public function submitAction() {
 		try {
 			$this->validatePost();
@@ -32,7 +39,6 @@ class Delete extends \Sy\Bootstrap\Component\Form\Crud {
 			return $this->jsonSuccess(
 				$this->getOption('flash-message') ?? [] + ['message' => 'Deleted successfully'],
 				[
-					'selector'    => $this->getOption('selector'),
 					'redirection' => $this->getOption('redirection'),
 				]
 			);

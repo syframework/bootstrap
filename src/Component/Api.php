@@ -40,9 +40,15 @@ abstract class Api extends \Sy\Component\WebComponent {
 	public function dispatch() {
 		$this->security();
 
-		// 1. Call method [$this->method]() if exists.
+		// 1. Call method [$this->method]Action() if exists.
 		if (((new \ReflectionClass($this))->getShortName() === $this->action) and !empty($this->method)) {
 			$method = Str::snakeToCaml($this->method);
+			$methodAction = $method . 'Action';
+			if (method_exists($this, $methodAction)) {
+				return $this->$methodAction();
+			}
+
+			// 1.1 Call method [$this->method]() if exists.
 			if (!method_exists($this, $method)) {
 				throw new Api\NotFoundException('Method ' . $method . ' not found in class ' . get_class($this));
 			}

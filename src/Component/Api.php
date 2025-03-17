@@ -21,34 +21,26 @@ abstract class Api extends \Sy\Component\WebComponent {
 	abstract public function security();
 
 	public function __construct() {
-		try {
-			parent::__construct();
-			$this->setTemplateContent('{RESPONSE}');
-			$this->action = ucfirst(Str::snakeToCaml($this->request(ACTION_TRIGGER, '')));
-			$param = $this->request(ACTION_PARAM, ['']);
-			$this->method = array_shift($param);
-			$this->param = $param;
+		parent::__construct();
 
-			// HTTP method
-			$this->verb = isset($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : '';
+		$this->action = ucfirst(Str::snakeToCaml($this->request(ACTION_TRIGGER, '')));
+		$param = $this->request(ACTION_PARAM, ['']);
+		$this->method = array_shift($param);
+		$this->param = $param;
 
-			$this->addTranslator(LANG_DIR);
-			$this->security();
-			$this->dispatch();
-		} catch (Api\NotFoundException $e) {
-			$this->notFound(['message' => $e->getMessage()]);
-			throw new Api\NotFoundException($e->getMessage(), $e->getCode(), $e);
-		} catch (Api\ForbiddenException $e) {
-			$this->forbidden(['message' => $e->getMessage()]);
-		} catch (Api\RequestErrorException $e) {
-			$this->requestError(['message' => $e->getMessage()]);
-		} catch (\Throwable $e) {
-			$this->serverError(['message' => $e->getMessage()]);
-		}
+		// HTTP method
+		$this->verb = isset($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : '';
+
+		$this->setTemplateContent('{RESPONSE}');
+		$this->addTranslator(LANG_DIR);
+
+		$this->mount(fn() => $this->dispatch());
 	}
 
 	public function dispatch() {
-		// 1. We are in the short named class [$this->action]. Call method [$this->method]().
+		$this->security();
+
+		// 1. Call method [$this->method]() if exists.
 		if (((new \ReflectionClass($this))->getShortName() === $this->action) and !empty($this->method)) {
 			$method = Str::snakeToCaml($this->method);
 			if (!method_exists($this, $method)) {
@@ -57,15 +49,7 @@ abstract class Api extends \Sy\Component\WebComponent {
 			return $this->$method();
 		}
 
-		// 2. Call method [$this->action]Action()
-		if (!empty($this->action)) {
-			$method = Str::snakeToCaml($this->action) . 'Action';
-			if (method_exists($this, $method)) {
-				return $this->$method();
-			}
-		}
-
-		// 3. Call [$this->verb]Action() where verb is HTTP method: get, post etc...
+		// 2. Call [$this->verb]Action() where verb is HTTP method: get, post etc...
 		if (empty($this->verb)) throw new Api\Exception('No HTTP method defined');
 		$method = $this->verb . 'Action';
 		if (method_exists($this, $method)) {

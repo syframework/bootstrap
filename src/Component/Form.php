@@ -640,7 +640,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			// Label
 			if (isset($options['label'])) {
 				$label = new \Sy\Component\Html\Element('label');
-				$label->addText($options['label']);
+				$label->addContent($options['label']);
 				$div->addElement($label);
 				unset($options['label']);
 			}
@@ -654,7 +654,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			// Input group addon before
 			if (isset($options['addon-before'])) {
 				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
-				$span->addText($this->_($options['addon-before']));
+				$span->addContent($this->_($options['addon-before']));
 			} elseif (isset($options['btn-before'])) {
 				$this->addGroupButton($options['btn-before'], $inputGroupDiv);
 			}
@@ -666,7 +666,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 			// Input group addon after
 			if (isset($options['addon-after'])) {
 				$span = $inputGroupDiv->addSpan(['class' => 'input-group-text']);
-				$span->addText($this->_($options['addon-after']));
+				$span->addContent($this->_($options['addon-after']));
 			} elseif (isset($options['btn-after'])) {
 				$this->addGroupButton($options['btn-after'], $inputGroupDiv);
 			}
@@ -676,7 +676,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($options['help'])) {
 			$small = new \Sy\Component\Html\Element('small');
 			$small->addClass('form-text text-muted');
-			$small->addText($this->_($options['help']));
+			$small->addContent($this->_($options['help']));
 			$div->addElement($small);
 		}
 

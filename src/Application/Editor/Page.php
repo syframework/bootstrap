@@ -1,8 +1,6 @@
 <?php
 namespace Sy\Bootstrap\Application\Editor;
 
-use Sy\Bootstrap\Lib\Str;
-
 class Page extends \Sy\Bootstrap\Component\Api {
 
 	use CkFile;

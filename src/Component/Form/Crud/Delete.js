@@ -7,8 +7,9 @@
 		const data = e.detail;
 		if (!data.ok) return;
 
-		if (!data.selector) return;
-		document.querySelectorAll(data.selector).forEach(el => el.remove());
+		const selector = form.dataset.selector;
+		if (!selector) return;
+		document.querySelectorAll(selector).forEach(el => el.remove());
 	});
 
 })();

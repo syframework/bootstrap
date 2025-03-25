@@ -179,36 +179,34 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addTel(array $attributes = [], array $options = [], $container = null) {
 		// Add Intl tel input JS and CSS
-		$this->addCssCode('.iti{width:100%}');
-		$this->addCssLink(INTLTELINPUT_CSS);
-		$this->addJsLink(INTLTELINPUT_JS);
+		$this->addCssCode('
+			.iti{width:100%}
+			[data-bs-theme=dark] .iti {
+				--iti-border-color: #5b5b5b;
+				--iti-dialcode-color: #999999;
+				--iti-dropdown-bg: #0d1117;
+				--iti-arrow-color: #aaaaaa;
+				--iti-hover-color: #30363d;
+			}
+		');
 		$js = new \Sy\Component();
 		$js->setTemplateFile(__DIR__ . '/Form/Tel.js');
 		$js->setVars([
+			'INTLTELINPUT_CSS' => INTLTELINPUT_CSS,
+			'INTLTELINPUT_JS' => INTLTELINPUT_JS,
 			'INTLTELINPUT_UTILS_JS' => INTLTELINPUT_UTILS_JS,
 			'WEB_ROOT' => WEB_ROOT,
 			'TOP_COUNTRIES' => defined('INTLTELINPUT_TOP_COUNTRIES') ? '"' . implode('","', INTLTELINPUT_TOP_COUNTRIES) . '"' : '',
 		]);
-		$this->addJsCode($js->__toString());
+		$this->addJsCode($js);
 
 		$attributes['data-name'] = $attributes['name'];
+		$attributes['name'] = $attributes['name'] . '-raw';
 		$attributes['data-error'] = $this->_('Invalid phone number');
 		$attributes['data-help'] = isset($options['help']) ? $this->_($options['help']) : '';
 		$options['help'] = isset($options['help']) ? $options['help'] : '';
 
-		// Add a hidden text input
-		$a = ['name' => $attributes['name'], 'class' => 'tel-hidden-input visually-hidden'];
-		if (isset($attributes['required'])) {
-			$a['required'] = $attributes['required'];
-		}
-		if (isset($attributes['value'])) {
-			$a['value'] = $attributes['value'];
-		}
-		$attributes['name'] = $attributes['name'] . '-raw';
-
-		// Add a visible tel input
 		$input = $this->addInput('tel', $attributes, $options, $container);
-		$input->getParent()->addTextInput($a);
 		return $input;
 	}
 

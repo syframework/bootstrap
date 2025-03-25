@@ -34,11 +34,11 @@
 				dropdownContainer: document.body,
 				loadUtils: () => import('{INTLTELINPUT_UTILS_JS}'),
 				initialCountry: 'auto',
-				geoIpLookup: (success, failure) => {
-					fetch("http://ip-api.com/json")
-						.then((res) => res.json())
-						.then((data) => success(data.countryCode))
-						.catch(() => failure());
+				geoIpLookup: callback => {
+					fetch("https://ipapi.co/json")
+						.then(res => res.json())
+						.then(data => callback(data.country_code))
+						.catch(() => callback("us"));
 				},
 				countryOrder: [{TOP_COUNTRIES}],
 				countrySearch: false,

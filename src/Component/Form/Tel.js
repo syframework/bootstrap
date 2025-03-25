@@ -1,63 +1,70 @@
 (function () {
 
-	function initTelInput(input) {
+	const loadCSS = ($url) => {
+		if (document.head.querySelector(`link[href="${$url}"]`)) return;
+		const link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = $url;
+		document.head.appendChild(link);
+	};
 
-		window.intlTelInput(input, {
-			dropdownContainer: document.body,
-			utilsScript: '{INTLTELINPUT_UTILS_JS}',
-			initialCountry: 'auto',
-			geoIpLookup: function(callback) {
-				fetch('{WEB_ROOT}/api/location').then(function(res) {
-					if (!res.ok) return;
-					res.text().then(function(data) {
-						callback(data);
-					});
-				});
-			},
-			preferredCountries: [{TOP_COUNTRIES}]
-		});
+	const loadScript = (url, callback) => {
+		if (document.head.querySelector(`script[src="${url}"]`)) return callback();
+		const script = document.createElement('script');
+		script.src = url;
+		script.type = 'text/javascript';
+		script.onload = callback;
+		document.head.appendChild(script);
+	};
 
-		var iti = window.intlTelInputGlobals.getInstance(input);
+	const reset = (input) => {
+		input.classList.remove('is-invalid');
+		input.parentElement.nextElementSibling.textContent = input.dataset.help;
+		input.parentElement.nextElementSibling.classList.replace('text-danger', 'text-muted');
+		input.setCustomValidity('');
+	};
 
-		var reset = function (input) {
-			input.classList.remove('is-invalid');
-			input.parentElement.nextElementSibling.textContent = input.dataset.help;
-			input.parentElement.nextElementSibling.classList.replace('text-danger', 'text-muted');
-			input.setCustomValidity('');
-		};
+	const initTelInput = (input) => {
 
-		input.addEventListener('blur', (e) => {
-			reset(e.target);
-			let hidden = input.form.querySelector('input[name="' + input.dataset.name + '"]');
-			if (e.target.value.trim()) {
-				if (iti.isValidNumber()) {
-					let number = iti.getNumber();
-					hidden.value = number;
-					hidden.setAttribute('value', number);
-				} else {
+		loadCSS('{INTLTELINPUT_CSS}');
+
+		loadScript('{INTLTELINPUT_JS}', () => {
+
+			const iti = window.intlTelInput(input, {
+				dropdownContainer: document.body,
+				loadUtils: () => import('{INTLTELINPUT_UTILS_JS}'),
+				initialCountry: 'auto',
+				geoIpLookup: (success, failure) => {
+					fetch("http://ip-api.com/json")
+						.then((res) => res.json())
+						.then((data) => success(data.countryCode))
+						.catch(() => failure());
+				},
+				countryOrder: [{TOP_COUNTRIES}],
+				countrySearch: false,
+				hiddenInput: () => ({ phone: input.dataset.name }),
+				strictMode: true,
+			});
+
+			input.addEventListener('blur', (e) => {
+				reset(e.target);
+				if (e.target.value.trim() && !iti.isValidNumber()) {
 					e.target.classList.add('is-invalid');
 					e.target.parentElement.nextElementSibling.textContent = e.target.dataset.error;
 					e.target.parentElement.nextElementSibling.classList.replace('text-muted', 'text-danger');
 					e.target.setCustomValidity(e.target.dataset.error);
 				}
-			} else {
-				hidden.value = '';
-			}
-		});
+			});
 
-		input.addEventListener('keyup', (e) => {
-			reset(e.target);
-		});
+			input.addEventListener('keyup', (e) => {
+				reset(e.target);
+			});
 
-		input.addEventListener('change', (e) => {
-			reset(e.target);
-		});
+			input.addEventListener('change', (e) => {
+				reset(e.target);
+			});
 
-		input.closest('form').querySelector('input[name="' + input.dataset.name + '"]').addEventListener('change', (e) => {
-			iti.setNumber(e.target.value);
 		});
-
-		iti.setNumber(input.closest('form').querySelector('input[name="' + input.dataset.name + '"]').value);
 
 	}
 

@@ -11,7 +11,9 @@
 	const loadScript = (() => {
 		const loadedScripts = {};
 
-		return (url, callback) => {
+		return (url, condition, callback) => {
+			if (condition) return callback();
+
 			if (!loadedScripts[url]) {
 				loadedScripts[url] = {
 					loaded: false,
@@ -46,8 +48,7 @@
 	const initTelInput = (input) => {
 
 		loadCSS('{INTLTELINPUT_CSS}');
-
-		loadScript('{INTLTELINPUT_JS}', () => {
+		loadScript('{INTLTELINPUT_JS}', window.intlTelInput, () => {
 
 			const iti = window.intlTelInput(input, {
 				dropdownContainer: document.body,

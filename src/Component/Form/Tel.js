@@ -8,14 +8,33 @@
 		document.head.appendChild(link);
 	};
 
-	const loadScript = (url, callback) => {
-		if (document.head.querySelector(`script[src="${url}"]`)) return callback();
-		const script = document.createElement('script');
-		script.src = url;
-		script.type = 'text/javascript';
-		script.onload = callback;
-		document.head.appendChild(script);
-	};
+	const loadScript = (() => {
+		const loadedScripts = {};
+
+		return (url, callback) => {
+			if (!loadedScripts[url]) {
+				loadedScripts[url] = {
+					loaded: false,
+					callbacks: [],
+				};
+			}
+
+			loadedScripts[url].callbacks.push(callback);
+
+			if (loadedScripts[url].loaded) return callback();
+
+			if (document.head.querySelector(`script[src="${url}"]`)) return;
+
+			const script = document.createElement('script');
+			script.src = url;
+			script.onload = () => {
+				loadedScripts[url].loaded = true;
+				loadedScripts[url].callbacks.forEach(cb => cb());
+				loadedScripts[url].callbacks = [];
+			};
+			document.head.appendChild(script);
+		};
+	})();
 
 	const reset = (input) => {
 		input.classList.remove('is-invalid');

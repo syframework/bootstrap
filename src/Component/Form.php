@@ -692,6 +692,7 @@ abstract class Form extends \Sy\Component\Html\Form {
 		if (isset($options['help'])) {
 			$small = new \Sy\Component\Html\Element('small');
 			$small->addClass('form-text text-muted');
+			$small->setAttribute('data-input-id', $input->getAttribute('id'));
 			$small->addContent(is_string($options['help']) ? $this->_($options['help']) : $options['help']);
 			$div->addElement($small);
 		}

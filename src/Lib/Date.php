@@ -79,4 +79,13 @@ class Date {
 		return $this->dateTime->getTimestamp();
 	}
 
+	/**
+	 * Returns the date/time value as a string in ISO 8601 format.
+	 *
+	 * @return string
+	 */
+	public function iso8601() {
+		return $this->dateTime->format(\DateTime::ATOM);
+	}
+
 }

@@ -59,7 +59,7 @@
 			console.error(error.name, error.message);
 			window.dispatchEvent(new Event('csrf'));
 			enableForm(form);
-			if (error instanceof TypeError || error instanceof AbortError || error instanceof NotAllowedError) {
+			if (error instanceof TypeError) {
 				flash(form.dataset.networkError ?? 'Network error', 'danger');
 			}
 		});
@@ -93,15 +93,18 @@
 			return;
 		}
 
-		// Ok
-		const reset = data.reset ?? true;
-		if (reset) form.reset();
-		flash(data.message, data.color ?? 'success', data.autohide);
-
 		// Close modal if form is contained in it
 		const modal = form.closest('.modal');
-		if (!modal) return;
-		bootstrap.Modal.getOrCreateInstance(modal).hide();
+		if (modal) {
+			bootstrap.Modal.getOrCreateInstance(modal).hide();
+		}
+
+		// Reset form
+		const reset = data.reset ?? true;
+		if (reset) form.reset();
+
+		// Show success message
+		flash(data.message, data.color ?? 'success', data.autohide);
 	});
 
 })();

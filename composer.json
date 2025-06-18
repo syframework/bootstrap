@@ -5,7 +5,7 @@
 	"require": {
 		"php": ">=7",
 		"sy/html": "^2.0",
-		"sy/mysql": "^3.0",
+		"sy/mysql": "^4.0",
 		"sy/container": "^1",
 		"sy/cache": "^1",
 		"sy/mail": "^2",

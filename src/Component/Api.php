@@ -34,7 +34,19 @@ abstract class Api extends \Sy\Component\WebComponent {
 		$this->setTemplateContent('{RESPONSE}');
 		$this->addTranslator(LANG_DIR);
 
-		$this->mount(fn() => $this->dispatch());
+		$this->mount(function () {
+			try {
+				$this->dispatch();
+			} catch (Api\NotFoundException $e) {
+				$this->notFound(['message' => $e->getMessage()]);
+			} catch (Api\ForbiddenException $e) {
+				$this->forbidden(['message' => $e->getMessage()]);
+			} catch (Api\RequestErrorException $e) {
+				$this->requestError(['message' => $e->getMessage()]);
+			} catch (\Throwable $e) {
+				$this->serverError(['message' => $e->getMessage()]);
+			}
+		});
 	}
 
 	public function dispatch() {

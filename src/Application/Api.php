@@ -3,7 +3,6 @@ namespace Sy\Bootstrap\Application;
 
 use Sy\Bootstrap\Component\Api\ForbiddenException;
 use Sy\Bootstrap\Component\Api\NotFoundException;
-use Sy\Bootstrap\Component\Api\RequestErrorException;
 use Sy\Bootstrap\Lib\Str;
 
 class Api extends \Sy\Bootstrap\Component\Api {
@@ -22,45 +21,35 @@ class Api extends \Sy\Bootstrap\Component\Api {
 	}
 
 	public function dispatch() {
-		try {
-			$this->security();
+		$this->security();
 
-			// 1. Method attribute is empty, check if [$this->action]Action method exist
-			if (empty($this->method)) {
-				$method = Str::snakeToCaml($this->action) . 'Action';
-				if (method_exists($this, $method)) {
-					return $this->$method();
-				}
+		// 1. Method attribute is empty, check if [$this->action]Action method exist
+		if (empty($this->method)) {
+			$method = Str::snakeToCaml($this->action) . 'Action';
+			if (method_exists($this, $method)) {
+				return $this->$method();
 			}
-
-			$findAction = function ($class, $callback) {
-				try {
-					if (class_exists($class)) {
-						$this->setVar('RESPONSE', new $class());
-						return;
-					}
-					$callback();
-				} catch (NotFoundException $e) {
-					$callback();
-				}
-			};
-
-			// 2. Check if a project api class exists
-			$findAction('Project\\Application\\Api\\' . $this->action, function () use ($findAction) {
-				// 3. Check if a plugin api class exists
-				$findAction('Sy\\Bootstrap\\Application\\Api\\' . $this->action, function () {
-					throw new NotFoundException('No action method found');
-				});
-			});
-		} catch (NotFoundException $e) {
-			$this->notFound(['message' => $e->getMessage()]);
-		} catch (ForbiddenException $e) {
-			$this->forbidden(['message' => $e->getMessage()]);
-		} catch (RequestErrorException $e) {
-			$this->requestError(['message' => $e->getMessage()]);
-		} catch (\Throwable $e) {
-			$this->serverError(['message' => $e->getMessage()]);
 		}
+
+		$findAction = function ($class, $callback) {
+			try {
+				if (class_exists($class)) {
+					$this->setVar('RESPONSE', new $class());
+					return;
+				}
+				$callback();
+			} catch (NotFoundException $e) {
+				$callback();
+			}
+		};
+
+		// 2. Check if a project api class exists
+		$findAction('Project\\Application\\Api\\' . $this->action, function () use ($findAction) {
+			// 3. Check if a plugin api class exists
+			$findAction('Sy\\Bootstrap\\Application\\Api\\' . $this->action, function () {
+				throw new NotFoundException('No action method found');
+			});
+		});
 	}
 
 	/**

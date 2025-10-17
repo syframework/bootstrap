@@ -49,9 +49,11 @@
 		}
 
 		fetch(url.href, options).then(response => {
-			if (response.redirected) {
-				window.location.href = response.url;
+			if (!response.ok) {
+				// Throw an error to be caught by the .catch() block
+				throw new Error('HTTP error! status: ' + response.status);
 			}
+			if (response.redirected) window.location.href = response.url;
 			return response.json();
 		}).then(result => {
 			form.dispatchEvent(new CustomEvent('submitted.syform', {bubbles: true, cancelable: true, detail: result}));
@@ -89,6 +91,7 @@
 
 		// Error message
 		if (!data.ok) {
+			window.dispatchEvent(new Event('csrf'));
 			flash(data.message, data.color ?? 'danger', data.autohide);
 			return;
 		}

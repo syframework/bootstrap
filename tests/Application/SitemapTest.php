@@ -10,6 +10,7 @@ function minify($code) {
 	$search = array("\t", "\r", "\n");
 	$code = str_replace($search, ' ', $code);
 	$code = preg_replace('/\s+/', ' ', $code);
+	$code = preg_replace('/>\s+</', '><', $code);
 	return trim($code);
 }
 

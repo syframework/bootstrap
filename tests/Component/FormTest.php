@@ -14,7 +14,6 @@ class FormTest extends TestCase {
 	public function testJsonSuccess() {
 		$reflection = new \ReflectionObject($this->form);
 		$jsonSuccess = $reflection->getMethod('jsonSuccess');
-		$jsonSuccess->setAccessible(true);
 
 		// No parameter
 		$this->assertJsonStringEqualsJsonString(json_encode([
@@ -115,7 +114,6 @@ class FormTest extends TestCase {
 	public function testJsonError() {
 		$reflection = new \ReflectionObject($this->form);
 		$jsonSuccess = $reflection->getMethod('jsonError');
-		$jsonSuccess->setAccessible(true);
 
 		// No parameter
 		$this->assertJsonStringEqualsJsonString(json_encode([

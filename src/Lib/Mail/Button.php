@@ -11,6 +11,7 @@ class Button extends \Sy\Component\WebComponent {
 		parent::__construct();
 		$this->label = $label;
 		$this->url = $url;
+		$this->mount(fn() => $this->init());
 	}
 
 	private function init() {
@@ -20,11 +21,6 @@ class Button extends \Sy\Component\WebComponent {
 			'URL'   => $this->url,
 			'LABEL' => $this->_($this->label),
 		]);
-	}
-
-	public function __toString() {
-		$this->init();
-		return parent::__toString();
 	}
 
 }

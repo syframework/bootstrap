@@ -27,6 +27,13 @@ class MyTestApi extends Api {
 
 class ApiTest extends TestCase {
 
+	protected function setUp(): void {
+		$_REQUEST = [];
+		$_GET     = [];
+		$_POST    = [];
+		unset($_SERVER['REQUEST_METHOD']);
+	}
+
 	public function testVerbGet() {
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		$api = new MyTestApi();
@@ -48,9 +55,10 @@ class ApiTest extends TestCase {
 	public function testNotFound() {
 		$_REQUEST[ACTION_TRIGGER] = 'my-test-api';
 		$_REQUEST[ACTION_PARAM] = ['foo', 'bar', 'baz'];
-		$this->expectException(NotFoundException::class);
 		$api = new MyTestApi();
-		strval($api);
+		$this->expectException(NotFoundException::class);
+		$this->expectExceptionMessageMatches('/Method foo not found/');
+		$api->dispatch();
 	}
 
 }

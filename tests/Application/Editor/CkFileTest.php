@@ -189,6 +189,17 @@ class CkFileTest extends TestCase {
 		$this->assertStringStartsWith(realpath($this->root), $dir);
 	}
 
+	public function testResolveUploadDirectoryCreatesMissingRoot() {
+		$this->removeDir($this->root);
+		$this->assertDirectoryDoesNotExist($this->root);
+
+		$dir = CkFileHarness::resolveUploadDirectory('article', 'image', '42');
+
+		$this->assertNotNull($dir);
+		$this->assertDirectoryExists($this->root);
+		$this->assertStringStartsWith(realpath($this->root), $dir);
+	}
+
 	public function testResolveUploadDirectoryRejectsTraversal() {
 		$this->assertNull(CkFileHarness::resolveUploadDirectory('../../etc', 'image', '42'));
 		$this->assertNull(CkFileHarness::resolveUploadDirectory('article', 'image', '../../etc'));

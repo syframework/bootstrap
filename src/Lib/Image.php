@@ -10,9 +10,9 @@ class Image {
 	 * @param string $fileName
 	 * @param int $width
 	 * @param int $height
-	 * @param string $type
+	 * @param string|null $type Output format, defaults to the file extension
 	 */
-	public static function resize($fileName, $width, $height, $type = 'jpeg') {
+	public static function resize($fileName, $width, $height, $type = null) {
 		list($wo, $ho) = getimagesize($fileName);
 		if (($wo / $ho) > ($width / $height)) {
 			$resize = $width . 'x';
@@ -20,6 +20,15 @@ class Image {
 			$resize = 'x' . $height;
 		}
 		$file = realpath($fileName);
+		if ($file === false) return;
+
+		// Keep the original format unless another one is explicitly requested.
+		// Otherwise mogrify writes a second file with the target extension
+		// (e.g. photo.jpg becomes photo.jpg + photo.jpeg) and leaves it behind.
+		if (is_null($type)) {
+			$type = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+		}
+
 		exec("mogrify -resize $resize $file");
 		exec("mogrify -format $type -write $file $file");
 		exec("mogrify -transparent white -gravity center -extent {$width}x$height $file");

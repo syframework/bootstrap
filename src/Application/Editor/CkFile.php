@@ -312,7 +312,14 @@ trait CkFile {
 		if (!self::isValidItem($item) or !self::isValidType($type) or !self::isValidId($id)) return null;
 
 		$root = realpath(UPLOAD_DIR);
-		if ($root === false) return null;
+		if ($root === false) {
+			// UPLOAD_DIR is git-ignored and only created on the first upload,
+			// so create it here to make browsing work on a fresh installation.
+			if (!@mkdir(UPLOAD_DIR, 0777, true) and !is_dir(UPLOAD_DIR)) return null;
+			clearstatcache(true, UPLOAD_DIR);
+			$root = realpath(UPLOAD_DIR);
+			if ($root === false) return null;
+		}
 
 		$dir = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR . $id;
 

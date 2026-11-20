@@ -3,7 +3,10 @@
 	"description": "A library for starting to create a website",
 	"type": "library",
 	"require": {
-		"php": ">=7",
+		"php": ">=8.0",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+		"sy/webcomponent": "^2",
 		"sy/html": "^2.0",
 		"sy/mysql": "^4.0",
 		"sy/container": "^1",

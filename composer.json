@@ -3,8 +3,9 @@
 	"description": "A library for starting to create a website",
 	"type": "library",
 	"require": {
-		"php": ">=8.0",
+		"php": ">=8.1",
 		"ext-json": "*",
+		"ext-dom": "*",
 		"ext-mbstring": "*",
 		"sy/webcomponent": "^2",
 		"sy/html": "^2.0",
@@ -13,7 +14,9 @@
 		"sy/cache": "^1",
 		"sy/mail": "^2",
 		"sy/event": "^1",
-		"hashids/hashids": "^4.1"
+		"hashids/hashids": "^4.1",
+		"masterminds/html5": "^2.8",
+		"symfony/html-sanitizer": "^6.4"
 	},
 	"license": "MIT",
 	"authors": [

@@ -22,6 +22,9 @@ class Editor extends \Sy\Bootstrap\Component\Api {
 		// Check if a plugin editor class exists
 		$class = 'Sy\\Bootstrap\\Application\\Editor\\' . $this->action;
 		if (class_exists($class)) {
+			// Plugin classes replace the generic dispatch, so the same-origin
+			// check performed by Component\Api::dispatch() would be skipped
+			$this->security();
 			$this->setVar('RESPONSE', new $class());
 			return;
 		}

@@ -1,6 +1,7 @@
 <?php
 namespace Sy\Bootstrap\Application\Editor;
 
+use Sy\Bootstrap\Lib\EditorAssets;
 use Sy\Bootstrap\Lib\Image;
 use Sy\Bootstrap\Lib\Str;
 use Sy\Bootstrap\Lib\Upload;
@@ -16,19 +17,6 @@ trait CkFile {
 	 * Record id pattern
 	 */
 	const ID_PATTERN = '/^[A-Za-z0-9_-]{1,64}$/';
-
-	/**
-	 * Allowed upload extensions, by type.
-	 *
-	 * SVG is intentionally excluded: it can carry scripts and is served
-	 * from the same origin as the application.
-	 *
-	 * @var array
-	 */
-	private static $allowedExtensions = [
-		'image' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-		'file'  => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'odt', 'ods', 'zip', 'txt', 'csv', 'mp3', 'mp4'],
-	];
 
 	/**
 	 * CKEditor Browse
@@ -271,11 +259,15 @@ trait CkFile {
 	}
 
 	/**
+	 * Allowed upload extensions, by type.
+	 *
+	 * Delegates to EditorAssets so the whitelist has a single definition.
+	 *
 	 * @param string $type
 	 * @return array
 	 */
 	public static function allowedExtensions($type) {
-		return isset(self::$allowedExtensions[$type]) ? self::$allowedExtensions[$type] : [];
+		return EditorAssets::allowedExtensions($type);
 	}
 
 	/**

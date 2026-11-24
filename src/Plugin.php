@@ -87,7 +87,10 @@ class Plugin {
 		if (is_file('protected/conf/database.ini')) return;
 
 		$executor = new ProcessExecutor();
-		$executor->execute('composer run-script install-project');
+		// Keep the terminal attached: genini uses readline() to prompt for the
+		// database and SMTP settings. Without a TTY it silently writes empty
+		// values instead of asking.
+		$executor->executeTty('composer run-script install-project');
 	}
 
 	/**

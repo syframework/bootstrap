@@ -56,6 +56,39 @@ class Plugin {
 		});
 	}
 
+	/**
+	 * Command: composer install-project-first
+	 *
+	 * Run the full project installation once, on the very first install.
+	 * Guarded by the database configuration: an already configured project
+	 * must not be reinstalled (no prompts, no rebuild, no sudo on every
+	 * `composer install`).
+	 *
+	 * @param Event $event
+	 */
+	public static function installProjectFirst(Event $event) {
+		if (is_file('protected/conf/database.ini')) return;
+
+		$executor = new ProcessExecutor();
+		$executor->execute('composer run-script install-project');
+	}
+
+	/**
+	 * Command: composer db migrate, when the project is configured.
+	 *
+	 * `composer create-project` triggers post-update-cmd, not post-install-cmd
+	 * (the new project has no lock file), while protected/conf/database.ini
+	 * does not exist yet. A raw ["@db migrate"] cannot be interrupted mid
+	 * chain, so the guard lives here, before the whole call.
+	 *
+	 * @param Event $event
+	 */
+	public static function dbMigrateIfConfigured(Event $event) {
+		if (!is_file('protected/conf/database.ini')) return;
+
+		$event->getComposer()->getEventDispatcher()->dispatchScript('db', false, ['migrate']);
+	}
+
 	public static function postPackageInstall(PackageEvent $event) {
 		$plugin = $event->getOperation()->getPackage()->getName();
 		if (!str_starts_with($plugin, 'sy/bootstrap-')) return;
@@ -73,18 +106,24 @@ class Plugin {
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
-		// Rebuild all
-		$application = new Application();
-		$application->setAutoExit(false);
-		$application->run(new ArrayInput(['command' => 'build']));
+		$requires = self::requiresInstall("$vendor/$plugin");
 
-		// Db migrate
-		$executor = new ProcessExecutor();
-		$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task repair";
-		$executor->execute($command);
-		$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task migrate";
-		$executor->execute($command);
-		self::migratePlugin($vendor, $plugin);
+		// Rebuild all, only when the plugin ships scss
+		if ($requires['build']) {
+			$application = new Application();
+			$application->setAutoExit(false);
+			$application->run(new ArrayInput(['command' => 'build']));
+		}
+
+		// Db migrate, only when the plugin ships sql
+		if ($requires['db']) {
+			$executor = new ProcessExecutor();
+			$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task repair";
+			$executor->execute($command);
+			$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task migrate";
+			$executor->execute($command);
+			self::migratePlugin($vendor, $plugin);
+		}
 	}
 
 	public static function postPackageUpdate(PackageEvent $event) {
@@ -101,13 +140,62 @@ class Plugin {
 		// Copy assets files
 		self::copyAssets($vendor, $plugin);
 
-		// Rebuild all
-		$application = new Application();
-		$application->setAutoExit(false);
-		$application->run(new ArrayInput(['command' => 'build']));
+		// Templates are never copied on update: they belong to the project
 
-		// Db migrate
-		self::migratePlugin($vendor, $plugin);
+		$requires = self::requiresInstall("$vendor/$plugin");
+
+		// Rebuild all, only when the plugin ships scss
+		if ($requires['build']) {
+			$application = new Application();
+			$application->setAutoExit(false);
+			$application->run(new ArrayInput(['command' => 'build']));
+		}
+
+		// Db migrate, only when the plugin ships sql
+		if ($requires['db']) {
+			self::migratePlugin($vendor, $plugin);
+		}
+	}
+
+	/**
+	 * Which installation steps a plugin needs.
+	 *
+	 * Public because it is a pure function of a directory path: this is the
+	 * only way to test it without booting a fake project.
+	 *
+	 * @param string $pluginDir Absolute plugin directory
+	 * @return array{build: bool, db: bool}
+	 */
+	public static function requiresInstall(string $pluginDir): array {
+		return [
+			'build' => self::hasScss($pluginDir),
+			'db'    => is_dir("$pluginDir/sql"),
+		];
+	}
+
+	/**
+	 * Does the plugin ship any scss to compile?
+	 *
+	 * Checks scss/ and templates/, recursively: glob() does not understand
+	 * `**`, hence the explicit walk.
+	 *
+	 * @param string $pluginDir Absolute plugin directory
+	 * @return bool
+	 */
+	private static function hasScss(string $pluginDir): bool {
+		foreach (['scss', 'templates'] as $sub) {
+			$directory = "$pluginDir/$sub";
+			if (!is_dir($directory)) continue;
+
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS)
+			);
+			foreach ($iterator as $file) {
+				if ($file->isFile() and strtolower($file->getExtension()) === 'scss') return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static function copyTemplates(string $vendor, string $plugin) {

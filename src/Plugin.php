@@ -15,23 +15,40 @@ class Plugin {
 	 * @param Event $event
 	 */
 	public static function install(Event $event) {
-		// Plugin name passed from arguments
-		$args = $event->getArguments();
-		$name = array_pop($args);
-		$version = array_pop($args);
-		if (is_null($name)) {
+		[$name, $version] = self::parseInstallArguments($event->getArguments());
+		if (is_null($name) or $name === '') {
 			echo "Missing plugin name: composer install-plugin [REQUIRED PLUGIN NAME] [OPTIONAL VERSION NUMBER]\n";
 			exit(1);
 		}
 
 		// Run composer require
 		$application = new Application();
-		$plugin = "sy/bootstrap-$name";
+		$plugin  = "sy/bootstrap-$name";
+		$suffix  = is_null($version) || $version === '' ? '' : ":$version";
 		$input = new ArrayInput([
 			'command' => 'require',
-			'packages' => [$plugin . (is_null($version) ? '' : ":$version")],
+			'packages' => [$plugin . $suffix],
 		]);
 		$application->run($input);
+	}
+
+	/**
+	 * Parse `composer install-plugin <name> [version]`.
+	 *
+	 * Composer appends the script arguments in command order, so the version
+	 * is the last argument and the plugin name is the one before it.
+	 *
+	 * @param array $args
+	 * @return array{0: string|null, 1: string|null}
+	 */
+	public static function parseInstallArguments(array $args): array {
+		$version = count($args) > 1 ? array_pop($args) : null;
+		$name    = array_pop($args);
+
+		return [
+			is_string($name) ? trim($name) : null,
+			is_string($version) ? trim($version) : null,
+		];
 	}
 
 	/**

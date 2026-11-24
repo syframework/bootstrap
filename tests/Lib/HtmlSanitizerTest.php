@@ -60,9 +60,6 @@ class HtmlSanitizerTest extends TestCase {
 			'sycomponent'      => ['data-sycomponent', 'Sy\\Bootstrap\\Component\\Place\\Map'],
 			'sycomponent-args' => ['data-sycomponent-args', '[]'],
 			'sycomponent-slot' => ['data-sycomponent-slot', 'slot-1'],
-			'component'        => ['data-component', 'MAP'],
-			'component-args'   => ['data-component-args', '{}'],
-			'component-slot'   => ['data-component-slot', 'slot-2'],
 			'sylock'           => ['data-sylock', 'mail'],
 			'sylock-attr'      => ['data-sylock-attributes', 'href'],
 		];
@@ -234,11 +231,11 @@ class HtmlSanitizerTest extends TestCase {
 		$this->assertStringContainsString('player.vimeo.com', $out);
 	}
 
-	public function testPlaceFixtureKeepsLegacyComponents() {
+	public function testPlaceFixtureKeepsComponents() {
 		$out = HtmlSanitizer::sanitize(file_get_contents(__DIR__ . '/../fixtures/place.html'));
 
-		$this->assertStringContainsString('data-component="MAP"', $out);
-		$this->assertStringContainsString('data-component="TWFEED"', $out);
+		$this->assertStringContainsString('data-sycomponent="MAP"', $out);
+		$this->assertStringContainsString('data-sycomponent="TWFEED"', $out);
 		$this->assertStringContainsString('www.google.com/maps/embed', $out);
 	}
 

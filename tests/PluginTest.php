@@ -26,6 +26,17 @@ class PluginTest extends TestCase {
 		$this->removeDirectory($this->dir);
 	}
 
+	public function testInstallArgumentsPutNameBeforeVersion() {
+		$this->assertSame(['article', 'dev-develop'], Plugin::parseInstallArguments(['article', 'dev-develop']));
+		$this->assertSame(['article', '1.6.4'], Plugin::parseInstallArguments(['article', '1.6.4']));
+		$this->assertSame(['article', null], Plugin::parseInstallArguments(['article']));
+		$this->assertSame([null, null], Plugin::parseInstallArguments([]));
+	}
+
+	public function testInstallArgumentsTrimSpaces() {
+		$this->assertSame(['article', 'dev-develop'], Plugin::parseInstallArguments([' article ', ' dev-develop ']));
+	}
+
 	public function testPluginWithoutDirectoryNeedsNothing() {
 		$this->assertSame(
 			['build' => false, 'db' => false],

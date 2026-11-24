@@ -6,8 +6,8 @@ use Masterminds\HTML5;
 /**
  * Removes or neutralizes server-side components that are not allowlisted.
  *
- * A component is an element carrying a component marker attribute
- * (data-sycomponent, legacy data-component) and optional arguments.
+ * A component is an element carrying the data-sycomponent marker attribute
+ * and optional arguments.
  *
  * This filter only decides whether a component class is allowed to be rendered.
  * It is NOT an HTML sanitizer: it does not guarantee the absence of XSS.
@@ -16,9 +16,9 @@ use Masterminds\HTML5;
 class ComponentFilter {
 
 	/**
-	 * Marker attributes, in resolution order.
+	 * Component marker attribute.
 	 */
-	private const MARKERS = ['data-sycomponent', 'data-component'];
+	private const MARKER = 'data-sycomponent';
 
 	/**
 	 * Neutralize every component whose class is not in $allowlist.
@@ -29,17 +29,10 @@ class ComponentFilter {
 	 *
 	 * @param string $html      HTML fragment
 	 * @param array  $allowlist Allowed component classes or slot names
-	 * @param string $attribute Preferred marker attribute
 	 * @return string
 	 */
-	public static function sanitize($html, array $allowlist, $attribute = 'data-sycomponent') {
+	public static function sanitize($html, array $allowlist) {
 		if (!is_string($html) or $html === '') return '';
-
-		$markers = array_values(array_unique(array_merge([$attribute], self::MARKERS)));
-		$markers = array_values(array_filter($markers, function ($marker) {
-			return in_array($marker, self::MARKERS, true);
-		}));
-		if (empty($markers)) return $html;
 
 		$html5 = new HTML5();
 		$fragment = $html5->loadHTMLFragment($html);
@@ -48,7 +41,7 @@ class ComponentFilter {
 		$changed  = false;
 
 		foreach (self::collectElements($fragment) as $element) {
-			$class = self::resolveClass($element, $markers);
+			$class = self::resolveClass($element);
 			if ($class === null) continue;
 			if (in_array($class, $allowlist, true)) continue;
 
@@ -85,15 +78,11 @@ class ComponentFilter {
 
 	/**
 	 * @param \DOMElement $element
-	 * @param array       $markers
 	 * @return string|null
 	 */
-	private static function resolveClass($element, array $markers) {
-		foreach ($markers as $marker) {
-			$class = trim($element->getAttribute($marker));
-			if ($class !== '') return $class;
-		}
-		return null;
+	private static function resolveClass($element) {
+		$class = trim($element->getAttribute(self::MARKER));
+		return $class !== '' ? $class : null;
 	}
 
 	/**

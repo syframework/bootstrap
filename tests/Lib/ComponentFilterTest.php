@@ -50,19 +50,6 @@ class ComponentFilterTest extends TestCase {
 		$this->assertSame('', ComponentFilter::sanitize('<div data-sycomponent="Unknown"> {SLOT} </div>', []));
 	}
 
-	public function testLegacyAttributeIsHandled() {
-		$html = '<div data-component="MAP">carte</div>';
-
-		$this->assertSame($html, ComponentFilter::sanitize($html, ['MAP'], 'data-component'));
-		$this->assertSame('carte', ComponentFilter::sanitize($html, ['TWFEED'], 'data-component'));
-	}
-
-	public function testLegacyAttributeIsHandledEvenWithDefaultAttribute() {
-		// A data-component marker never survives on a consumer that only knows
-		// data-sycomponent: the filter inspects both conventions
-		$this->assertSame('carte', ComponentFilter::sanitize('<div data-component="MAP">carte</div>', ['A\\B']));
-	}
-
 	public function testClassAttributeDoesNotConfuseTheFilter() {
 		$html = '<p class="text-center">x</p>';
 		$this->assertSame($html, ComponentFilter::sanitize($html, []));
@@ -77,7 +64,6 @@ class ComponentFilterTest extends TestCase {
 		$out = ComponentFilter::sanitize('<div data-sycomponent="A\\B">x</div>', ['A\\B']);
 
 		$this->assertStringNotContainsString('data-sycomponent-slot', $out);
-		$this->assertStringNotContainsString('data-component-slot', $out);
 	}
 
 	public function testNestedComponentsAreBothProcessed() {

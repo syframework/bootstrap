@@ -70,9 +70,6 @@ final class HtmlSanitizer {
 			->allowAttribute('data-sycomponent-slot', '*')
 			->allowAttribute('data-sylock', '*')
 			->allowAttribute('data-sylock-attributes', '*')
-			->allowAttribute('data-component', '*')
-			->allowAttribute('data-component-args', '*')
-			->allowAttribute('data-component-slot', '*')
 			// 4. URLs: no data:, relative URLs kept
 			->allowLinkSchemes(['http', 'https', 'mailto', 'tel'])
 			->allowMediaSchemes(['http', 'https'])

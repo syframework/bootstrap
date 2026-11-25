@@ -92,7 +92,10 @@ abstract class Form extends \Sy\Component\Html\Form {
 	 */
 	public function addAntiSpamField() {
 		$f = new \Sy\Component\Html\Form\FieldContainer('div');
-		$f->setAttribute('style', 'height:0;overflow:hidden');
+		// Keep the honey pot hidden with a class: the editor's ACF removes
+		// inline styles, which made the block visible while editing.
+		$f->setAttribute('class', 'd-none');
+		$f->setAttribute('aria-hidden', 'true');
 		$f->addTextInput(
 			['name' => 'sy_firstname', 'autocomplete' => 'true'],
 			['validator' => function($p) {

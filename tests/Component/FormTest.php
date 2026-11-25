@@ -188,6 +188,14 @@ class FormTest extends TestCase {
 		$this->assertEquals('form-range rating', $rate->getAttribute('class'));
 	}
 
+	public function testAntiSpamFieldUsesAClassInsteadOfInlineStyle() {
+		$field = $this->form->addAntiSpamField();
+
+		$this->assertSame('d-none', $field->getAttribute('class'));
+		$this->assertSame('true', $field->getAttribute('aria-hidden'));
+		$this->assertNull($field->getAttribute('style'));
+	}
+
 	protected function setUp(): void {
 		$this->form = $this->getMockBuilder(Form::class)
 			->disableOriginalConstructor()

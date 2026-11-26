@@ -26,6 +26,33 @@ final class HtmlSanitizer {
 	private static $sanitizer = null;
 
 	/**
+	 * Characters the library encodes in text nodes, and that a text node does
+	 * not need encoded.
+	 *
+	 * The content formats address a translation with a `{"Some message"}`
+	 * marker, which is a template variable whose name is the message. Encoded
+	 * as `{&#34;Some message&#34;}` the marker matches no variable and the page
+	 * prints it verbatim, so the text nodes are decoded after the sanitize.
+	 * Attribute values keep their entities: they are meaningful there.
+	 *
+	 * @see \Symfony\Component\HtmlSanitizer\TextSanitizer\StringSanitizer::encodeHtmlEntities()
+	 */
+	private const TEXT_ENTITIES = [
+		'&#34;'    => '"',
+		'&#039;'   => "'",
+		'&#43;'    => '+',
+		'&#61;'    => '=',
+		'&#64;'    => '@',
+		'&#96;'    => '`',
+		'&#xFF1C;' => '＜',
+		'&#xFF1E;' => '＞',
+		'&#xFF0B;' => '＋',
+		'&#xFF1D;' => '＝',
+		'&#xFF20;' => '＠',
+		'&#xFF40;' => '｀',
+	];
+
+	/**
 	 * Sanitize an HTML fragment.
 	 *
 	 * @param string $html
@@ -47,7 +74,23 @@ final class HtmlSanitizer {
 			throw new \InvalidArgumentException('Content is not valid UTF-8');
 		}
 
-		return self::sanitizer()->sanitize($html);
+		return self::decodeTextEntities(self::sanitizer()->sanitize($html));
+	}
+
+	/**
+	 * Restore, in text nodes only, the characters the library encodes for
+	 * attribute safety.
+	 *
+	 * The sanitizer encodes `<` and `>` everywhere, so a text node is always
+	 * what sits between a `>` and the next `<`.
+	 *
+	 * @param string $html
+	 * @return string
+	 */
+	private static function decodeTextEntities(string $html): string {
+		return preg_replace_callback('/(^|>)([^<]*)/', function ($match) {
+			return $match[1] . strtr($match[2], self::TEXT_ENTITIES);
+		}, $html);
 	}
 
 	/**

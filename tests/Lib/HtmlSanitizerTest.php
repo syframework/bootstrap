@@ -126,6 +126,37 @@ class HtmlSanitizerTest extends TestCase {
 		$this->assertStringStartsWith('<p>', HtmlSanitizer::sanitize($html));
 	}
 
+	public function testTranslationMarkersKeepTheirLiteralQuotes() {
+		// A `{"message"}` marker is a template variable name: encoded as
+		// `{&#34;message&#34;}` it matches nothing and the page prints the marker.
+		$this->assertSame(
+			'<p>{"Title"}</p>',
+			HtmlSanitizer::sanitize('<p>{"Title"}</p>')
+		);
+		// Apostrophes and the other characters the library escapes are restored
+		// too, otherwise a French message would never match its own marker.
+		$this->assertSame(
+			'<p>{"Il n\'y a pas d\'offres + d\'evenements"}</p>',
+			HtmlSanitizer::sanitize('<p>{"Il n\'y a pas d\'offres + d\'evenements"}</p>')
+		);
+	}
+
+	public function testAttributeValuesKeepTheirEncodedQuotes() {
+		$safe = HtmlSanitizer::sanitize('<div title="a &quot;b&quot;">{"K"}</div>');
+
+		// In an attribute the entity is still needed: only the text is decoded.
+		$this->assertStringContainsString('title="a &#34;b&#34;"', $safe);
+		$this->assertStringContainsString('{"K"}', $safe);
+	}
+
+	public function testTextNodesKeepTheirEscapedMarkup() {
+		// `<`, `>` and `&` stay encoded: decoding them would change the markup.
+		$this->assertSame(
+			'<p>a &lt; b &amp; c &gt; d</p>',
+			HtmlSanitizer::sanitize('<p>a &lt; b &amp; c &gt; d</p>')
+		);
+	}
+
 	public function testIdempotence() {
 		$html = '<p class="a">x</p><iframe src="https://evil.example/x"></iframe><svg><path d="M0 0"></path></svg>'
 			. '<img src="data:image/png;base64,AAA"><div data-sycomponent="A\\B">y</div>';

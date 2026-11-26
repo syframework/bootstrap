@@ -109,72 +109,170 @@ class Plugin {
 		$event->getComposer()->getEventDispatcher()->dispatchScript('db', false, ['migrate']);
 	}
 
+	/**
+	 * Wire `post-package-install`: the plugin was just installed.
+	 *
+	 * @param PackageEvent $event
+	 */
 	public static function postPackageInstall(PackageEvent $event) {
 		$plugin = $event->getOperation()->getPackage()->getName();
 		if (!str_starts_with($plugin, 'sy/bootstrap-')) return;
 		echo "Plugin install: $plugin\n";
 
-		$name = substr($plugin, strlen('sy/bootstrap-'));
-		echo "Plugin name: $name\n";
-
 		$vendor = $event->getComposer()->getConfig()->get('vendor-dir');
-		echo "Plugin vendor: $vendor\n";
-
-		// Copy template files
-		self::copyTemplates($vendor, $plugin);
-
-		// Copy assets files
-		self::copyAssets($vendor, $plugin);
-
-		$requires = self::requiresInstall("$vendor/$plugin");
-
-		// Rebuild all, only when the plugin ships scss
-		if ($requires['build']) {
-			$application = new Application();
-			$application->setAutoExit(false);
-			$application->run(new ArrayInput(['command' => 'build']));
-		}
-
-		// Db migrate, only when the plugin ships sql
-		if ($requires['db']) {
-			$executor = new ProcessExecutor();
-			$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task repair";
-			$executor->execute($command);
-			$command = "$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task migrate";
-			$executor->execute($command);
-			self::migratePlugin($vendor, $plugin);
-		}
+		self::installPackage($vendor, $plugin, true);
 	}
 
+	/**
+	 * Wire `post-package-update`: the project templates are never touched.
+	 *
+	 * @param PackageEvent $event
+	 */
 	public static function postPackageUpdate(PackageEvent $event) {
 		$plugin = $event->getOperation()->getTargetPackage()->getName();
 		if (!str_starts_with($plugin, 'sy/bootstrap-')) return;
 		echo "Plugin update: $plugin\n";
 
-		$name = substr($plugin, strlen('sy/bootstrap-'));
-		echo "Plugin name: $name\n";
-
 		$vendor = $event->getComposer()->getConfig()->get('vendor-dir');
-		echo "Plugin vendor: $vendor\n";
+		self::installPackage($vendor, $plugin, false);
+	}
 
-		// Copy assets files
-		self::copyAssets($vendor, $plugin);
+	/**
+	 * Wire `post-install-cmd`, `post-update-cmd` and `post-create-project-cmd`:
+	 * synchronise every installed plugin in one pass.
+	 *
+	 * The per-package events cannot run during a first install: Composer fires
+	 * them before it dumps the autoloader, so this class is not loadable yet
+	 * (C62). This scan runs from a `-cmd` hook, i.e. after the dump, and needs
+	 * no state file: the copy is mtime based, so a second run copies nothing.
+	 *
+	 * Migrations stay with `dbMigrateIfConfigured()`, which already covers every
+	 * plugin on `post-update-cmd`; the build runs only when a plugin SCSS file is
+	 * newer than the compiled CSS.
+	 *
+	 * @param Event $event
+	 */
+	public static function installPlugins(Event $event) {
+		foreach (self::syncAllPlugins($event->getComposer()->getConfig()->get('vendor-dir')) as $line) {
+			echo $line . "\n";
+		}
+	}
 
-		// Templates are never copied on update: they belong to the project
+	/**
+	 * Synchronise every installed plugin, then rebuild the CSS once if a plugin
+	 * SCSS file is newer than it.
+	 *
+	 * Separate from `installPlugins()` so it can run without a Composer event,
+	 * and so the scan is testable on a fixture project.
+	 *
+	 * @param string $vendor Project vendor directory
+	 * @return string[] One line per plugin that actually copied something
+	 */
+	public static function syncAllPlugins(string $vendor): array {
+		$css   = dirname($vendor, 2) . '/assets/css/app.css';
+		$log   = [];
+		$build = false;
+
+		foreach (glob("$vendor/sy/bootstrap-*", GLOB_ONLYDIR) as $dir) {
+			$copied = self::syncFiles($dir, $vendor);
+			if ($copied !== []) $log[] = 'Plugin sync: sy/' . basename($dir) . ' (' . count($copied) . ' files)';
+			$build = $build or self::needsBuild($dir, $css);
+		}
+
+		if ($build) self::build();
+
+		return $log;
+	}
+
+	/**
+	 * Copy one plugin's files, then run the steps it requires.
+	 *
+	 * @param string $vendor
+	 * @param string $plugin
+	 * @param bool   $templates Copy the templates too (install only)
+	 */
+	private static function installPackage(string $vendor, string $plugin, bool $templates) {
+		self::syncFiles("$vendor/$plugin", $vendor, $templates);
 
 		$requires = self::requiresInstall("$vendor/$plugin");
 
-		// Rebuild all, only when the plugin ships scss
-		if ($requires['build']) {
-			$application = new Application();
-			$application->setAutoExit(false);
-			$application->run(new ArrayInput(['command' => 'build']));
-		}
+		if ($requires['build']) self::build();
 
-		// Db migrate, only when the plugin ships sql
 		if ($requires['db']) {
+			$executor = new ProcessExecutor();
+			$executor->execute("$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task repair");
+			$executor->execute("$vendor/bin/flyway --conf protected/conf/database.ini --sql protected/sql --task migrate");
 			self::migratePlugin($vendor, $plugin);
 		}
+	}
+
+	/**
+	 * Copy the templates and the assets of one plugin into the project.
+	 *
+	 * Assets are refreshed when the vendor copy is newer. Templates are copied
+	 * only when they are missing: once a project has customised one, it owns it,
+	 * on install as well as on update. The return value lists the copied files,
+	 * so a caller can tell a real change from a no-op.
+	 *
+	 * @param string $pluginDir Absolute plugin directory
+	 * @param string $vendorDir Project vendor directory
+	 * @param bool   $templates Copy the templates too
+	 * @return string[] Copied files, relative to the project directory they went to
+	 */
+	public static function syncFiles(string $pluginDir, string $vendorDir, bool $templates = true): array {
+		$copied = [];
+		if ($templates) {
+			$copied = self::copyDir("$pluginDir/templates", dirname($vendorDir) . '/templates', false);
+		}
+		return array_merge($copied, self::copyDir("$pluginDir/assets", dirname($vendorDir, 2) . '/assets', true));
+	}
+
+	/**
+	 * Is a plugin SCSS file newer than the compiled CSS?
+	 *
+	 * Lets the stateless scan skip the build — a Docker run — when nothing
+	 * changed, without remembering the last build anywhere.
+	 *
+	 * @param string $pluginDir Absolute plugin directory
+	 * @param string $cssFile   Compiled CSS the project serves
+	 * @return bool
+	 */
+	public static function needsBuild(string $pluginDir, string $cssFile): bool {
+		$scss = self::newestScssMtime($pluginDir);
+		if ($scss === 0) return false;
+		if (!is_file($cssFile)) return true;
+		return $scss > (int) filemtime($cssFile);
+	}
+
+	/**
+	 * Newest modification time of the SCSS files a plugin ships (0 if none).
+	 *
+	 * @param string $pluginDir
+	 * @return int
+	 */
+	private static function newestScssMtime(string $pluginDir): int {
+		$newest = 0;
+		foreach (['scss', 'templates'] as $sub) {
+			$directory = "$pluginDir/$sub";
+			if (!is_dir($directory)) continue;
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS)
+			);
+			foreach ($iterator as $file) {
+				if (!$file->isFile() or strtolower($file->getExtension()) !== 'scss') continue;
+				$newest = max($newest, (int) $file->getMTime());
+			}
+		}
+		return $newest;
+	}
+
+	/**
+	 * Compile the project SCSS (Docker gulp wrapper).
+	 */
+	private static function build() {
+		$application = new Application();
+		$application->setAutoExit(false);
+		$application->run(new ArrayInput(['command' => 'build']));
 	}
 
 	/**
@@ -218,18 +316,6 @@ class Plugin {
 		return false;
 	}
 
-	private static function copyTemplates(string $vendor, string $plugin) {
-		if (!is_dir("$vendor/$plugin/templates")) return;
-		self::copyDir("$vendor/$plugin/templates", "$vendor/../templates");
-		echo "Copy template files\n";
-	}
-
-	private static function copyAssets(string $vendor, string $plugin) {
-		if (!is_dir("$vendor/$plugin/assets")) return;
-		self::copyDir("$vendor/$plugin/assets", "$vendor/../../assets");
-		echo "Copy assets files\n";
-	}
-
 	private static function forEachPlugin(string $vendor, callable $callback) {
 		foreach (glob("$vendor/sy/bootstrap-*", GLOB_ONLYDIR) as $dir) {
 			$callback($vendor, 'sy/' . basename($dir));
@@ -247,18 +333,35 @@ class Plugin {
 	}
 
 	/**
+	 * Copy a directory into the project.
+	 *
 	 * @param string $src
 	 * @param string $dst
+	 * @param bool   $refresh Overwrite a destination older than its source
+	 * @return string[] Copied files, relative to $dst
 	 */
-	private static function copyDir($src, $dst) {
-		$dir = new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS);
-		$iterator = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
+	private static function copyDir($src, $dst, bool $refresh): array {
+		if (!is_dir($src)) return [];
+
+		$copied = [];
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($src, \FilesystemIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
 		foreach ($iterator as $item) {
-			$destination = $dst . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
 			if ($item->isDir()) continue;
-			if (!file_exists(dirname($destination))) mkdir(directory: dirname($destination), recursive: true);
-			copy($item, $destination);
+			$relative    = $iterator->getSubPathName();
+			$destination = $dst . DIRECTORY_SEPARATOR . $relative;
+			if (is_file($destination)) {
+				// A template belongs to the project once copied; an asset is
+				// refreshed only when the vendor copy is newer.
+				if (!$refresh or $item->getMTime() <= filemtime($destination)) continue;
+			}
+			if (!is_dir(dirname($destination))) mkdir(dirname($destination), 0777, true);
+			copy($item->getPathname(), $destination);
+			$copied[] = $relative;
 		}
+		return $copied;
 	}
 
 }

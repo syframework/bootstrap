@@ -237,8 +237,8 @@ class User extends Crud {
 	 * @return string
 	 */
 	public function getCsrfToken() {
-		if (!isset($_SESSION['csrfToken'])) {
-			$_SESSION['csrfToken'] = md5(uniqid(rand(), true));
+		if (!isset($_SESSION['csrfToken']) or !is_string($_SESSION['csrfToken']) or $_SESSION['csrfToken'] === '') {
+			$_SESSION['csrfToken'] = bin2hex(random_bytes(32));
 		}
 		return $_SESSION['csrfToken'];
 	}

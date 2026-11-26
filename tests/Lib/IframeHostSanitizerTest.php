@@ -54,6 +54,8 @@ class IframeHostSanitizerTest extends TestCase {
 		return [
 			'allowed host'        => ['https://www.youtube-nocookie.com/embed/x', true],
 			'other allowed host'  => ['https://player.vimeo.com/video/1', true],
+			// The port is not part of the host policy (same as allowMediaHosts).
+			'allowed host with port' => ['https://www.youtube.com:8080/embed/x', true],
 			'unknown host'        => ['https://evil.example/x', false],
 			'http allowed host'   => ['http://www.youtube.com/embed/x', true],
 			'relative same origin' => ['/embed/local', true],

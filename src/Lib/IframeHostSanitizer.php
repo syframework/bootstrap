@@ -53,6 +53,9 @@ final class IframeHostSanitizer implements AttributeSanitizerInterface {
 	public function sanitizeAttribute(string $element, string $attribute, ?string $value, HtmlSanitizerConfig $config): ?string {
 		if ($value === null or $element !== 'iframe') return $value;
 
+		// The port is intentionally not checked: parse_url() isolates it, and
+		// the host allowlist is the trust boundary (same behavior as Symfony's
+		// allowMediaHosts()). A stricter policy can compare $url['port'].
 		$url = parse_url(trim($value));
 		if ($url === false) return null;
 

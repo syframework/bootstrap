@@ -63,7 +63,9 @@ final class HtmlSanitizer {
 				'loading', 'referrerpolicy', 'title', 'sandbox',
 			])
 			// 3. Order matters: allowAttribute(..., '*') only applies to the
-			//    elements allowed at that point, and is subtractive
+			//    elements allowed at that point, and is subtractive. This also
+			//    keeps class on iframe (harmless, useful for responsive
+			//    wrappers such as .ratio).
 			->allowAttribute('class', '*')
 			->allowAttribute('data-sycomponent', '*')
 			->allowAttribute('data-sycomponent-args', '*')

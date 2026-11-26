@@ -39,11 +39,12 @@ class HtmlSanitizerTest extends TestCase {
 
 	public static function classProvider() {
 		return [
-			'p'     => ['<p class="text-center lead">x</p>', '<p class="text-center lead">x</p>'],
-			'div'   => ['<div class="row g-3">x</div>', '<div class="row g-3">x</div>'],
-			'span'  => ['<p><span class="badge bg-primary">x</span></p>', '<p><span class="badge bg-primary">x</span></p>'],
-			'img'   => ['<img class="img-fluid" src="/u/a.jpg" alt="a" />', '<img class="img-fluid" src="/u/a.jpg" alt="a" />'],
-			'table' => ['<table class="table"><tbody><tr><td>x</td></tr></tbody></table>', '<table class="table"><tbody><tr><td>x</td></tr></tbody></table>'],
+			'p'      => ['<p class="text-center lead">x</p>', '<p class="text-center lead">x</p>'],
+			'div'    => ['<div class="row g-3">x</div>', '<div class="row g-3">x</div>'],
+			'span'   => ['<p><span class="badge bg-primary">x</span></p>', '<p><span class="badge bg-primary">x</span></p>'],
+			'img'    => ['<img class="img-fluid" src="/u/a.jpg" alt="a" />', '<img class="img-fluid" src="/u/a.jpg" alt="a" />'],
+			'table'  => ['<table class="table"><tbody><tr><td>x</td></tr></tbody></table>', '<table class="table"><tbody><tr><td>x</td></tr></tbody></table>'],
+			'iframe' => ['<iframe class="ratio" src="https://www.youtube-nocookie.com/embed/x"></iframe>', '<iframe class="ratio" src="https://www.youtube-nocookie.com/embed/x"></iframe>'],
 		];
 	}
 

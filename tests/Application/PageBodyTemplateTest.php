@@ -24,4 +24,13 @@ class PageBodyTemplateTest extends TestCase {
 		$this->assertStringContainsString('{LAYOUT}', $this->template());
 	}
 
+	public function testNoEditorSharedSpaceStyles() {
+		$scss = file_get_contents(__DIR__ . '/../../scss/toolbar.scss');
+
+		$this->assertStringNotContainsString('sy-page-topbar', $scss);
+		$this->assertStringNotContainsString('sy-page-bottombar', $scss);
+		// The Page toolbar itself stays.
+		$this->assertStringContainsString('#sy-page-toolbar', $scss);
+	}
+
 }

@@ -26,7 +26,7 @@ class ConsoleTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
-		unset($GLOBALS['sy_run'], $GLOBALS['sy_quiet'], $GLOBALS['sy_dry_run']);
+		unset($GLOBALS['sy_run'], $GLOBALS['sy_quiet'], $GLOBALS['sy_dry_run'], $GLOBALS['_composer_bin_dir']);
 		$this->removeDirectory($this->dir);
 	}
 
@@ -236,6 +236,17 @@ class ConsoleTest extends TestCase {
 
 		$this->assertSame(2, $code);
 		$this->assertStringContainsString('sy — project installer', $out);
+	}
+
+	public function testRootIsFoundFromTheComposerBinDirectory() {
+		$this->writeJson('composer.json', []);
+		mkdir($this->dir . '/protected/vendor/bin', 0777, true);
+		mkdir($this->dir . '/protected/vendor/sy/bootstrap/bin', 0777, true);
+		$this->writeJson('protected/vendor/sy/bootstrap/composer.json', ['name' => 'sy/bootstrap']);
+
+		$GLOBALS['_composer_bin_dir'] = $this->dir . '/protected/vendor/bin';
+
+		$this->assertSame($this->dir, \sy_root());
 	}
 
 	private function write(string $relative, string $content): void {

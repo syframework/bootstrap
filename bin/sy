@@ -127,11 +127,17 @@ function sy_copy(string $src, string $dst, bool $refresh): array {
  * @return string[] One report line per plugin that copied something
  */
 function sy_sync(string $root, string $vendor, bool $templates = true): array {
+	// The directory that holds the vendor dir also holds templates/
+	// (protected/ in the sy layout: protected/vendor and protected/templates),
+	// while assets/ always lives at the web root.
+	$templatesDir = dirname($vendor) . '/templates';
+	$assetsDir    = $root . '/assets';
+
 	$lines = [];
 	foreach (sy_plugins($vendor) as $name => $dir) {
 		$copied = [];
-		if ($templates) $copied = sy_copy($dir . '/templates', $root . '/templates', false);
-		$copied = array_merge($copied, sy_copy($dir . '/assets', $root . '/assets', true));
+		if ($templates) $copied = sy_copy($dir . '/templates', $templatesDir, false);
+		$copied = array_merge($copied, sy_copy($dir . '/assets', $assetsDir, true));
 		if ($copied !== []) $lines[] = 'sync: sy/bootstrap-' . $name . ' (' . count($copied) . ' files)';
 	}
 	return $lines;

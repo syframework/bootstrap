@@ -91,6 +91,19 @@ class ConsoleTest extends TestCase {
 		$this->assertSame([], \sy_sync($this->dir, $this->dir . '/vendor'));
 	}
 
+	public function testTemplatesFollowTheVendorDirectoryAssetsStickToTheRoot() {
+		$this->write('vendor/sy/bootstrap-article/templates/Page/a.html', 'template');
+		$this->write('vendor/sy/bootstrap-article/assets/js/a.js', 'asset');
+		mkdir($this->dir . '/protected', 0777, true);
+		rename($this->dir . '/vendor', $this->dir . '/protected/vendor');
+
+		\sy_sync($this->dir, $this->dir . '/protected/vendor');
+
+		$this->assertFileExists($this->dir . '/protected/templates/Page/a.html');
+		$this->assertFileExists($this->dir . '/assets/js/a.js');
+		$this->assertDirectoryDoesNotExist($this->dir . '/templates');
+	}
+
 	public function testNeedsBuildFollowsTheScssAndCssTimestamps() {
 		$this->write('vendor/sy/bootstrap-article/scss/article.scss', 'body{}');
 		$css = $this->dir . '/assets/css/app.css';

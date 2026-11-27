@@ -238,6 +238,15 @@ class ConsoleTest extends TestCase {
 		$this->assertStringContainsString('sy — project installer', $out);
 	}
 
+	public function testPluginsInstalledThroughASymlinkAreDiscovered() {
+		$this->write('packages/bootstrap-article/assets/js/a.js', 'asset');
+		mkdir($this->dir . '/vendor/sy', 0777, true);
+		symlink($this->dir . '/packages/bootstrap-article', $this->dir . '/vendor/sy/bootstrap-article');
+
+		$this->assertSame(['article'], array_keys(\sy_plugins($this->dir . '/vendor')));
+		$this->assertSame(['sync: sy/bootstrap-article (1 files)'], \sy_sync($this->dir, $this->dir . '/vendor'));
+	}
+
 	public function testRootIsFoundFromTheComposerBinDirectory() {
 		$this->writeJson('composer.json', []);
 		mkdir($this->dir . '/protected/vendor/bin', 0777, true);
@@ -260,14 +269,24 @@ class ConsoleTest extends TestCase {
 	}
 
 	private function removeDirectory(string $dir): void {
-		if (!is_dir($dir)) return;
-		$iterator = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-			\RecursiveIteratorIterator::CHILD_FIRST
-		);
-		foreach ($iterator as $item) {
-			$item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+		// is_link() first: a path repository installed with symlink: true must
+		// be unlinked, never followed, or the cleanup would delete the target.
+		if (is_link($dir) or is_file($dir)) {
+			unlink($dir);
+			return;
 		}
+		if (!is_dir($dir)) return;
+
+		foreach (scandir($dir) ?: [] as $entry) {
+			if ($entry === '.' or $entry === '..') continue;
+			$path = $dir . '/' . $entry;
+			if (is_link($path) or is_file($path)) {
+				unlink($path);
+				continue;
+			}
+			$this->removeDirectory($path);
+		}
+
 		rmdir($dir);
 	}
 

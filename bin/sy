@@ -76,7 +76,10 @@ function sy_vendor(string $root): string {
  */
 function sy_plugins(string $vendor): array {
 	$plugins = [];
-	foreach (glob($vendor . '/sy/bootstrap-*', GLOB_ONLYDIR) ?: [] as $dir) {
+	foreach (glob($vendor . '/sy/bootstrap-*') ?: [] as $dir) {
+		// is_dir() rather than GLOB_ONLYDIR: a path repository installed with
+		// symlink: true is a link, and glob would silently skip it.
+		if (!is_dir($dir)) continue;
 		$plugins[substr(basename($dir), strlen('bootstrap-'))] = $dir;
 	}
 	ksort($plugins);
@@ -287,18 +290,20 @@ function sy_doctor(string $root, string $vendor, array $config): array {
 	foreach ($plugins as $name => $dir) {
 		$assets  = $dir . '/assets';
 		$missing = [];
+		$checked = 0;
 		if (is_dir($assets)) {
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator($assets, FilesystemIterator::SKIP_DOTS)
 			);
 			foreach ($iterator as $file) {
 				if (!$file->isFile()) continue;
+				$checked++;
 				$relative = substr($file->getPathname(), strlen($assets) + 1);
 				if (!is_file($root . '/assets/' . $relative)) $missing[] = 'assets/' . $relative;
 			}
 		}
 		if ($missing === []) {
-			$lines[] = 'ok: sy/bootstrap-' . $name . ' (' . count(glob($assets . '/*') ?: []) . ' entries)';
+			$lines[] = 'ok: sy/bootstrap-' . $name . ' (' . $checked . ' files)';
 		} else {
 			$ok      = false;
 			$lines[] = 'missing: sy/bootstrap-' . $name . ' -> ' . implode(', ', $missing);

@@ -29,6 +29,9 @@
 			"Sy\\Bootstrap\\": "src/"
 		}
 	},
+	"bin": [
+		"bin/sy"
+	],
 	"require-dev": {
 		"phpunit/phpunit": "^10"
 	},

@@ -1,0 +1,447 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Sy project installer.
+ *
+ * Runs inside a project, either through the Composer bin proxy
+ * (vendor/bin/sy) or directly (vendor/sy/bootstrap/bin/sy). It never
+ * depends on the Composer process: it reads the project composer.json and
+ * calls vendor/bin/{genini,flyway}.
+ *
+ * Every verb is idempotent: it may run on each install, each deploy and by
+ * hand without producing a different result.
+ */
+
+/**
+ * Run a shell command in the project root.
+ *
+ * The single seam: tests override $GLOBALS['sy_run'] to capture commands
+ * instead of executing them.
+ */
+function sy_exec(string $command, bool $tty = false): int {
+	if (isset($GLOBALS['sy_run'])) return (int) ($GLOBALS['sy_run'])($command, $tty);
+	if (!empty($GLOBALS['sy_dry_run'])) {
+		sy_out('  + ' . $command);
+		return 0;
+	}
+	passthru($command, $code);
+	return (int) $code;
+}
+
+function sy_out(string $line): void {
+	if (!empty($GLOBALS['sy_quiet']) or $line === '') return;
+	echo $line . PHP_EOL;
+}
+
+/**
+ * Project root: walk up from the vendor directory until composer.json.
+ *
+ * The vendor directory is known from the bin proxy, or from the depth of
+ * this file (bin/ -> package/ -> sy/ -> vendor/). Starting there, the first
+ * composer.json is the project one; the package manifests live below it.
+ */
+function sy_root(): string {
+	$bin = $GLOBALS['_composer_bin_dir'] ?? null;
+	$dir = $bin !== null ? dirname($bin) : dirname(__DIR__, 3);
+	while ($dir !== '/' and $dir !== '' and !is_file($dir . '/composer.json')) {
+		$dir = dirname($dir);
+	}
+	return ($dir === '/' or $dir === '') ? (getcwd() ?: '.') : $dir;
+}
+
+/** Decoded project composer.json. */
+function sy_manifest(string $root): array {
+	$file = $root . '/composer.json';
+	if (!is_file($file)) return [];
+	$json = json_decode((string) file_get_contents($file), true);
+	return is_array($json) ? $json : [];
+}
+
+/** extra.sy of the project (empty when the project declares nothing). */
+function sy_config(string $root): array {
+	$sy = sy_manifest($root)['extra']['sy'] ?? [];
+	return is_array($sy) ? $sy : [];
+}
+
+/** Absolute vendor directory, honouring config.vendor-dir. */
+function sy_vendor(string $root): string {
+	$dir = sy_manifest($root)['config']['vendor-dir'] ?? 'vendor';
+	return $root . '/' . rtrim((string) $dir, '/');
+}
+
+/**
+ * Installed plugins, name => absolute directory.
+ *
+ * The naming convention is the only registry: sy/bootstrap-<name>.
+ */
+function sy_plugins(string $vendor): array {
+	$plugins = [];
+	foreach (glob($vendor . '/sy/bootstrap-*', GLOB_ONLYDIR) ?: [] as $dir) {
+		$plugins[substr(basename($dir), strlen('bootstrap-'))] = $dir;
+	}
+	ksort($plugins);
+	return $plugins;
+}
+
+/** Flyway history table of a plugin schema. */
+function sy_sql_table(string $name): string {
+	return 'flyway_' . $name . '_history';
+}
+
+/**
+ * Copy a directory into the project.
+ *
+ * @param bool $refresh Overwrite a destination older than its source
+ * @return string[] Copied files, relative to $dst
+ */
+function sy_copy(string $src, string $dst, bool $refresh): array {
+	if (!is_dir($src)) return [];
+
+	$copied = [];
+	$iterator = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($src, FilesystemIterator::SKIP_DOTS),
+		RecursiveIteratorIterator::SELF_FIRST
+	);
+	foreach ($iterator as $item) {
+		if ($item->isDir()) continue;
+		$relative    = $iterator->getSubPathName();
+		$destination = $dst . '/' . $relative;
+		if (is_file($destination)) {
+			// A template belongs to the project once copied; an asset is
+			// refreshed only when the vendor copy is newer.
+			if (!$refresh or $item->getMTime() <= filemtime($destination)) continue;
+		}
+		if (!is_dir(dirname($destination))) mkdir(dirname($destination), 0777, true);
+		copy($item->getPathname(), $destination);
+		$copied[] = $relative;
+	}
+	return $copied;
+}
+
+/**
+ * Synchronise every plugin into the project.
+ *
+ * @return string[] One report line per plugin that copied something
+ */
+function sy_sync(string $root, string $vendor, bool $templates = true): array {
+	$lines = [];
+	foreach (sy_plugins($vendor) as $name => $dir) {
+		$copied = [];
+		if ($templates) $copied = sy_copy($dir . '/templates', $root . '/templates', false);
+		$copied = array_merge($copied, sy_copy($dir . '/assets', $root . '/assets', true));
+		if ($copied !== []) $lines[] = 'sync: sy/bootstrap-' . $name . ' (' . count($copied) . ' files)';
+	}
+	return $lines;
+}
+
+/** Newest mtime of the SCSS files a plugin ships (0 when none). */
+function sy_scss_mtime(string $pluginDir): int {
+	$newest = 0;
+	foreach (['scss', 'templates'] as $sub) {
+		$directory = $pluginDir . '/' . $sub;
+		if (!is_dir($directory)) continue;
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS)
+		);
+		foreach ($iterator as $file) {
+			if (!$file->isFile() or strtolower($file->getExtension()) !== 'scss') continue;
+			$newest = max($newest, (int) $file->getMTime());
+		}
+	}
+	return $newest;
+}
+
+/** Is a plugin SCSS file newer than the compiled CSS? */
+function sy_needs_build(string $vendor, string $cssFile): bool {
+	foreach (sy_plugins($vendor) as $dir) {
+		$scss = sy_scss_mtime($dir);
+		if ($scss === 0) continue;
+		if (!is_file($cssFile)) return true;
+		if ($scss > (int) filemtime($cssFile)) return true;
+	}
+	return false;
+}
+
+/** Run the project build command (extra.sy.build). */
+function sy_build(string $root, array $config): int {
+	$command = $config['build'] ?? null;
+	if (!is_string($command) or trim($command) === '') {
+		sy_out('build: extra.sy.build is not declared in composer.json');
+		return 2;
+	}
+	sy_out('build: ' . $command);
+	return sy_exec('cd ' . escapeshellarg($root) . ' && ' . $command) === 0 ? 0 : 1;
+}
+
+/** INI descriptors declared by the project, name => { file, input }. */
+function sy_ini(array $config): array {
+	$ini = $config['ini'] ?? [];
+	return is_array($ini) ? $ini : [];
+}
+
+/** INI files declared but absent on disk, name => descriptor. */
+function sy_ini_missing(string $root, array $config): array {
+	$missing = [];
+	foreach (sy_ini($config) as $name => $descriptor) {
+		$file = is_array($descriptor) ? ($descriptor['file'] ?? null) : null;
+		if (!is_string($file) or $file === '') continue;
+		if (!is_file($root . '/' . $file)) $missing[$name] = $descriptor;
+	}
+	return $missing;
+}
+
+/** Database configuration file used by flyway. */
+function sy_conf(string $root, array $config): string {
+	$file = sy_ini($config)['database']['file'] ?? 'protected/conf/database.ini';
+	return $root . '/' . $file;
+}
+
+/** Is the project configured? database.ini is the sentinel. */
+function sy_configured(string $root, array $config): bool {
+	return is_file(sy_conf($root, $config));
+}
+
+/**
+ * Generate the missing INI files, then run the project install steps.
+ *
+ * genini prompts through readline(), so it is called with a TTY.
+ */
+function sy_provision(string $root, string $vendor, array $config): int {
+	$genini = $vendor . '/bin/genini';
+
+	foreach (sy_ini_missing($root, $config) as $name => $descriptor) {
+		$payload = json_encode($descriptor, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+		sy_out('provision: ' . $name . ' -> ' . (string) ($descriptor['file'] ?? '?'));
+		$command = 'cd ' . escapeshellarg($root) . ' && ' . escapeshellarg($genini) . ' ' . escapeshellarg((string) $payload);
+		if (sy_exec($command, true) !== 0) return 1;
+	}
+
+	$steps = $config['install'] ?? [];
+	foreach (is_array($steps) ? $steps : [] as $step) {
+		sy_out('provision: ' . $step);
+		if (sy_exec('cd ' . escapeshellarg($root) . ' && ' . $step) !== 0) return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * Flyway commands for one task: the core schema, then every plugin schema.
+ *
+ * @return array<int, array{label: string, command: string}>
+ */
+function sy_db_commands(string $root, string $vendor, array $config, string $task): array {
+	$flyway = $vendor . '/bin/flyway';
+	$conf   = sy_conf($root, $config);
+	$base   = escapeshellarg($flyway) . ' --conf ' . escapeshellarg($conf);
+
+	$commands = [[
+		'label'   => 'core',
+		'command' => $base . ' --sql ' . escapeshellarg($root . '/protected/sql') . ' --task ' . escapeshellarg($task),
+	]];
+
+	foreach (sy_plugins($vendor) as $name => $dir) {
+		if (!is_dir($dir . '/sql')) continue;
+		$args = '-baselineOnMigrate=true -baselineVersion=0 -table=' . sy_sql_table($name);
+		$commands[] = [
+			'label'   => 'plugin ' . $name,
+			'command' => $base . ' --sql ' . escapeshellarg($dir . '/sql') . ' --task ' . escapeshellarg($task) . ' --args ' . escapeshellarg($args),
+		];
+	}
+
+	return $commands;
+}
+
+/**
+ * Run flyway for the given tasks on every schema, stopping on the first
+ * failure.
+ *
+ * @param string[] $tasks
+ */
+function sy_db_run(string $root, string $vendor, array $config, array $tasks): int {
+	if (!sy_configured($root, $config)) {
+		sy_out('db: project is not configured yet (' . sy_conf($root, $config) . ' missing)');
+		return 2;
+	}
+	foreach ($tasks as $task) {
+		foreach (sy_db_commands($root, $vendor, $config, $task) as $entry) {
+			sy_out('db ' . $task . ': ' . $entry['label']);
+			if (sy_exec('cd ' . escapeshellarg($root) . ' && ' . $entry['command']) !== 0) return 1;
+		}
+	}
+	return 0;
+}
+
+/**
+ * Diagnose the project: plugin files, compiled CSS, configuration, stale SCSS.
+ *
+ * @return array{lines: string[], ok: bool}
+ */
+function sy_doctor(string $root, string $vendor, array $config): array {
+	$lines   = [];
+	$ok      = true;
+	$plugins = sy_plugins($vendor);
+
+	if ($plugins === []) $lines[] = 'warning: no sy/bootstrap-* plugin installed';
+
+	foreach ($plugins as $name => $dir) {
+		$assets  = $dir . '/assets';
+		$missing = [];
+		if (is_dir($assets)) {
+			$iterator = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator($assets, FilesystemIterator::SKIP_DOTS)
+			);
+			foreach ($iterator as $file) {
+				if (!$file->isFile()) continue;
+				$relative = substr($file->getPathname(), strlen($assets) + 1);
+				if (!is_file($root . '/assets/' . $relative)) $missing[] = 'assets/' . $relative;
+			}
+		}
+		if ($missing === []) {
+			$lines[] = 'ok: sy/bootstrap-' . $name . ' (' . count(glob($assets . '/*') ?: []) . ' entries)';
+		} else {
+			$ok      = false;
+			$lines[] = 'missing: sy/bootstrap-' . $name . ' -> ' . implode(', ', $missing);
+		}
+	}
+
+	$css = $root . '/assets/css/app.css';
+	if (is_file($css)) {
+		$lines[] = 'ok: assets/css/app.css';
+	} else {
+		$ok      = false;
+		$lines[] = 'missing: assets/css/app.css (run sy build)';
+	}
+
+	foreach (sy_ini($config) as $name => $descriptor) {
+		$file = (string) ($descriptor['file'] ?? '?');
+		if (is_file($root . '/' . $file)) {
+			$lines[] = 'ok: ' . $file;
+		} else {
+			$lines[] = 'warning: ' . $file . ' missing (generated on the next install)';
+		}
+	}
+
+	if (is_file($css) and sy_needs_build($vendor, $css)) {
+		$lines[] = 'warning: a plugin SCSS file is newer than assets/css/app.css (run sy build)';
+	}
+
+	return ['lines' => $lines, 'ok' => $ok];
+}
+
+/**
+ * Full idempotent pass: provision what is missing, sync files, build when
+ * stale, migrate when configured.
+ *
+ * @param array{dry-run?: bool, no-db?: bool, no-build?: bool, no-templates?: bool} $options
+ */
+function sy_install(string $root, array $options = []): int {
+	$config = sy_config($root);
+	$vendor = sy_vendor($root);
+
+	if (!empty($options['dry-run'])) $GLOBALS['sy_dry_run'] = true;
+
+	if (sy_ini_missing($root, $config) !== []) {
+		if (sy_provision($root, $vendor, $config) !== 0) return 1;
+	}
+
+	foreach (sy_sync($root, $vendor, empty($options['no-templates'])) as $line) sy_out($line);
+
+	$css = $root . '/assets/css/app.css';
+	if (empty($options['no-build']) and sy_needs_build($vendor, $css)) {
+		if (sy_build($root, $config) !== 0) return 1;
+	}
+
+	if (empty($options['no-db']) and sy_configured($root, $config)) {
+		if (sy_db_run($root, $vendor, $config, ['repair', 'migrate']) !== 0) return 1;
+	}
+
+	return 0;
+}
+
+function sy_usage(): void {
+	echo <<<TXT
+sy — project installer
+
+  sy install [--dry-run] [--no-db] [--no-build] [--no-templates]
+        Idempotent: generate the missing INI files, run extra.sy.install,
+        synchronise the plugin files, build when stale, migrate when the
+        project is configured.
+
+  sy sync [--no-templates]   Copy the plugin files only
+  sy build                   Force the asset build (extra.sy.build)
+  sy db [task]               Flyway on the core schema and on every plugin
+                             schema; task = migrate (default) | info | repair
+                             | clean | validate | baseline
+  sy doctor                  Fail when a plugin file or the CSS is missing
+
+Configuration lives in composer.json, under extra.sy:
+  build    shell command compiling the project assets
+  ini      { name: { file, input } }, generated by genini when missing
+  install  shell commands run once, after the INI generation
+
+TXT;
+}
+
+/**
+ * @param string[] $argv
+ */
+function sy_main(array $argv): int {
+	$verb      = $argv[1] ?? '';
+	$options   = [];
+	$arguments = [];
+	$known     = ['dry-run', 'no-db', 'no-build', 'no-templates', 'quiet'];
+
+	foreach (array_slice($argv, 2) as $arg) {
+		if (!str_starts_with($arg, '--')) {
+			$arguments[] = $arg;
+			continue;
+		}
+		$name = substr($arg, 2);
+		if (!in_array($name, $known, true)) {
+			sy_out('unknown option: ' . $arg);
+			return 2;
+		}
+		$options[$name] = true;
+	}
+
+	if (!empty($options['quiet'])) $GLOBALS['sy_quiet'] = true;
+
+	$root   = sy_root();
+	$config = sy_config($root);
+	$vendor = sy_vendor($root);
+
+	switch ($verb) {
+		case 'install':
+			return sy_install($root, [
+				'dry-run'      => !empty($options['dry-run']),
+				'no-db'        => !empty($options['no-db']),
+				'no-build'     => !empty($options['no-build']),
+				'no-templates' => !empty($options['no-templates']),
+			]);
+
+		case 'sync':
+			foreach (sy_sync($root, $vendor, empty($options['no-templates'])) as $line) sy_out($line);
+			return 0;
+
+		case 'build':
+			return sy_build($root, $config);
+
+		case 'db':
+			return sy_db_run($root, $vendor, $config, [$arguments[0] ?? 'migrate']);
+
+		case 'doctor':
+			$report = sy_doctor($root, $vendor, $config);
+			foreach ($report['lines'] as $line) sy_out($line);
+			return $report['ok'] ? 0 : 1;
+	}
+
+	sy_usage();
+	return 2;
+}
+
+// Define SY_CONSOLE_TEST before including this file to load the functions
+// without running the command; the test suite does exactly that.
+if (!defined('SY_CONSOLE_TEST')) {
+	exit(sy_main($argv ?? []));
+}
